@@ -1,0 +1,10 @@
+# Ambiente Python
+.venv/
+__pycache__/
+*.pyc
+
+# Segredos
+.env
+
+# Dados grandes gerados pelas queries (mantemos os .csv finais das sprints, não os intermediários)
+Lab-01/individual/**/output/
