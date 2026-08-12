@@ -1,4 +1,4 @@
-# RQ03 e RQ04 — extração e validação
+# lucasrsnd — extração e validação (RQ03 + RQ04)
 
 Responsável: `lucasrsnd`
 Issues:
@@ -17,10 +17,10 @@ cd Lab-01
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-copy .env.example .env   # depois editar e colar o token
-cd individual\lucasrsnd
-python rq03_releases.py
-python rq04_atualizacao.py
+pip install -e .          # instala config/src em modo editavel
+copy .env.example .env    # depois editar e colar o token
+python scripts\rq03_releases.py
+python scripts\rq04_atualizacao.py
 ```
 
 ## Validação
@@ -64,7 +64,7 @@ python rq04_atualizacao.py
 
 ## Trecho de query pronto para integração
 
-Os campos relevantes para RQ03 e RQ04 dentro do `search(...) { nodes { ... on Repository { } } }` são:
+Campos relevantes para RQ03 e RQ04 dentro do `search(...) { nodes { ... on Repository { } } }` (ver `src/queries`):
 
 ```graphql
 releases {
@@ -73,6 +73,6 @@ releases {
 pushedAt
 ```
 
-Cálculo de "dias desde atualização" fica no lado do script (Python), não no GraphQL —
-ver `calcular_dias_desde_atualizacao()` em `rq04_atualizacao.py`. RQ03 não precisa de
-cálculo adicional, `total_releases` já vem pronto de `releases.totalCount`.
+Cálculo de "dias desde atualização" fica em `extract_rq04_dias_desde_atualizacao()`, em
+`src/metrics`. RQ03 não precisa de cálculo adicional, `total_releases` já vem pronto
+de `releases.totalCount` (ver `extract_rq03_total_releases()`).

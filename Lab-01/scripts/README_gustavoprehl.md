@@ -10,10 +10,10 @@ cd Lab-01
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
-copy .env.example .env   # depois editar e colar o token
-cd individual\gustavoprehl
-python rq01_idade.py
-python rq02_prs_aceitas.py
+pip install -e .          # instala config/src em modo editavel
+copy .env.example .env    # depois editar e colar o token
+python scripts\rq01_idade.py
+python scripts\rq02_prs_aceitas.py
 ```
 
 ---
@@ -42,15 +42,15 @@ python rq02_prs_aceitas.py
 | jwasham/coding-interview-university | 358308 | 2016-06-06 | 10.18 |
 | vinta/awesome-python | 313188 | 2014-06-27 | 12.12 |
 
-### Trecho de query pronto para integração (Issue #10)
+### Trecho de query pronto para integração
 
-Campo relevante dentro do `search(...) { nodes { ... on Repository { } } }`:
+Campo relevante dentro do `search(...) { nodes { ... on Repository { } } }` (ver `src/queries`):
 
 ```graphql
 createdAt
 ```
 
-Cálculo de idade fica no lado do script (Python), não no GraphQL, ver `calcular_idade_anos()` em `rq01_idade.py`.
+Cálculo de idade fica em `extract_rq01_idade_anos()`, em `src/metrics`.
 
 ---
 
@@ -78,9 +78,9 @@ Cálculo de idade fica no lado do script (Python), não no GraphQL, ver `calcula
 | jwasham/coding-interview-university | 358310 | 415 |
 | vinta/awesome-python | 313203 | 738 |
 
-### Trecho de query pronto para integração (Issue #10)
+### Trecho de query pronto para integração
 
-Campo relevante dentro do `search(...) { nodes { ... on Repository { } } }`:
+Campo relevante dentro do `search(...) { nodes { ... on Repository { } } }` (ver `src/queries`):
 
 ```graphql
 pullRequests(states: MERGED) {
@@ -88,4 +88,4 @@ pullRequests(states: MERGED) {
 }
 ```
 
-O script extrai `totalCount` para `prs_aceitas` — ver `rodar_query()` em `rq02_prs_aceitas.py`.
+Extração feita em `extract_rq02_prs_aceitas()`, em `src/metrics`.
