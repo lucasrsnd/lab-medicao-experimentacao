@@ -6,6 +6,12 @@ __pycache__/
 # Segredos
 .env
 
-# Dados grandes gerados pelas queries (mantemos os .csv finais das sprints, não os intermediários)
-Lab-01/individual/**/output/
-Lab-01/output/
+# Dados gerados pelas queries - por padrao nao versionados; quando um CSV vira
+# entregavel de verdade (dataset da S02, snapshot de sprint), adicionar com `git add -f`
+Lab-01/data/raw/*
+!Lab-01/data/raw/.gitkeep
+Lab-01/data/snapshots/*
+!Lab-01/data/snapshots/.gitkeep
+
+# Empacotamento Python (pip install -e .)
+*.egg-info/
