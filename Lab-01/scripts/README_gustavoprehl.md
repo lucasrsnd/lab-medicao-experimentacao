@@ -1,4 +1,4 @@
-# gustavoprehl — extração e validação (RQ01 + RQ02)
+# gustavoprehl - extração e validação (RQ01 + RQ02)
 
 Responsável: `gustavoprehl`
 Issues: RQ01 (idade do repositório) e RQ02 (PRs aceitas) · `sprint:S01`
@@ -20,13 +20,13 @@ python scripts\rq02_prs_aceitas.py
 
 ## RQ01 — idade do repositório
 
-**Métrica:** idade do repositório = hoje − `createdAt` (campo GraphQL), em anos.
+**Métrica:** idade do repositório = hoje - `createdAt` (campo GraphQL), em anos.
 
 ### Validação
 
 - [x] Amostra rodada: 10 repositórios
 - [x] Nenhum `createdAt` nulo na amostra
-- [x] Idades calculadas fazem sentido (conferido `codecrafters-io/build-your-own-x` e `sindresorhus/awesome` manualmente na página do GitHub - batem)
+- [x] Idades calculadas fazem sentido (conferido `codecrafters-io/build-your-own-x` e `sindresorhus/awesome` manualmente na página do GitHub, batem)
 - [x] Observações / inconsistências encontradas: nenhuma. `openclaw/openclaw` deu idade 0.71 anos (criado em 2025-11-24), o que é coerente, repositório recente com alto número de estrelas.
 
 | repositório | estrelas | criado em | idade (anos) |

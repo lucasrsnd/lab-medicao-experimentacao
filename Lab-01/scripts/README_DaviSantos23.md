@@ -1,15 +1,15 @@
-# DaviSantos23 — extração e validação (RQ05, RQ06 e RQ07)
+# DaviSantos23 - extração e validação (RQ05, RQ06 e RQ07)
 
 Responsável: `DaviSantos23`
 Issues:
-- RQ05 — extração e validação (Linguagem primária) · `sprint:S01`
-- RQ06 — extração e validação (Taxa de issues fechadas) · `sprint:S01`
-- RQ07 — análise combinada (Agrupamento por linguagem) · `sprint:S01`
+- RQ05 - extração e validação (Linguagem primária) · `sprint:S01`
+- RQ06 - extração e validação (Taxa de issues fechadas) · `sprint:S01`
+- RQ07 - análise combinada (Agrupamento por linguagem) · `sprint:S01`
 
 ## Métricas
 
 - **RQ05**: Linguagem primária do repositório (`primaryLanguage.name`, campo GraphQL). *Fonte de referência escolhida para "Linguagens mais populares": Relatório GitHub Octoverse mais recente.*
-- **RQ06**: Razão entre issues fechadas e total de issues. Obtido pela divisão de `issues_closed` (states: CLOSED) por `issues_total`. 
+- **RQ06**: Razão entre issues fechadas e total de issues. Obtido pela divisão de `issues_closed` (states: CLOSED) por `issues_total`.
 - **RQ07**: Agrupamento das métricas das RQs 02 (PRs), 03 (Releases) e 04 (Atualizações) utilizando a linguagem primária (RQ05) como chave.
 
 ## Como rodar
