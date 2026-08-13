@@ -1,14 +1,14 @@
-# lucasrsnd — extração e validação (RQ03 + RQ04)
+# lucasrsnd - extração e validação (RQ03 + RQ04)
 
 Responsável: `lucasrsnd`
 Issues:
-- RQ03 — extração e validação (total de releases) · `sprint:S01`
-- RQ04 — extração e validação (tempo até última atualização) · `sprint:S01`
+- RQ03 - extração e validação (total de releases) · `sprint:S01`
+- RQ04 - extração e validação (tempo até última atualização) · `sprint:S01`
 
 ## Métricas
 
 - **RQ03**: total de releases do repositório (`releases.totalCount`, campo GraphQL).
-- **RQ04**: tempo até a última atualização = hoje − `pushedAt` (data do último push), em dias.
+- **RQ04**: tempo até a última atualização = hoje - `pushedAt` (data do último push), em dias.
 
 ## Como rodar
 
@@ -29,8 +29,8 @@ python scripts\rq04_atualizacao.py
 - [x] Nenhum `releases.totalCount` ou `pushedAt` nulo na amostra
 - [x] Valores de releases e de dias desde atualização fazem sentido
 - [x] Observações / inconsistências encontradas:
-  - **RQ03**: a maioria dos repositórios da amostra tem **0 releases**, mesmo com centenas de milhares de estrelas. Isso é coerente — vários são listas/coleções (`sindresorhus/awesome`, `EbookFoundation/free-programming-books`, `public-apis/public-apis`) que nunca usam a feature "Releases" do GitHub, só recebem commits diretos. Só `openclaw/openclaw` (233) e `nilbuild/developer-roadmap` (1) fogem disso.
-  - **RQ04**: a maior parte foi atualizada há poucos dias (0 a 6 dias), exceto `jwasham/coding-interview-university` (347 dias) e `donnemartin/system-design-primer` (144 dias) — ambos são listas de referência mais estáticas, não projetos de código com desenvolvimento ativo constante.
+  - **RQ03**: a maioria dos repositórios da amostra tem **0 releases**, mesmo com centenas de milhares de estrelas. Isso é coerente, vários são listas/coleções (`sindresorhus/awesome`, `EbookFoundation/free-programming-books`, `public-apis/public-apis`) que nunca usam a feature "Releases" do GitHub, só recebem commits diretos. Só `openclaw/openclaw` (233) e `nilbuild/developer-roadmap` (1) fogem disso.
+  - **RQ04**: a maior parte foi atualizada há poucos dias (0 a 6 dias), exceto `jwasham/coding-interview-university` (347 dias) e `donnemartin/system-design-primer` (144 dias), ambos são listas de referência mais estáticas, não projetos de código com desenvolvimento ativo constante.
 
 ### Amostra completa (RQ03)
 
