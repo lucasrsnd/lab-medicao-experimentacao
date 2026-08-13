@@ -50,3 +50,15 @@ def extract_rq04_dias_desde_atualizacao(node: dict, agora: datetime | None = Non
     agora = agora or datetime.now(timezone.utc)
     dias = (agora - _parse_iso8601(pushed_at)).days
     return max(dias, 0)
+
+def extract_rq05_linguagem(repo: dict) -> str:
+    lang_node = repo.get("primaryLanguage")
+    if lang_node and isinstance(lang_node, dict):
+        return lang_node.get("name", "N/A")
+    return "N/A"
+
+def extract_rq06_razao_issues(repo: dict) -> tuple[int, int, float]:
+    total = repo.get("issues_total", {}).get("totalCount", 0)
+    closed = repo.get("issues_closed", {}).get("totalCount", 0)
+    razao = round(closed / total, 4) if total > 0 else 0.0
+    return total, closed, razao
