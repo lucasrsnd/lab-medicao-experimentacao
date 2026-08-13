@@ -104,16 +104,22 @@ query($sampleSize: Int!) {
 }
 """
 
-# Script único do grupo (Lab01S01) - junta os campos das RQs já integradas.
-# RQ05/RQ06 continuam TODO (comentadas) até quem for responsável integrar.
+# Script único do grupo (Lab01S01) - junta os campos das 6 RQs já integradas
+# (RQ01-RQ06; RQ07 é derivada, sem campo próprio - ver scripts/rq07_analise.py).
 #
-# KNOWN ISSUE (achado ao testar, responsabilidade de quem tocar a Issue de
-# integração de novo): pedir first: 100 aqui (com os campos aninhados
-# pullRequests/releases) está retornando 502 da API do GitHub - funciona até
-# first: 50. Precisa de investigação/paginação antes de considerar a Issue fechada.
+# Usa $pageSize/$after (não $totalRepos/first fixo) porque pedir tudo de uma vez
+# (first: 100) com esses campos aninhados (releases, pullRequests, issues) estoura
+# o limite de complexidade da API e devolve 502 - paginar em blocos menores
+# contorna isso. O tamanho seguro do bloco cai conforme mais campos aninhados são
+# adicionados (testado: com as 6 RQs integradas, 40 funciona e 50 já dá 502) -
+# ver PAGE_SIZE em `scripts/script_unico_grupo.py`. Ver `src.github_client.paginate()`.
 QUERY_UNICO_S01 = """
-query ConsultaUnicaS01($totalRepos: Int!) {
-  search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, first: $totalRepos) {
+query ConsultaUnicaS01($pageSize: Int!, $after: String) {
+  search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, first: $pageSize, after: $after) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
     nodes {
       ... on Repository {
         nameWithOwner
