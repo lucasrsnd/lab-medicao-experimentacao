@@ -113,8 +113,17 @@ query($sampleSize: Int!) {
 # contorna isso. O tamanho seguro do bloco cai conforme mais campos aninhados são
 # adicionados (testado: com as 6 RQs integradas, 40 funciona e 50 já dá 502) -
 # ver PAGE_SIZE em `scripts/script_unico_grupo.py`. Ver `src.github_client.paginate()`.
+#
+# Inclui `rateLimit` (campo irmão de `search`, não aninhado nela) para que quem pagina
+# em lote grande (Lab01S02, `paginate_resumable()`) saiba o orçamento restante e possa
+# pausar de propósito antes de a API cortar. Scripts que não olham esse campo (o da
+# S01) simplesmente ignoram o dado extra - não quebra nada.
 QUERY_UNICO_S01 = """
 query ConsultaUnicaS01($pageSize: Int!, $after: String) {
+  rateLimit {
+    remaining
+    resetAt
+  }
   search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, first: $pageSize, after: $after) {
     pageInfo {
       hasNextPage

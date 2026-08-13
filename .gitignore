@@ -6,10 +6,11 @@ __pycache__/
 # Segredos
 .env
 
-# Dados gerados pelas queries - por padrao nao versionados; quando um CSV vira
-# entregavel de verdade (dataset da S02, snapshot de sprint), adicionar com `git add -f`
+# Dados gerados pelas queries - por padrao nao versionados; excecoes abaixo sao os
+# entregaveis de verdade (pedidos explicitamente pelo enunciado)
 Lab-01/data/raw/*
 !Lab-01/data/raw/.gitkeep
+!Lab-01/data/raw/repositorios_s02.csv
 Lab-01/data/snapshots/*
 !Lab-01/data/snapshots/.gitkeep
 
