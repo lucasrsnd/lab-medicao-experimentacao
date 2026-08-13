@@ -69,6 +69,41 @@ query AmostraRQ04($sampleSize: Int!) {
 }
 """
 
+QUERY_RQ05_LINGUAGEM = """
+query($sampleSize: Int!) {
+  search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, first: $sampleSize) {
+    nodes {
+      ... on Repository {
+        nameWithOwner
+        stargazerCount
+        primaryLanguage {
+          name
+        }
+      }
+    }
+  }
+}
+"""
+
+QUERY_RQ06_ISSUES = """
+query($sampleSize: Int!) {
+  search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, first: $sampleSize) {
+    nodes {
+      ... on Repository {
+        nameWithOwner
+        stargazerCount
+        issues_total: issues {
+          totalCount
+        }
+        issues_closed: issues(states: CLOSED) {
+          totalCount
+        }
+      }
+    }
+  }
+}
+"""
+
 # Script único do grupo (Lab01S01) - junta os campos das RQs já integradas.
 # RQ05/RQ06 continuam TODO (comentadas) até quem for responsável integrar.
 #
@@ -100,12 +135,18 @@ query ConsultaUnicaS01($totalRepos: Int!) {
         # RQ04 - tempo ate ultima atualizacao (lucasrsnd)
         pushedAt
 
-        # RQ05 - linguagem primaria - TODO: (DaviSantos23)
-        # primaryLanguage { name }
+        # RQ05 - linguagem primaria (DaviSantos23)
+        primaryLanguage { 
+          name 
+        }
 
-        # RQ06 - percentual de issues fechadas - TODO: (DaviSantos23)
-        # issues(states: OPEN) { totalCount }
-        # closedIssues: issues(states: CLOSED) { totalCount }
+        # RQ06 - percentual de issues fechadas (DaviSantos23)
+        issues_total: issues { 
+          totalCount 
+        }
+        issues_closed: issues(states: CLOSED) { 
+          totalCount 
+        }
       }
     }
   }

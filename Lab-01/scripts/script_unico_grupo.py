@@ -11,8 +11,9 @@ Cobertura atual (marcar [x] conforme cada RQ for integrada por quem e responsave
     [x] RQ02 - pull requests aceitas       (gustavoprehl)
     [x] RQ03 - releases.totalCount         (lucasrsnd)
     [x] RQ04 - pushedAt                    (lucasrsnd)
-    [ ] RQ05 - primaryLanguage             (DaviSantos23) -> TODO: adicionar campo
-    [ ] RQ06 - issues abertas/fechadas     (DaviSantos23) -> TODO: adicionar campo
+    [x] RQ05 - primaryLanguage             (DaviSantos23) 
+    [x] RQ06 - issues abertas/fechadas     (DaviSantos23) 
+    [x] RQ07 - analise combinatoria        (DaviSantos23)
 
 Ainda SEM paginacao (busca so os 100 primeiros por estrelas, conforme pede o
 Lab01S01). Paginacao para 1000 repositorios e escopo do Lab01S02.
@@ -30,11 +31,9 @@ Uso (a partir de Lab-01/):
 """
 
 from __future__ import annotations
-
 from pathlib import Path
 
 from config import load_github_token
-
 from src.export import salvar_csv
 from src.github_client import run_query
 from src.metrics import (
@@ -42,10 +41,12 @@ from src.metrics import (
     extract_rq02_prs_aceitas,
     extract_rq03_total_releases,
     extract_rq04_dias_desde_atualizacao,
+    extract_rq05_linguagem,
+    extract_rq06_razao_issues,
 )
 from src.queries import QUERY_UNICO_S01
 
-TOTAL_REPOS = 100  # Lab01S01 pede consulta para 100 repositorios (ver KNOWN ISSUE acima)
+TOTAL_REPOS = 10
 DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
 
 CAMPOS_CSV = [
@@ -57,22 +58,38 @@ CAMPOS_CSV = [
     "total_releases",
     "pushedAt",
     "dias_desde_atualizacao",
+    "linguagem_primaria",
+    "total_issues",
+    "issues_fechadas",
+    "razao_fechadas",
 ]
-
 
 def buscar_repositorios(token: str) -> list[dict]:
     data = run_query(QUERY_UNICO_S01, {"totalRepos": TOTAL_REPOS}, token, timeout=60)
     repos = []
     for node in data["search"]["nodes"]:
         node["idade_anos"] = extract_rq01_idade_anos(node)
+        
         node["prs_aceitas"] = extract_rq02_prs_aceitas(node)
         node.pop("pullRequests", None)
+        
         node["total_releases"] = extract_rq03_total_releases(node)
         node.pop("releases", None)
+        
         node["dias_desde_atualizacao"] = extract_rq04_dias_desde_atualizacao(node)
+        
+        node["linguagem_primaria"] = extract_rq05_linguagem(node)
+        node.pop("primaryLanguage", None)
+        
+        total, closed, razao = extract_rq06_razao_issues(node)
+        node["total_issues"] = total
+        node["issues_fechadas"] = closed
+        node["razao_fechadas"] = razao
+        node.pop("issues_total", None)
+        node.pop("issues_closed", None)
+        
         repos.append(node)
     return repos
-
 
 def main() -> None:
     token = load_github_token()
@@ -82,12 +99,6 @@ def main() -> None:
 
     caminho_csv = salvar_csv(repos, CAMPOS_CSV, DATA_DIR / "repositorios_s01.csv")
     print(f"Resultado salvo em: {caminho_csv}")
-    print(
-        "\nLembrete: RQ05 e RQ06 ainda estao marcados como TODO neste script - "
-        "cada responsavel deve descomentar/adicionar o campo validado na sua Issue "
-        "antes do fechamento da sprint."
-    )
-
 
 if __name__ == "__main__":
     main()
