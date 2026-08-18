@@ -12,9 +12,12 @@ Uso (a partir de Lab-01/):
 import pandas as pd
 from pathlib import Path
 
-# Ajustado para ler da pasta raw e buscar o CSV gerado pelo script unico
+# Ajustado para ler da pasta raw e buscar o CSV gerado pelo script unico.
+# NOTA (#17): apontava pra repositorios_s01.csv (100 repos, dataset antigo da S01) -
+# corrigido pra usar o dataset da S02 (998 repos), senao a analise da S03 roda em
+# cima de dado desatualizado.
 DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
-DATASET_PATH = DATA_DIR / "repositorios_s01.csv"
+DATASET_PATH = DATA_DIR / "repositorios_s02.csv"
 OUTPUT_DIR = Path(__file__).resolve().parent.parent / "data" / "processed"
 
 def realizar_analise():
