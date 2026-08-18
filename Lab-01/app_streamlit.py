@@ -44,6 +44,19 @@ def carregar_rq07() -> pd.DataFrame | None:
     return pd.read_csv(RQ07_PATH)
 
 
+def _contagem_por_faixa(serie: pd.Series, casas: int, bins: int = 20) -> pd.Series:
+    """Agrupa `serie` em `bins` faixas e devolve a contagem indexada por um rótulo
+    de texto ("7.20 - 8.60"), em vez do `pandas.Interval` cru que `value_counts`
+    devolveria - o Streamlit serializa Interval como {"left": ..., "right": ...}
+    e mostra isso na legenda/eixo do gráfico, em vez de uma faixa legível.
+    """
+    dados = serie.dropna()
+    contagem = pd.cut(dados, bins=bins).value_counts(sort=False)
+    fmt = f"{{:.{casas}f}}"
+    contagem.index = [f"{fmt.format(iv.left)} - {fmt.format(iv.right)}" for iv in contagem.index]
+    return contagem
+
+
 def renderizar_aba_numerica(df: pd.DataFrame, coluna: str, resumo_fn, casas: int) -> None:
     resumo = resumo_fn(df)
     fmt = f"{{:.{casas}f}}"
@@ -53,7 +66,7 @@ def renderizar_aba_numerica(df: pd.DataFrame, coluna: str, resumo_fn, casas: int
         st.metric("Média", fmt.format(resumo["media"]))
         st.metric("Min / Max", f"{fmt.format(resumo['min'])} / {fmt.format(resumo['max'])}")
     with col_grafico:
-        st.bar_chart(df[coluna].value_counts(bins=20).sort_index())
+        st.bar_chart(_contagem_por_faixa(df[coluna], casas))
 
 
 def renderizar_aba_rq05(df: pd.DataFrame) -> None:
