@@ -167,3 +167,54 @@ query ConsultaUnicaS01($pageSize: Int!, $after: String) {
   }
 }
 """
+
+# ---------------------------------------------------------------------------
+# ADIÇÃO S02
+# ---------------------------------------------------------------------------
+
+# Snapshot do GitHub Projects (v2) para CSV - Enunciado_Lab-01.md, Parte 2, item 6.
+# Usa `user(login: ...)` (não `organization`) porque o Project é de conta pessoal.
+QUERY_PROJECT_SNAPSHOT_USER = """
+query SnapshotProject($login: String!, $number: Int!, $pageSize: Int!, $after: String) {
+  user(login: $login) {
+    projectV2(number: $number) {
+      title
+      items(first: $pageSize, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          status: fieldValueByName(name: "Status") {
+            ... on ProjectV2ItemFieldSingleSelectValue {
+              name
+            }
+          }
+          content {
+            ... on Issue {
+              number
+              title
+              url
+              state
+              assignees(first: 5) {
+                nodes {
+                  login
+                }
+              }
+            }
+            ... on PullRequest {
+              number
+              title
+              url
+              state
+            }
+            ... on DraftIssue {
+              title
+            }
+          }
+        }
+      }
+    }
+  }
+}
+"""

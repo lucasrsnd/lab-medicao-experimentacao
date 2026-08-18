@@ -32,3 +32,26 @@ def load_github_token() -> str:
             f"e preencha com um token seu."
         )
     return token
+
+
+def load_project_config() -> tuple[str, int]:
+    """Lê GITHUB_PROJECT_OWNER e GITHUB_PROJECT_NUMBER do `.env` (usado pelo
+    snapshot do GitHub Projects, `scripts/snapshot_project.py`).
+
+    - GITHUB_PROJECT_OWNER: usuário dono do GitHub Projects (conta pessoal do
+      grupo, não organização) - ex.: "lucasrsnd", sem o @.
+    - GITHUB_PROJECT_NUMBER: número do project, visível na própria URL dele
+      (github.com/users/<owner>/projects/<numero>).
+    """
+    owner = os.getenv("GITHUB_PROJECT_OWNER")
+    number_raw = os.getenv("GITHUB_PROJECT_NUMBER")
+    if not owner or not number_raw:
+        sys.exit(
+            "GITHUB_PROJECT_OWNER e/ou GITHUB_PROJECT_NUMBER não encontrados no .env.\n"
+            f"Adicione ambos em {ENV_PATH} (ver {ENV_EXAMPLE_PATH} para o formato)."
+        )
+    try:
+        number = int(number_raw)
+    except ValueError:
+        sys.exit(f"GITHUB_PROJECT_NUMBER precisa ser um número inteiro, veio: {number_raw!r}")
+    return owner, number
