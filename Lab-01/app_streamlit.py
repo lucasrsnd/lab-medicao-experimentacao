@@ -19,6 +19,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import streamlit as st
 
@@ -49,11 +50,22 @@ def _contagem_por_faixa(serie: pd.Series, casas: int, bins: int = 20) -> pd.Seri
     de texto ("7.20 - 8.60"), em vez do `pandas.Interval` cru que `value_counts`
     devolveria - o Streamlit serializa Interval como {"left": ..., "right": ...}
     e mostra isso na legenda/eixo do gráfico, em vez de uma faixa legível.
+
+    Bordas fixas via `np.linspace(min, max, ...)`, em vez de deixar `pd.cut`
+    escolhê-las: o `pd.cut(serie, bins=N)` "solto" expande a borda esquerda em
+    0.1% pra incluir o mínimo, o que gera faixas tipo "-0.02 - 0.92" pra uma
+    métrica que nunca é negativa (idade, PRs, releases etc.). `include_lowest`
+    faz o mesmo deslocamento mesmo com bordas explícitas, por isso a primeira
+    borda ainda é grampeada (`max(iv.left, minimo)`) no mínimo real dos dados.
     """
     dados = serie.dropna()
-    contagem = pd.cut(dados, bins=bins).value_counts(sort=False)
+    minimo = float(dados.min())
+    bordas = np.linspace(minimo, float(dados.max()), bins + 1)
+    contagem = pd.cut(dados, bins=bordas, include_lowest=True).value_counts(sort=False)
     fmt = f"{{:.{casas}f}}"
-    contagem.index = [f"{fmt.format(iv.left)} - {fmt.format(iv.right)}" for iv in contagem.index]
+    contagem.index = [
+        f"{fmt.format(max(iv.left, minimo))} - {fmt.format(iv.right)}" for iv in contagem.index
+    ]
     return contagem
 
 
