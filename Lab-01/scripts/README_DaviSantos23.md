@@ -112,10 +112,11 @@ Hipótese: Sim. Projetos saudáveis e altamente populares devem possuir um alto 
 Hipótese: Sim. Acreditamos que os repositórios escritos nas top 3 linguagens mais populares concentrarão as maiores medianas de PRs e atualizações, devido ao maior volume e densidade de suas comunidades de desenvolvedores.
 
 ### Resultado da validação em 1000 (998 repositórios coletados)
-- [x] `linguagem_primaria`: [VALOR]% de valores ausentes ('N/A'). Top 3 linguagens: [LINGUAGEM 1], [LINGUAGEM 2], [LINGUAGEM 3].
-- [x] `razao_fechadas`: mediana [VALOR], [VALOR]% dos repositórios possuem 0 issues cadastradas/desabilitadas. [VALOR] outliers severos identificados pela regra IQR.
+
+- [x] `linguagem_primaria`: 8.62% de valores ausentes ('N/A'). Top 3 linguagens: Python (228), TypeScript (174) e JavaScript (110).
+- [x] `razao_fechadas`: mediana de 0.86 (86.4%), com 4.3% dos repositórios possuindo 0 issues cadastradas/desabilitadas. 60 outliers identificados pela regra IQR.
 - [x] A hipótese se confirmou?
-  - RQ05: [Sim/Não, detalhar de acordo com as top linguagens impressas no terminal].
-  - RQ06: [Sim/Não, detalhar se a mediana ficou acima ou abaixo dos 80% hipotetizados].
-  - RQ07: [Sim/Não, detalhar se as linguagens do topo da lista realmente tiveram maior mediana de PRs/Releases no agrupamento impresso no terminal].
-- [x] Inconsistências encontradas: [Descrever aqui se encontrou algum projeto com comportamento muito fora da curva, ou deixar como "Nenhuma" se os dados fluíram bem].
+  - **RQ05**: Sim. O topo do ranking foi amplamente dominado por Python, TypeScript e JavaScript, refletindo com exatidão as linguagens mais adotadas no mercado e nos relatórios recentes do GitHub.
+  - **RQ06**: Sim. A mediana de fechamento ficou em 86.4%, superando com margem os 80% hipotetizados. Isso reforça que repositórios populares conseguem manter a saúde do projeto através de uma comunidade engajada na resolução das issues.
+  - **RQ07**: Não. A hipótese foi refutada pelos dados. Embora TypeScript tenha uma alta mediana de PRs aceitas (1985), Python (559.5) e JavaScript (630) ficaram bem abaixo de linguagens menos frequentes no top 1.000, como Rust (2491) e Go (1690). Isso demonstra que o número de repositórios escritos em uma linguagem não garante proporcionalmente o maior volume de contribuições externas neles.
+- [x] Inconsistências encontradas: Na extração da RQ06, repositórios massivos como `torvalds/linux` e `vinta/awesome-python` apareceram no top 5 menores taxas, cravando `0.0`. Isso indica que esses projetos desativaram a funcionalidade de *issues* no GitHub (usando listas de e-mail ou apenas PRs), forçando o cálculo a registrar zero, o que distorce levemente a cauda inferior da nossa distribuição.
