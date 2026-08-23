@@ -1,0 +1,25 @@
+sprint,data_snapshot,issue_number,titulo,status,assignees,url
+S03,2026-08-23,19,"Seção ""Configuração do processo"" + print do board + política de WIP - S03 - RF",Doing,DaviSantos23,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/19
+S03,2026-08-23,22,Rodar snapshot de fechamento da sprint - S03,Doing,DaviSantos23,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/22
+S03,2026-08-23,15,Análise e visualização RQ01+RQ02 - S03,Review,gustavoprehl,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/15
+S03,2026-08-23,16,Análise e visualização RQ03+RQ04 - S03,Review,gustavoprehl,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/16
+S03,2026-08-23,17,Análise e visualização RQ05+RQ06+RQ07 - S03,Review,gustavoprehl,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/17
+S03,2026-08-23,12,Validação individual RQ05+RQ06+RQ07 em 1000 repos + hipótese informal - S02,Done,DaviSantos23,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/12
+S03,2026-08-23,13,Escrever 1ª versão do relatório (introdução + hipóteses informais) - S02,Done,DaviSantos23,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/13
+S03,2026-08-23,18,"Consolidar documento final (metodologia, resultados, discussão) - S03 - RF",To do,lucasrsnd,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/18
+S03,2026-08-23,20,Rodar snapshot final e revisar referência de Issue nos commits - S03 - RF,To do,lucasrsnd,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/20
+S03,2026-08-23,11,Validação individual RQ03+RQ04 em 1000 repos + hipótese informal - S02,Done,lucasrsnd,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/11
+S03,2026-08-23,10,Validação individual RQ01+RQ02 em 1000 repos + hipótese informal - S02,Done,gustavoprehl,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/10
+S03,2026-08-23,14,Script de snapshot GraphQL do Project → CSV + rodar 1º snapshot - S02,Done,lucasrsnd,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/14
+S03,2026-08-23,21,Exportar dados para .csv - S02,Done,gustavoprehl,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/21
+S03,2026-08-23,9,Implementar paginação para 1000 repositórios - S02,Done,gustavoprehl,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/9
+S03,2026-08-23,7,Integrar extrações individuais no script único de consulta GraphQL - S01,Done,lucasrsnd,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/7
+S03,2026-08-23,5,RQ05 - extração e validação (linguagem primária) - S01,Done,DaviSantos23,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/5
+S03,2026-08-23,6,RQ06 - extração e validação (% issues fechadas) - S01,Done,DaviSantos23,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/6
+S03,2026-08-23,24,RQ07 - validação da viabilidade de cruzamento por linguagem (bônus) - S01,Done,DaviSantos23,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/24
+S03,2026-08-23,1,RQ01 - extração e validação (idade do repositório) - S01,Done,gustavoprehl,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/1
+S03,2026-08-23,3,RQ03 - extração e validação (total de releases) - S01,Done,lucasrsnd,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/3
+S03,2026-08-23,4,RQ04 - extração e validação (tempo até última atualização) - S01,Done,lucasrsnd,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/4
+S03,2026-08-23,2,RQ02 - extração e validação (PRs aceitas) - S01,Done,gustavoprehl,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/2
+S03,2026-08-23,28,#5 #6 #24 Implementa extração e validação das métricas RQ05 (linguagem primária… ,Done,,https://github.com/lucasrsnd/lab-medicao-experimentacao/pull/28
+S03,2026-08-23,8,Implementar requisição automática - S01,Done,gustavoprehl,https://github.com/lucasrsnd/lab-medicao-experimentacao/issues/8
