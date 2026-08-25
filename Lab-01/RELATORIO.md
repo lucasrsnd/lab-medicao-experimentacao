@@ -98,7 +98,7 @@ O gerenciamento e o rastreamento das tarefas deste laboratório foram realizados
 
 **Política de WIP (Work in Progress):** limite de **3** para a coluna Doing. Como a equipe é formada por 3 integrantes, esse limite garante que cada membro trabalhe em no máximo uma tarefa de forma simultânea. Essa restrição evita a perda de foco (*context switching*), previne o gargalo de tarefas incompletas e incentiva a colaboração mútua e o auxílio nas revisões antes de puxar um novo cartão.
 
-![Board Kanban Final](./reports/figures/board_final.jpeg)
+![Board Kanban Final](./reports/figures/snapshot_final.png)
 
 ### 3.4 Ferramentas
 
