@@ -43,29 +43,29 @@ Além das 7 RQs pedidas, o grupo optou por três frentes de contribuição próp
 
 ## 2. Contexto
 
-Este é o primeiro laboratório da disciplina, responsável por iniciar tanto a rotina de mineração de dados via API quanto o quadro Kanban (GitHub Projects) que acompanhará o grupo até o final do semestre — a estrutura de colunas e a política de WIP definidas aqui (Seção 3.3) são a base usada nos laboratórios seguintes.
+Este é o primeiro laboratório da disciplina, responsável por iniciar tanto a rotina de mineração de dados via API quanto o quadro Kanban (GitHub Projects) que acompanhará o grupo até o final do semestre, a estrutura de colunas e a política de WIP definidas aqui (Seção 3.3) são a base usada nos laboratórios seguintes.
 
-O objeto de estudo são os 1.000 repositórios mais populares do GitHub, medidos por número de estrelas — um critério de popularidade amplamente usado tanto em pesquisa quanto no próprio discurso de mercado do GitHub. A ideia geral por trás do laboratório é que popularidade (estrelas) se correlacione com maturidade e boas práticas de manutenção — idade, contribuição externa, cadência de releases, atualização, escolha de linguagem e gestão de issues —, mas essa correlação não é garantida, e é isso que as 7 RQs investigam empiricamente (Seção 4.3).
+O objeto de estudo são os 1.000 repositórios mais populares do GitHub, medidos por número de estrelas, um critério de popularidade amplamente usado tanto em pesquisa quanto no próprio discurso de mercado do GitHub. A ideia geral por trás do laboratório é que popularidade (estrelas) se correlacione com maturidade e boas práticas de manutenção. Como por exemplo a idade, contribuição externa, cadência de releases, atualização, escolha de linguagem e gestão de issues, mas essa correlação não é garantida, e é isso que as 7 RQs investigam empiricamente (Seção 4.3).
 
-Como referência conceitual para "linguagens mais populares" (RQ05/RQ07), adotamos o **GitHub Octoverse**, edição 2025, mantido como fonte única do início ao fim do laboratório, conforme exigido pelo enunciado (ver Seção 6, Referências).
+Como referência conceitual para "linguagens mais populares" (RQ05/RQ07), adotamos o **GitHub Octoverse**, edição 2025, mantido como fonte única do início ao fim do laboratório (ver Seção 6, Referências).
 
 ## 3. Metodologia
 
-A coleta foi feita inteiramente via **GraphQL API do GitHub**, com script próprio do grupo (Python + `requests` + `python-dotenv`), sem bibliotecas de terceiros que abstraem a API, conforme exigido pelo enunciado. **Critério de amostragem:** os repositórios foram buscados com `search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, ...)`, ordenados do maior para o menor número de estrelas — não existe uma lista fixa de repositórios, o "top N" é definido dinamicamente no momento da consulta.
+A coleta foi feita inteiramente via **GraphQL API do GitHub**, com script próprio do grupo (Python + `requests` + `python-dotenv`), sem bibliotecas de terceiros que abstraem a API. **Critério de amostragem:** os repositórios foram buscados com `search(query: "stars:>1 sort:stars-desc", type: REPOSITORY, ...)`, ordenados do maior para o menor número de estrelas, não existe uma lista fixa de repositórios, o "top N" é definido dinamicamente no momento da consulta.
 
 ### 3.1 Principais Desafios
 
-* **Erro 502 intermitente da Search API (S01).** Pedir os 100 repositórios do Lab01S01 numa única chamada GraphQL (com todos os campos aninhados de todo mundo juntos) retornava erro 502. Descartamos rate limit (esperamos 70s e 4min, o erro persistiu) e complexidade da query (a mesma query, isolada, funcionava em lotes menores) como causa — concluímos ser uma instabilidade genuína e intermitente do lado do GitHub. Resolvido paginando por cursor (`after`/`pageInfo`) em lotes pequenos, com backoff exponencial entre tentativas.
-* **998 em vez de 1000 repositórios coletados (S02).** Na coleta de 1000 repositórios (execução de vários minutos), o índice "vivo" da Search API do GitHub muda durante a consulta, fazendo `hasNextPage` virar `false` antes do esperado. Verificamos que não há duplicatas e que o cursor avançou corretamente em toda a paginação — concluímos ser um comportamento documentado da API operando em escala, não uma falha do script ou perda de dados.
-* **Ausência de histórico de mudança de coluna no GitHub Projects (v2)**, que não expõe via API quando um cartão mudou de status — resolvido com snapshots manuais recorrentes (um script GraphQL próprio, ao final de cada sprint) em vez de depender de um histórico que a ferramenta não fornece.
+* **Erro 502 intermitente da Search API (S01).** Pedir os 100 repositórios do Lab01S01 numa única chamada GraphQL (com todos os campos aninhados de todo mundo juntos) retornava erro 502. Descartamos rate limit (esperamos 70s e 4min, o erro persistiu) e complexidade da query (a mesma query, isolada, funcionava em lotes menores) como causa, concluímos ser uma instabilidade genuína e intermitente do lado do GitHub. Resolvido paginando por cursor (`after`/`pageInfo`) em lotes pequenos, com backoff exponencial entre tentativas.
+* **998 em vez de 1000 repositórios coletados (S02).** Na coleta de 1000 repositórios (execução de vários minutos), o índice "vivo" da Search API do GitHub muda durante a consulta, fazendo `hasNextPage` virar `false` antes do esperado. Verificamos que não há duplicatas e que o cursor avançou corretamente em toda a paginação, concluímos ser um comportamento documentado da API operando em escala, não uma falha do script ou perda de dados.
+* **Ausência de histórico de mudança de coluna no GitHub Projects (v2)**, que não expõe via API quando um cartão mudou de status, resolvido com snapshots manuais recorrentes (um script GraphQL próprio, ao final de cada sprint) em vez de depender de um histórico que a ferramenta não fornece.
 * **Repositórios com métricas nativas do GitHub sub-representadas.** Alguns projetos populares não usam certos recursos nativos do GitHub para seu fluxo real de trabalho (ex.: `torvalds/linux`, que recebe contribuições por lista de e-mail em vez de Pull Requests, e por isso aparece com 0 PRs aceitas). A métrica mede um canal específico de contribuição, não a colaboração real do projeto — discutido com mais detalhe na Seção 4.3.
 
 ### 3.2 Tomadas de Decisão
 
 * **Limite de WIP = 3** para a coluna Doing (detalhado na Seção 3.3): como a equipe tem 3 integrantes, esse limite garante no máximo uma tarefa simultânea por pessoa, evitando *context switching* e incentivando revisão mútua antes de puxar um novo cartão.
-* **Paginação adaptativa e resumível**, em vez de uma reexecução do zero a cada falha: tamanho de página reduzido pela metade após um erro e aumentado gradualmente após sucessos consecutivos, com checkpoint em disco para retomar de onde parou. Escolhida depois de esgotar outras explicações para o 502 (não era rate limit nem complexidade) — ver Seção 3.6a.
+* **Paginação adaptativa e resumível**, em vez de uma reexecução do zero a cada falha: tamanho de página reduzido pela metade após um erro e aumentado gradualmente após sucessos consecutivos, com checkpoint em disco para retomar de onde parou. Escolhida depois de esgotar outras explicações para o 502 (não era rate limit nem complexidade), ver Seção 3.6a.
 * **Aceitar os 998 repositórios coletados na S02**, em vez de forçar uma nova coleta para completar 1000: como o desvio é um comportamento documentado da API (índice vivo), e não um bug do script, decidimos manter e documentar o número real em vez de mascará-lo artificialmente.
-* **Repositórios sem linguagem primária classificável entram como `"N/A"`** na contagem da RQ05, em vez de serem descartados da amostra — mantém a base íntegra (998 em toda RQ) e explicita quantos casos existem, em vez de reduzir a amostra silenciosamente.
+* **Repositórios sem linguagem primária classificável entram como `"N/A"`** na contagem da RQ05, em vez de serem descartados da amostra, mantém a base íntegra (998 em toda RQ) e explicita quantos casos existem, em vez de reduzir a amostra silenciosamente.
 * **GitHub Octoverse (2025) mantido como única fonte de "linguagens populares"** do início ao fim do laboratório (RQ05 e RQ07), conforme exigido pelo enunciado, em vez de misturar fontes (TIOBE, GitHut) entre RQs.
 * **Streamlit escolhido para o dashboard** por permitir reaproveitar a mesma camada de análise (`src/analysis/`) usada nas figuras estáticas do relatório, evitando duas implementações de cálculo divergentes entre as duas apresentações.
 
@@ -87,7 +87,7 @@ A coleta foi feita inteiramente via **GraphQL API do GitHub**, com script própr
 
 #### Configuração do processo
 
-O gerenciamento e o rastreamento das tarefas deste laboratório foram realizados utilizando o **GitHub Projects (v2)**, com abordagem visual baseada no sistema Kanban, refletindo o progresso real e contínuo do grupo (link no cabeçalho deste documento).
+O gerenciamento e o rastreamento das tarefas deste laboratório foram realizados utilizando o **GitHub Projects**, com abordagem visual baseada no sistema Kanban, refletindo o progresso real e contínuo do grupo (link no cabeçalho deste documento).
 
 **Colunas do board (Status):**
 * **Backlog:** Tarefas planejadas e identificadas, aguardando priorização para as próximas sprints.
@@ -128,15 +128,15 @@ O gerenciamento e o rastreamento das tarefas deste laboratório foram realizados
 
 **(b) Paginação adaptativa e resumível para a coleta de 1000 repositórios.** Não exigida pelo enunciado (que pede apenas "paginação"), mas necessária na prática para lidar com o erro 502 intermitente encontrado na S01, numa escala 10x maior na S02. Implementa: ajuste dinâmico de tamanho de página (reduz pela metade em falha, aumenta gradualmente após sucessos consecutivos), checkpoint em disco para retomar a coleta de onde parou em caso de interrupção, e verificação do rate limit da API (`rateLimit.remaining`/`resetAt`) antes de cada página. Essa decisão é o que viabilizou a base de 998 repositórios usada em toda a análise (Seções 4 e 5).
 
-**(c) Validação estatística individual por integrante, na base completa (S02).** Cada RQ foi validada com estatística descritiva (`describe()`: mediana, média, min/max) e detecção de outliers pela regra do IQR, antes de qualquer hipótese informal ser registrada — vai além do "valores medianos" pedido no enunciado. Essa validação alimenta diretamente a Discussão (Seção 4.3): os percentuais de outliers por RQ (ex.: 12,3% em RQ02, 19,0% em RQ04) explicam por que a média isoladamente é enganosa nesses casos, e reforçam o uso da mediana como medida central.
+**(c) Validação estatística individual por integrante, na base completa (S02).** Cada RQ foi validada com estatística descritiva (`describe()`: mediana, média, min/max) e detecção de outliers pela regra do IQR, antes de qualquer hipótese informal ser registrada, vai além do "valores medianos" pedido no enunciado. Essa validação alimenta diretamente a Discussão (Seção 4.3): os percentuais de outliers por RQ (ex.: 12,3% em RQ02, 19,0% em RQ04) explicam por que a média isoladamente é enganosa nesses casos, e reforçam o uso da mediana como medida central.
 
 ## 4. Resultados
 
 ### 4.1 Coleta de Dados
 
-A coleta teve como alvo 1.000 repositórios (top estrelas do GitHub) e fechou em **998 repositórios** efetivamente coletados e analisados — motivo detalhado na Seção 3.1 (comportamento da Search API em coletas longas, não falha de dados). Não houve necessidade de descartar repositórios por dados incompletos: todos os 998 têm valor válido em todas as 6 métricas de campo (RQ01-RQ06); a única lacuna sistemática é a linguagem primária ausente em alguns repositórios, tratada como categoria `"N/A"` (Seção 3.2) em vez de exclusão.
+A coleta teve como alvo 1.000 repositórios (top estrelas do GitHub) e fechou em **998 repositórios** efetivamente coletados e analisados, motivo detalhado na Seção 3.1 (comportamento da Search API em coletas longas, não falha de dados). Não houve necessidade de descartar repositórios por dados incompletos: todos os 998 têm valor válido em todas as 6 métricas de campo (RQ01-RQ06); a única lacuna sistemática é a linguagem primária ausente em alguns repositórios, tratada como categoria `"N/A"` (Seção 3.2) em vez de exclusão.
 
-Outliers foram identificados pela regra do IQR (intervalo interquartil) para cada métrica numérica, mas **mantidos na amostra** — são pontos de dado reais (ex.: `firstcontributions/first-contributions` com 103.014 PRs aceitas), não erros de coleta, e a discussão de cada um está na Seção 4.3.
+Outliers foram identificados pela regra do IQR (intervalo interquartil) para cada métrica numérica, mas **mantidos na amostra**, são pontos de dado reais (ex.: `firstcontributions/first-contributions` com 103.014 PRs aceitas), não erros de coleta, e a discussão de cada um está na Seção 4.3.
 
 ### 4.2 Visualização Gráfica
 
@@ -198,7 +198,7 @@ Comparação das médias de PRs aceitas (RQ02), releases (RQ03) e dias desde a �
 
 **RQ01:** a hipótese de maturidade se confirma como norma (mediana bem acima de 5 anos, distribuição concentrada), mas o mínimo em 0 anos mostra que popularidade extrema também pode ser alcançada quase instantaneamente. A maturidade é regra, não unanimidade.
 
-**RQ02:** a hipótese superestimou a escala (esperávamos "milhares", saiu "centenas"), mas a direção geral está certa: populares recebem mais contribuição do que projetos comuns. O achado mais importante aqui é metodológico: `torvalds/linux` aparece com 0 PRs aceitas não por falta de contribuição, mas porque o kernel usa lista de e-mail em vez do mecanismo nativo de PR do GitHub. A métrica mede um canal específico, não "contribuição externa" em geral, e projetos com workflow fora do GitHub aparecem artificialmente como pouco colaborativos - uma ameaça de validade de construto que se repete na RQ06.
+**RQ02:** a hipótese superestimou a escala (esperávamos "milhares", saiu "centenas"), mas a direção geral está certa: populares recebem mais contribuição do que projetos comuns. O achado mais importante aqui é metodológico: `torvalds/linux` aparece com 0 PRs aceitas não por falta de contribuição, mas porque o kernel usa lista de e-mail em vez do mecanismo nativo de PR do GitHub. A métrica mede um canal específico, não "contribuição externa" em geral, e projetos com workflow fora do GitHub aparecem artificialmente como pouco colaborativos, uma ameaça de validade de construto que se repete na RQ06.
 
 **RQ03:** esse foi o achado que mais contrariou a expectativa inicial da nossa dupla (RQ03/RQ04). A amostra pequena do S01 (10 repositórios) sugeria fortemente que a maioria não lançava releases, mas isso era coincidência de amostra: caiu em várias listas/coleções do tipo `awesome-*`, que não são representativas do conjunto todo. Na base de 998, a maioria lança releases sim, e alguns projetos de software ativo lançam com bastante frequência (a ponto de bater no teto de contagem do campo).
 
@@ -206,12 +206,12 @@ Comparação das médias de PRs aceitas (RQ02), releases (RQ03) e dias desde a �
 
 **RQ05:** confirmada, e de forma direta. O top 3 do laboratório bate exatamente com o top 3 do Octoverse 2025, reforçando que o ecossistema open-source mais popular do GitHub acompanha as tendências gerais de mercado.
 
-**RQ06:** confirmada com margem (86% vs. 80% hipotetizado), reforçando que repositórios populares mantêm boa saúde de gestão de issues. Vale notar que alguns projetos massivos (`torvalds/linux` entre eles) aparecem com razão 0,0 porque desativaram issues no GitHub - mesma limitação de métrica observada na RQ02.
+**RQ06:** confirmada com margem (86% vs. 80% hipotetizado), reforçando que repositórios populares mantêm boa saúde de gestão de issues. Vale notar que alguns projetos massivos (`torvalds/linux` entre eles) aparecem com razão 0,0 porque desativaram issues no GitHub, mesma limitação de métrica observada na RQ02.
 
 **RQ07:** foi a hipótese refutada com mais clareza. Não é o volume de repositórios numa linguagem que determina o volume de contribuição por repositório. Linguagens de nicho mais especializado (Rust, Go) tiveram medianas de PRs mais altas que linguagens dominantes em quantidade (Python, JavaScript). Isso sugere que projetos em linguagens menos populares, mas que ainda assim atingem o top 1.000 por estrelas, tendem a ser projetos de infraestrutura/sistemas com comunidades muito engajadas proporcionalmente ao seu tamanho.
 
 **Ameaças à validade:**
-* **Amostra não é fixa e não é reprodutível a um segundo:** o "top 1000 por estrelas" é dinâmico - uma nova coleta em outro momento pode retornar um conjunto ligeiramente diferente, sujeito ao mesmo comportamento de índice vivo discutido na Seção 3.1 (998 vs. 1000).
+* **Amostra não é fixa e não é reprodutível a um segundo:** o "top 1000 por estrelas" é dinâmico, uma nova coleta em outro momento pode retornar um conjunto ligeiramente diferente, sujeito ao mesmo comportamento de índice vivo discutido na Seção 3.1 (998 vs. 1000).
 * **Teto de contagem em `releases.totalCount`:** vários dos maiores valores de RQ03 batem exatamente em 1000, sugerindo um limite da paginação usada e não o total real - isso pode estar subestimando outliers superiores em RQ03 e RQ07.
 * **Validade de construto em métricas nativas do GitHub:** PRs e issues medem um canal específico de colaboração, não a colaboração real do projeto - projetos com fluxo de trabalho fora do GitHub (RQ02, RQ06) aparecem distorcidos.
 * **Coleta feita num único ponto no tempo** (S02), sem replicação longitudinal - não capturamos variação sazonal de atividade.
