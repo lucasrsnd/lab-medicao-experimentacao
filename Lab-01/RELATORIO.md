@@ -114,17 +114,17 @@ O gerenciamento e o rastreamento das tarefas deste laboratório foram realizados
 
 | RQ | Métrica | Definição Operacional | Unidade | Ferramenta / Fonte |
 |---|---|---|---|---|
-| RQ01 | Idade do repositório | Data da coleta − `createdAt` | Anos | Script GraphQL (API do GitHub) |
+| RQ01 | Idade do repositório | Data da coleta - `createdAt` | Anos | Script GraphQL (API do GitHub) |
 | RQ02 | PRs aceitas | `pullRequests(states: MERGED).totalCount` | Contagem (nº de PRs) | Script GraphQL (API do GitHub) |
 | RQ03 | Total de releases | `releases.totalCount` | Contagem (nº de releases) | Script GraphQL (API do GitHub) |
-| RQ04 | Tempo até última atualização | Data da coleta − `pushedAt` | Dias | Script GraphQL (API do GitHub) |
+| RQ04 | Tempo até última atualização | Data da coleta - `pushedAt` | Dias | Script GraphQL (API do GitHub) |
 | RQ05 | Linguagem primária | `primaryLanguage.name` (repositórios sem linguagem classificável marcados `"N/A"`) | Categórica (nome da linguagem) | Script GraphQL + GitHub Octoverse 2025 (referência de "linguagens populares") |
 | RQ06 | Razão de issues fechadas | `issues(states: CLOSED).totalCount / issues.totalCount` (0,0 quando o total é 0) | Proporção (0–1) | Script GraphQL (API do GitHub) |
 | RQ07 | Comparação por linguagem | Média de RQ02, RQ03 e RQ04, agrupada por `primaryLanguage.name` | Médias (mesmas unidades de RQ02/RQ03/RQ04) | `pandas.groupby` sobre os dados de RQ02/RQ03/RQ04/RQ05 |
 
-### 3.6 Inovações Propostas pelo Grupo (30% da nota)
+### 3.6 Inovações Propostas pelo Grupo
 
-**(a) Dashboard interativo em Streamlit.** Além do relatório estático (obrigatório pelo enunciado), o grupo construiu um dashboard (`app_streamlit.py`) com uma aba por RQ, reaproveitando a mesma camada de análise (`src/analysis/stats.py`, `figures.py`, `rq_config.py`) usada nas figuras estáticas — garantindo que as duas apresentações nunca divirjam entre si (mesma ordem de RQs, mesmo texto de legenda). Permite exploração ad-hoc dos dados além dos gráficos fixos da Seção 4.2.
+**(a) Dashboard interativo em Streamlit.** Além do relatório estático (obrigatório pelo enunciado), o grupo construiu um dashboard (`app_streamlit.py`) com uma aba por RQ, reaproveitando a mesma camada de análise (`src/analysis/stats.py`, `figures.py`, `rq_config.py`) usada nas figuras estáticas, garantindo que as duas apresentações nunca divirjam entre si (mesma ordem de RQs, mesmo texto de legenda). Permite exploração ad-hoc dos dados além dos gráficos fixos da Seção 4.2.
 
 **(b) Paginação adaptativa e resumível para a coleta de 1000 repositórios.** Não exigida pelo enunciado (que pede apenas "paginação"), mas necessária na prática para lidar com o erro 502 intermitente encontrado na S01, numa escala 10x maior na S02. Implementa: ajuste dinâmico de tamanho de página (reduz pela metade em falha, aumenta gradualmente após sucessos consecutivos), checkpoint em disco para retomar a coleta de onde parou em caso de interrupção, e verificação do rate limit da API (`rateLimit.remaining`/`resetAt`) antes de cada página. Essa decisão é o que viabilizou a base de 998 repositórios usada em toda a análise (Seções 4 e 5).
 
@@ -146,7 +146,7 @@ Outliers foram identificados pela regra do IQR (intervalo interquartil) para cad
 
 ![Figura 1 - RQ01 - Idade do repositório](./reports/figures/rq01_idade.png)
 
-Distribuição da idade dos repositórios (anos desde a criação), com a mediana destacada. Mediana: **7,72 anos** (média 7,65, min 0,00, max 18,34). Sem outliers pela regra do IQR - distribuição concentrada e sem cauda pesada. Mais antigos: `rails/rails` (18,34 anos), `git/git` (18,06). Mais novos: repositórios ligados à onda de IA que já acumularam estrelas suficientes em poucos meses.
+Distribuição da idade dos repositórios (anos desde a criação), com a mediana destacada. Mediana: **7,72 anos** (média 7,65, min 0,00, max 18,34). Sem outliers pela regra do IQR, distribuição concentrada e sem cauda pesada. Mais antigos: `rails/rails` (18,34 anos), `git/git` (18,06). Mais novos: repositórios ligados à onda de IA que já acumularam estrelas suficientes em poucos meses.
 
 **RQ02 - Sistemas populares recebem muita contribuição externa?**
 
@@ -158,7 +158,7 @@ Distribuição do total de pull requests aceitas (merged) por repositório, em e
 
 ![Figura 3 - RQ03 - Total de releases](./reports/figures/rq03_releases.png)
 
-Distribuição do total de releases publicadas por repositório, em escala log. Mediana: **39,5** (média 127,4). 92 outliers pela regra do IQR (9,2%). 27,9% dos repositórios têm 0 releases. Maiores: `langchain-ai/langchain`, `vercel/next.js`, `ggml-org/llama.cpp`, `electron/electron`, `storybookjs/storybook`, todos batendo exatamente em 1000 - provável teto de contagem do campo `releases.totalCount` na paginação usada, e não o total real.
+Distribuição do total de releases publicadas por repositório, em escala log. Mediana: **39,5** (média 127,4). 92 outliers pela regra do IQR (9,2%). 27,9% dos repositórios têm 0 releases. Maiores: `langchain-ai/langchain`, `vercel/next.js`, `ggml-org/llama.cpp`, `electron/electron`, `storybookjs/storybook`, todos batendo exatamente em 1000, provável teto de contagem do campo `releases.totalCount` na paginação usada, e não o total real.
 
 **RQ04 - Sistemas populares são atualizados com frequência?**
 
@@ -212,22 +212,21 @@ Comparação das médias de PRs aceitas (RQ02), releases (RQ03) e dias desde a �
 
 **Ameaças à validade:**
 * **Amostra não é fixa e não é reprodutível a um segundo:** o "top 1000 por estrelas" é dinâmico, uma nova coleta em outro momento pode retornar um conjunto ligeiramente diferente, sujeito ao mesmo comportamento de índice vivo discutido na Seção 3.1 (998 vs. 1000).
-* **Teto de contagem em `releases.totalCount`:** vários dos maiores valores de RQ03 batem exatamente em 1000, sugerindo um limite da paginação usada e não o total real - isso pode estar subestimando outliers superiores em RQ03 e RQ07.
-* **Validade de construto em métricas nativas do GitHub:** PRs e issues medem um canal específico de colaboração, não a colaboração real do projeto - projetos com fluxo de trabalho fora do GitHub (RQ02, RQ06) aparecem distorcidos.
-* **Coleta feita num único ponto no tempo** (S02), sem replicação longitudinal - não capturamos variação sazonal de atividade.
+* **Teto de contagem em `releases.totalCount`:** vários dos maiores valores de RQ03 batem exatamente em 1000, sugerindo um limite da paginação usada e não o total real, isso pode estar subestimando outliers superiores em RQ03 e RQ07.
+* **Validade de construto em métricas nativas do GitHub:** PRs e issues medem um canal específico de colaboração, não a colaboração real do projeto, projetos com fluxo de trabalho fora do GitHub (RQ02, RQ06) aparecem distorcidos.
+* **Coleta feita num único ponto no tempo** (S02), sem replicação longitudinal, não capturamos variação sazonal de atividade.
 
 As três inovações da Seção 3.6 aprofundaram essa discussão em vez de apenas confirmar os 70% do enunciado: a validação por IQR (c) foi o que permitiu identificar os percentuais de outliers citados acima e justificar o uso da mediana; a paginação adaptativa (b) é o motivo pelo qual a base de 998 existe e é confiável (sem duplicatas, cursor íntegro); e o dashboard (a) permite ao leitor conferir qualquer um desses números interativamente, além dos gráficos fixos desta seção.
 
 ## 5. Conclusão
 
-Das 7 RQs investigadas, 4 confirmaram a hipótese informal (RQ01, RQ04, RQ05, RQ06), 2 confirmaram parcialmente na direção mas não na escala esperada (RQ02, RQ03), e 1 foi refutada com clareza (RQ07). O padrão geral que emerge é que repositórios populares no GitHub são, sim, majoritariamente maduros, ativamente mantidos e bem geridos em termos de issues - mas a intensidade de contribuição externa (RQ02) e a frequência de releases (RQ03) têm cauda muito mais longa e heterogênea do que o senso comum sugeria, e a linguagem de programação (RQ07) não é um bom preditor de quanto um projeto específico vai receber de contribuição.
+Das 7 RQs investigadas, 4 confirmaram a hipótese informal (RQ01, RQ04, RQ05, RQ06), 2 confirmaram parcialmente na direção mas não na escala esperada (RQ02, RQ03), e 1 foi refutada com clareza (RQ07). O padrão geral que emerge é que repositórios populares no GitHub são, sim, majoritariamente maduros, ativamente mantidos e bem geridos em termos de issues, mas a intensidade de contribuição externa (RQ02) e a frequência de releases (RQ03) têm cauda muito mais longa e heterogênea do que o senso comum sugeria, e a linguagem de programação (RQ07) não é um bom preditor de quanto um projeto específico vai receber de contribuição.
 
 **Principais limitações do estudo:** amostra de 998 em vez de 1000 repositórios (Seção 3.1); possível teto de contagem em `releases.totalCount` distorcendo a cauda superior de RQ03/RQ07; métricas nativas do GitHub (PRs, issues) subestimando projetos com fluxo de trabalho externo à plataforma (`torvalds/linux` sendo o caso mais visível); e uma coleta feita num único ponto no tempo, sem repetição.
 
-Com mais tempo, o grupo investigaria: (i) uma segunda coleta em outro momento do semestre, pra medir o quanto o "top 1000" e suas métricas variam ao longo do tempo; (ii) uma forma de contornar o teto aparente de `releases.totalCount`, paginando o campo `releases` diretamente em vez de usar `totalCount`; (iii) expandir a RQ07 para uma correlação estatística formal (ex.: Spearman) em vez de comparação de médias/medianas por grupo. Das três inovações da Seção 3.6, a que mais valeria a pena expandir é a paginação adaptativa (b) - o mecanismo de checkpoint/retry construído aqui é reaproveitável para qualquer coleta futura da disciplina que também dependa da API do GitHub em escala.
+Com mais tempo, o grupo investigaria: (i) uma segunda coleta em outro momento do semestre, pra medir o quanto o "top 1000" e suas métricas variam ao longo do tempo; (ii) uma forma de contornar o teto aparente de `releases.totalCount`, paginando o campo `releases` diretamente em vez de usar `totalCount`; (iii) expandir a RQ07 para uma correlação estatística formal (ex.: Spearman) em vez de comparação de médias/medianas por grupo. Das três inovações da Seção 3.6, a que mais valeria a pena expandir é a paginação adaptativa (b), o mecanismo de checkpoint/retry construído aqui é reaproveitável para qualquer coleta futura da disciplina que também dependa da API do GitHub em escala.
 
 ## 6. Referências
 
 * GITHUB. **Octoverse 2025**: the state of open source. Disponível em: `https://octoverse.github.com/`. Acesso em: 2026.
-* Vídeo de referência da disciplina: `https://www.youtube.com/shorts/YwnaeO95AN8`.
 * ZUSE, Horst. **A framework of software measurement**. Walter de Gruyter, 2013.
