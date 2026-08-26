@@ -229,5 +229,4 @@ Com mais tempo, o grupo investigaria: (i) uma segunda coleta em outro momento do
 ## 6. Referências
 
 * GITHUB. **Octoverse 2025**: the state of open source. Disponível em: `https://octoverse.github.com/`. Acesso em: 2026.
-* Vídeo de referência da disciplina: `https://www.youtube.com/shorts/YwnaeO95AN8`.
 * ZUSE, Horst. **A framework of software measurement**. Walter de Gruyter, 2013.
