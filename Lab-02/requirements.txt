@@ -1,0 +1,12 @@
+python-dotenv>=1.0
+pytest>=8.0
+radon>=6.0
+pandas>=2.0
+matplotlib>=3.8
+seaborn>=0.13
+scipy>=1.11
+requests>=2.31
+
+# jscpd (duplicação de código, RQ3) roda via Node/npm, não é um pacote pip:
+#   npm install -g jscpd
+# ou, sem instalar globalmente: npx jscpd <pasta>
