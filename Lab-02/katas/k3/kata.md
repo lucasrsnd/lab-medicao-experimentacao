@@ -1,16 +1,14 @@
-# Kata K3 — _título a definir_
+# Kata K3 — Cálculo de Troco com Estoque
 
 > Dono: Davi — Issue "Escolha e validação dos 6 katas" (Milestone Lab02S01). Preencher antes da execução (Milestone Lab02S02).
 
 ## Enunciado
-
-_(a definir — preferir exercício autoral/pouco indexado, ver ameaça à validade
-"memorização" em `../../docs/desenho-experimento.md`)_
+Crie uma função que receba o valor do troco a ser dado e um dicionário representando o estoque do caixa (ex: `{50: 1, 20: 2, 10: 5}`). A função deve retornar um dicionário com as cédulas a serem devolvidas, usando a menor quantidade de notas possível. Se não houver estoque suficiente para o troco exato, retorne `None`.
 
 ## Critérios de aceitação
-
-_(lista de testes automatizados que definem "time-to-green" para este kata)_
+*   Retornar o troco exato quando há notas suficientes de alto valor.
+*   Retornar o troco exato usando notas menores quando as maiores acabam.
+*   Retornar `None` quando é impossível formar o valor exato com o estoque atual.
 
 ## Dificuldade estimada
-
-_(comparável aos demais 5 katas)_
+Média (Algoritmo guloso com restrição de estado).

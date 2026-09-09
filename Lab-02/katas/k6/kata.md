@@ -1,16 +1,14 @@
-# Kata K6 — _título a definir_
+# Kata K6 — Agrupamento de Anagramas por Peso
 
 > Dono: Davi — Issue "Escolha e validação dos 6 katas" (Milestone Lab02S01). Preencher antes da execução (Milestone Lab02S02).
 
 ## Enunciado
-
-_(a definir — preferir exercício autoral/pouco indexado, ver ameaça à validade
-"memorização" em `../../docs/desenho-experimento.md`)_
+Dada uma lista de palavras, agrupe aquelas que são anagramas entre si. Porém, a saída deve ser um dicionário onde a chave é a soma dos valores ASCII das letras do anagrama, e o valor é a lista das palavras agrupadas. (Ex: `{"abc", "cab"}` viram a chave `294: ["abc", "cab"]`).
 
 ## Critérios de aceitação
-
-_(lista de testes automatizados que definem "time-to-green" para este kata)_
+*   Agrupar anagramas simples sob a mesma chave ASCII.
+*   Garantir que palavras que não são anagramas fiquem em chaves diferentes, mesmo que acidentalmente tenham a mesma soma ASCII.
+*   Retornar um dicionário vazio caso a lista de entrada seja vazia.
 
 ## Dificuldade estimada
-
-_(comparável aos demais 5 katas)_
+Média (Transformação de dados, ordenação e dicionários).
