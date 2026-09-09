@@ -15,7 +15,25 @@ ENV_EXAMPLE_PATH = LAB02_ROOT / ".env.example"
 
 load_dotenv(dotenv_path=ENV_PATH)
 
+GRAPHQL_URL = os.getenv("GITHUB_GRAPHQL_URL", "https://api.github.com/graphql")
+
 DEFAULT_TIMEBOX_MIN = 35
+
+
+def load_github_token() -> str:
+    """Lê GITHUB_TOKEN do `.env`, reaproveitado do Lab-01 e usado pelo
+    snapshot do GitHub Projects (`src/project/snapshot.py`).
+
+    Encerra com mensagem clara, em vez de KeyError, se o token não estiver
+    configurado.
+    """
+    token = os.getenv("GITHUB_TOKEN")
+    if not token:
+        sys.exit(
+            f"GITHUB_TOKEN não encontrado. Copie {ENV_EXAMPLE_PATH} para {ENV_PATH} "
+            f"e preencha com um token seu."
+        )
+    return token
 
 
 def load_timebox_min() -> int:
