@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.env
+
+# Ferramentas de apoio locais (setup do GitHub Projects, etc.) — não fazem
+# parte do que é avaliado no repositório, não versionar.
+/tools/
