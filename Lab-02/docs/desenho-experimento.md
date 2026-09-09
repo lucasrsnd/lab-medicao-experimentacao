@@ -6,27 +6,30 @@
 
 ## A. Hipóteses
 
-- H0:
+- H0: O uso de assistente de IA generativa não altera significativamente o tempo de resolução, a quantidade de testes passando ou a qualidade estrutural do código (complexidade e duplicação).
 - H1 (por RQ, se necessário):
+  - **H1_1 (RQ1):** O tempo mediano de resolução (*time-to-green*) é menor nos trials com assistente de IA.
+  - **H1_2 (RQ2):** A proporção mediana de testes de aceitação passando ao final do time-box é maior nos trials com assistente de IA.
+  - **H1_3 (RQ3):** Há diferença estatística na complexidade ciclomática média e/ou no percentual de duplicação de código (normalizado por LOC) entre os tratamentos.
 
 ## B. Variáveis dependentes
 
-- Tempo (time-to-green / censura em time-box)
-- Nº de testes de aceitação passando ao final do trial
+- Tempo (time-to-green / censura em time-box fixo de 35 minutos)
+- Nº de testes de aceitação passando ao final do trial (Taxa de Sucesso)
 - Métricas estáticas: complexidade ciclomática (Radon cc), duplicação (jscpd), LOC
 
 ## C. Variável independente
 
-- Uso (ou não) do assistente de IA
+- Uso (ou não) do assistente de IA generativa
 
 ## D. Tratamentos
 
-- Com IA:
-- Sem IA:
+- Com IA: O participante resolve o kata utilizando a IDE padrão com a extensão do assistente de IA ativada (ex.: GitHub Copilot) livre para fornecer autocompletes e receber prompts durante os 35 minutos.
+- Sem IA: O participante resolve o kata utilizando apenas a IDE padrão, raciocínio lógico e documentação oficial (browser), com a extensão do assistente de IA explicitamente desabilitada.
 
 ## E. Objetos experimentais
 
-- 6 katas de dificuldade equivalente (ver `katas/`)
+- 6 katas de dificuldade equivalente (ver `katas/`) focados em regras de negócio e processamento de dados.
 
 ## F. Tipo de projeto experimental
 
@@ -34,11 +37,11 @@
 
 ## G. Quantidade de medições
 
-- 6 trials/integrante × 3 integrantes = 18 trials
+- 6 trials/integrante × 3 integrantes = 18 trials totais
 
 ## H. Ameaças à validade
 
-- Efeito de aprendizado entre katas:
-- Familiaridade prévia com a ferramenta de IA:
-- Vazamento de solução já vista:
-- Memorização (katas muito conhecidas):
+- Efeito de aprendizado entre katas: Será mitigado pelo design estritamente contrabalanceado (os integrantes alternarão a ordem de execução dos katas e intercalarão os tratamentos com e sem IA).
+- Familiaridade prévia com a ferramenta de IA: Controlada pela padronização. Todos os membros usarão exatamente a mesma ferramenta (GitHub Copilot gratuito via Student Pack) na mesma IDE.
+- Vazamento de solução já vista: O experimento será realizado com as sessões isoladas e controladas por um *time-box* inflexível, impedindo o compartilhamento de código ou consultas aos colegas durante a resolução.
+- Memorização (katas muito conhecidas): Para impedir que a IA forneça soluções de repositórios de treinamento (HackerRank/LeetCode), foram elaborados 6 katas autorais focados em regras de negócio específicas, que possuem baixíssima ou nenhuma indexação pública.
