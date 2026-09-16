@@ -4,3 +4,4 @@ timestamp_inicio,timestamp_fim,kata,integrante,tratamento,tempo_min,censurado,te
 2026-09-16T18:39:14.534376+00:00,2026-09-16T18:50:36.661044+00:00,k3,lucasrsnd,sem_ia,11.37,False,3,3
 2026-09-16T19:01:25.641799+00:00,2026-09-16T19:04:36.021204+00:00,k4,lucasrsnd,com_ia,3.17,False,4,4
 2026-09-16T19:07:01.428115+00:00,2026-09-16T19:10:40.718341+00:00,k5,lucasrsnd,com_ia,3.65,False,3,3
+2026-09-16T19:12:34.525006+00:00,2026-09-16T19:17:10.612569+00:00,k6,lucasrsnd,com_ia,4.6,False,2,2
