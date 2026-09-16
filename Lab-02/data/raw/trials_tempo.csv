@@ -1,0 +1,2 @@
+timestamp_inicio,timestamp_fim,kata,integrante,tratamento,tempo_min,censurado,testes_passando,testes_total
+2026-09-16T17:43:41.710369+00:00,2026-09-16T18:08:48.710130+00:00,k1,lucasrsnd,sem_ia,25.12,False,3,3
