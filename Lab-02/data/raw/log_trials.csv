@@ -1,7 +1,0 @@
-kata,integrante,tratamento,modelo_ia,n_prompts_ia,observacoes
-k4,gustavoprehl,sem_ia,,,
-k5,gustavoprehl,sem_ia,,,
-k6,gustavoprehl,sem_ia,,,
-k1,gustavoprehl,com_ia,Sonnet 5,1,pediu ajuda pontual pra corrigir o regex do parser depois de 3 testes falhando
-k2,gustavoprehl,com_ia,Sonnet 5,0,sem interação por chat; usou autocomplete/sugestões inline do assistente (aceitas via Tab) durante a resolução
-k3,gustavoprehl,com_ia,Sonnet 5,0,sem interação por chat; usou autocomplete/sugestões inline do assistente (aceitas via Tab) durante a resolução
