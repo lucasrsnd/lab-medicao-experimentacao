@@ -10,3 +10,4 @@ timestamp_inicio,timestamp_fim,kata,integrante,tratamento,tempo_min,censurado,te
 2026-09-17T01:30:31.814275+00:00,2026-09-17T01:33:30.233791+00:00,k3,DaviSantos23,com_ia,2.97,False,3,3
 2026-09-17T02:02:02.591242+00:00,2026-09-17T02:03:26.670911+00:00,k5,DaviSantos23,com_ia,1.4,False,3,3
 2026-09-17T02:08:00.950700+00:00,2026-09-17T02:27:35.113751+00:00,k4,DaviSantos23,sem_ia,19.57,False,4,4
+2026-09-17T02:30:04.765186+00:00,2026-09-17T02:39:30.299775+00:00,k6,DaviSantos23,sem_ia,9.43,False,2,2
