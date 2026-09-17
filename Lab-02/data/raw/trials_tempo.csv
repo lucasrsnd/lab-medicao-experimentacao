@@ -6,3 +6,4 @@ timestamp_inicio,timestamp_fim,kata,integrante,tratamento,tempo_min,censurado,te
 2026-09-16T19:07:01.428115+00:00,2026-09-16T19:10:40.718341+00:00,k5,lucasrsnd,com_ia,3.65,False,3,3
 2026-09-16T19:12:34.525006+00:00,2026-09-16T19:17:10.612569+00:00,k6,lucasrsnd,com_ia,4.6,False,2,2
 2026-09-17T00:47:15.808225+00:00,2026-09-17T01:22:26.254669+00:00,k2,DaviSantos23,sem_ia,35.0,True,0,2
+2026-09-17T01:27:35.572578+00:00,2026-09-17T01:29:15.749615+00:00,k1,DaviSantos23,com_ia,1.67,False,3,3
