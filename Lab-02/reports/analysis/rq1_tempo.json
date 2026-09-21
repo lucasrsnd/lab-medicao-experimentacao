@@ -1,0 +1,128 @@
+{
+  "todos_os_trials": {
+    "descritivas_por_tratamento": [
+      {
+        "tratamento": "com_ia",
+        "n": 9,
+        "mediana": 3.17,
+        "iqr": 1.9199999999999995,
+        "minimo": 1.4,
+        "maximo": 8.31
+      },
+      {
+        "tratamento": "sem_ia",
+        "n": 9,
+        "mediana": 11.37,
+        "iqr": 13.24,
+        "minimo": 9.06,
+        "maximo": 35.0
+      }
+    ],
+    "censura_por_tratamento": [
+      {
+        "tratamento": "com_ia",
+        "n_trials": 9,
+        "n_censurados": 0
+      },
+      {
+        "tratamento": "sem_ia",
+        "n_trials": 9,
+        "n_censurados": 1
+      }
+    ],
+    "outliers_iqr": [
+      {
+        "kata": "k1",
+        "integrante": "gustavoprehl",
+        "tratamento": "com_ia",
+        "tempo_min": 8.31
+      }
+    ],
+    "wilcoxon_pareado_por_integrante": {
+      "n_pares": 3,
+      "pares": [
+        {
+          "integrante": "DaviSantos23",
+          "mediana_com_ia": 1.67,
+          "mediana_sem_ia": 19.57
+        },
+        {
+          "integrante": "gustavoprehl",
+          "mediana_com_ia": 6.68,
+          "mediana_sem_ia": 10.55
+        },
+        {
+          "integrante": "lucasrsnd",
+          "mediana_com_ia": 3.65,
+          "mediana_sem_ia": 11.37
+        }
+      ],
+      "estatistica": 0.0,
+      "p_valor": 0.25,
+      "erro": null
+    }
+  },
+  "excluindo_outliers_instrumentacao": {
+    "descritivas_por_tratamento": [
+      {
+        "tratamento": "com_ia",
+        "n": 9,
+        "mediana": 3.17,
+        "iqr": 1.9199999999999995,
+        "minimo": 1.4,
+        "maximo": 8.31
+      },
+      {
+        "tratamento": "sem_ia",
+        "n": 8,
+        "mediana": 10.96,
+        "iqr": 10.615000000000002,
+        "minimo": 9.06,
+        "maximo": 25.12
+      }
+    ],
+    "censura_por_tratamento": [
+      {
+        "tratamento": "com_ia",
+        "n_trials": 9,
+        "n_censurados": 0
+      },
+      {
+        "tratamento": "sem_ia",
+        "n_trials": 8,
+        "n_censurados": 0
+      }
+    ],
+    "outliers_iqr": [
+      {
+        "kata": "k1",
+        "integrante": "gustavoprehl",
+        "tratamento": "com_ia",
+        "tempo_min": 8.31
+      }
+    ],
+    "wilcoxon_pareado_por_integrante": {
+      "n_pares": 3,
+      "pares": [
+        {
+          "integrante": "DaviSantos23",
+          "mediana_com_ia": 1.67,
+          "mediana_sem_ia": 14.5
+        },
+        {
+          "integrante": "gustavoprehl",
+          "mediana_com_ia": 6.68,
+          "mediana_sem_ia": 10.55
+        },
+        {
+          "integrante": "lucasrsnd",
+          "mediana_com_ia": 3.65,
+          "mediana_sem_ia": 11.37
+        }
+      ],
+      "estatistica": 0.0,
+      "p_valor": 0.25,
+      "erro": null
+    }
+  }
+}
