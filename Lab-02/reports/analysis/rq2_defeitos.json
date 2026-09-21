@@ -1,0 +1,196 @@
+{
+  "todos_os_trials": {
+    "taxa_sucesso": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 100.0,
+          "iqr": 0.0,
+          "minimo": 100.0,
+          "maximo": 100.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 9,
+          "mediana": 100.0,
+          "iqr": 0.0,
+          "minimo": 0.0,
+          "maximo": 100.0
+        }
+      ],
+      "outliers_iqr": [
+        {
+          "kata": "k2",
+          "integrante": "DaviSantos23",
+          "tratamento": "sem_ia",
+          "taxa_sucesso_pct": 0.0
+        }
+      ],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 100.0,
+            "mediana_sem_ia": 100.0
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 100.0,
+            "mediana_sem_ia": 100.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 100.0,
+            "mediana_sem_ia": 100.0
+          }
+        ],
+        "estatistica": 0.0,
+        "p_valor": 1.0,
+        "erro": null
+      }
+    },
+    "testes_falhando": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 0.0,
+          "iqr": 0.0,
+          "minimo": 0.0,
+          "maximo": 0.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 9,
+          "mediana": 0.0,
+          "iqr": 0.0,
+          "minimo": 0.0,
+          "maximo": 2.0
+        }
+      ],
+      "outliers_iqr": [
+        {
+          "kata": "k2",
+          "integrante": "DaviSantos23",
+          "tratamento": "sem_ia",
+          "n_testes_falhando": 2
+        }
+      ],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          }
+        ],
+        "estatistica": 0.0,
+        "p_valor": 1.0,
+        "erro": null
+      }
+    }
+  },
+  "excluindo_outliers_instrumentacao": {
+    "taxa_sucesso": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 100.0,
+          "iqr": 0.0,
+          "minimo": 100.0,
+          "maximo": 100.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 8,
+          "mediana": 100.0,
+          "iqr": 0.0,
+          "minimo": 100.0,
+          "maximo": 100.0
+        }
+      ],
+      "outliers_iqr": [],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 100.0,
+            "mediana_sem_ia": 100.0
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 100.0,
+            "mediana_sem_ia": 100.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 100.0,
+            "mediana_sem_ia": 100.0
+          }
+        ],
+        "estatistica": 0.0,
+        "p_valor": 1.0,
+        "erro": null
+      }
+    },
+    "testes_falhando": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 0.0,
+          "iqr": 0.0,
+          "minimo": 0.0,
+          "maximo": 0.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 8,
+          "mediana": 0.0,
+          "iqr": 0.0,
+          "minimo": 0.0,
+          "maximo": 0.0
+        }
+      ],
+      "outliers_iqr": [],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          }
+        ],
+        "estatistica": 0.0,
+        "p_valor": 1.0,
+        "erro": null
+      }
+    }
+  }
+}
