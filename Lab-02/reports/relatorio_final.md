@@ -141,7 +141,14 @@ foram escolhidos por dificuldade comparável e baixa indexação, Seção 5.3,
 não para cobrir padrões de segurança). A pergunta "IA introduz mais/menos
 vulnerabilidades" exigiria tarefas com superfície de ataque real (parsing de
 entrada não confiável, acesso a arquivo/rede, autenticação) — nenhum dos 6
-katas tem isso. Detalhamento completo em `docs/resultados-seguranca.md`.
+katas tem isso.
+
+Como checagem de corroboração, também rodamos o **Semgrep** (200 regras,
+`p/python` + `p/security-audit` — ruleset bem mais amplo que o do Bandit)
+sobre todo `katas/`: **0 achados em 85 arquivos**. Duas ferramentas
+independentes, mesma conclusão — evidência de que o zero é real, não uma
+lacuna de cobertura de uma lista de regras específica. Detalhamento completo
+em `docs/resultados-seguranca.md`.
 
 ---
 

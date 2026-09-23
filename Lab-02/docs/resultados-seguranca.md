@@ -55,6 +55,19 @@ achatamento de dicionário, agrupamento de anagramas). Não há, estruturalmente
 onde uma vulnerabilidade do tipo que o Bandit procura poderia aparecer nesta
 amostra.
 
+## Corroboração com uma segunda ferramenta
+
+Pra checar se o zero é peculiaridade do conjunto de regras do Bandit (~70
+checks, focados em padrões clássicos de segurança), rodamos também o
+**Semgrep** (`p/python` + `p/security-audit`, 200 regras — ruleset bem mais
+amplo, cobre também padrões defensivos além de vulnerabilidades clássicas)
+sobre todo `katas/`. Resultado: **0 achados em 85 arquivos escaneados**. Duas
+ferramentas independentes, critérios de regra diferentes, mesma conclusão —
+evidência convergente de que o zero é real, não uma lacuna de cobertura de
+uma lista de regras específica. (Checagem pontual, não integrada ao
+pipeline/dashboard — mesma limitação de superfície de ataque discutida
+acima se aplica igualmente aqui.)
+
 ## O que isso significa para a pergunta original
 
 **Não dá para responder "a IA introduz mais ou menos vulnerabilidades" com

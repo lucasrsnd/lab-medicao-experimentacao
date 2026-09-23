@@ -8,6 +8,11 @@ scipy>=1.11
 requests>=2.31
 bandit>=1.7
 
+# Opcional: checagem manual de corroboração da análise extra de segurança
+# (docs/resultados-seguranca.md), não integrada a nenhum script/teste:
+#   pip install semgrep
+#   semgrep --config p/python --config p/security-audit katas/
+
 # jscpd (duplicação de código, RQ3) roda via Node/npm, não é um pacote pip:
 #   npm install -g jscpd
 # ou, sem instalar globalmente: npx jscpd <pasta>
