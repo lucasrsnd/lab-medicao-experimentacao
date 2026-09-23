@@ -34,7 +34,7 @@ class DescritivasPorTratamento:
 @dataclass
 class ResultadoWilcoxon:
     n_pares: int
-    pares: list[tuple[str, float, float]]  # (integrante, valor_com_ia, valor_sem_ia)
+    pares: list[tuple[str, float, float]]  # (integrante ou kata, valor_com_ia, valor_sem_ia)
     estatistica: float | None
     p_valor: float | None
     erro: str | None
@@ -78,19 +78,26 @@ def identificar_outliers_iqr(df: pd.DataFrame, coluna_valor: str) -> pd.DataFram
     return pd.concat(outliers)
 
 
-def medianas_pareadas_por_participante(df: pd.DataFrame, coluna_valor: str) -> ResultadoWilcoxon:
-    """Mediana por (integrante, tratamento), pareando com_ia vs sem_ia do
-    mesmo integrante, e rodando o Wilcoxon signed-rank nesses pares."""
-    medianas = df.groupby(["integrante", "tratamento"])[coluna_valor].median()
+def medianas_pareadas_por_participante(
+    df: pd.DataFrame, coluna_valor: str, chave: str = "integrante"
+) -> ResultadoWilcoxon:
+    """Mediana por (chave, tratamento), pareando com_ia vs sem_ia da mesma
+    chave, e rodando o Wilcoxon signed-rank nesses pares.
+
+    `chave` padrão é "integrante" (RQ1/RQ2). A RQ3 também usa `chave="kata"`
+    como análise complementar (N=6): métricas estruturais dependem muito do
+    kata, e todo kata foi resolvido nos dois tratamentos (por integrantes
+    diferentes, ver `katas/README.md`)."""
+    medianas = df.groupby([chave, "tratamento"])[coluna_valor].median()
 
     pares: list[tuple[str, float, float]] = []
-    for integrante in sorted(df["integrante"].unique()):
+    for valor_chave in sorted(df[chave].unique()):
         try:
-            valor_com_ia = float(medianas[(integrante, "com_ia")])
-            valor_sem_ia = float(medianas[(integrante, "sem_ia")])
+            valor_com_ia = float(medianas[(valor_chave, "com_ia")])
+            valor_sem_ia = float(medianas[(valor_chave, "sem_ia")])
         except KeyError:
-            continue  # integrante sem trials nos dois tratamentos ainda
-        pares.append((integrante, valor_com_ia, valor_sem_ia))
+            continue  # chave sem trials nos dois tratamentos ainda
+        pares.append((valor_chave, valor_com_ia, valor_sem_ia))
 
     if len(pares) < 2:
         return ResultadoWilcoxon(len(pares), pares, None, None, "menos de 2 pares — Wilcoxon não aplicável")

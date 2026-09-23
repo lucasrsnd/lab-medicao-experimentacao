@@ -111,3 +111,20 @@ def test_medianas_pareadas_ignora_integrante_sem_os_dois_tratamentos():
     # só 1 par válido (gustavo) -> Wilcoxon não aplicável (precisa de 2+)
     assert resultado.n_pares == 1
     assert resultado.erro is not None
+
+
+def test_medianas_pareadas_por_kata_pareia_trials_de_integrantes_diferentes():
+    df = _df(
+        [
+            ("k1", "gustavo", "com_ia", 4.0),
+            ("k1", "davi", "com_ia", 6.0),
+            ("k1", "lucas", "sem_ia", 11.0),
+            ("k2", "gustavo", "com_ia", 5.0),
+            ("k2", "lucas", "sem_ia", 3.0),
+            ("k2", "davi", "sem_ia", 3.0),
+        ]
+    )
+    resultado = medianas_pareadas_por_participante(df, "valor", chave="kata")
+
+    assert resultado.n_pares == 2
+    assert resultado.pares == [("k1", 5.0, 11.0), ("k2", 5.0, 3.0)]
