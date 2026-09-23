@@ -48,9 +48,12 @@ A automação da coleta de métricas foi o pilar da reprodutibilidade:
 
 ![Dashboard comparando Com IA e Sem IA nas três RQs — mediana/IQR (boxplot) com os 9 trials individuais sobrepostos por tratamento](figures/dashboard_tratamentos.png)
 
-*Figura 1 — Tempo (RQ1), taxa de sucesso dos testes (RQ2) e estrutura do
-código (RQ3) por tratamento. Cada ponto é um trial; a caixa mostra
-mediana/IQR, não a média, como recomendado no enunciado dado o N pequeno.*
+*Figura 1 — Tempo (RQ1), taxa de sucesso dos testes (RQ2) e quatro métricas
+estruturais da RQ3 (complexidade ciclomática, SLOC, complexidade normalizada
+por LOC e índice de manutenibilidade) por tratamento. Cada ponto é um trial;
+a caixa mostra mediana/IQR, não a média, como recomendado no enunciado dado
+o N pequeno. Duplicação de código fica fora do gráfico por ser 0% em todos
+os 18 trials, sem variância para mostrar.*
 
 ### RQ1 — O uso de assistente de IA reduz o tempo necessário para resolver uma tarefa de programação?
 
