@@ -1,13 +1,13 @@
 # Relatório de Experimento: Impacto de Assistentes de IA no Desenvolvimento de Software
 
-**Disciplina:** Medição e Experimentação em Engenharia de Software (PUC Minas)  
-**Equipa:** Davi Érico, Gustavo Prehl, Lucas Resende  
+**Disciplina:** Medição e Experimentação em Engenharia de Software (PUC Minas)
+**Equipa:** Davi Érico, Gustavo Prehl, Lucas Resende
 
 ---
 
 ## 1. Introdução
 
-A adoção de assistentes de Inteligência Artificial (IA) generativa transformou o panorama do desenvolvimento de software, prometendo ganhos significativos de produtividade. No entanto, é fundamental quantificar empiricamente se a velocidade de entrega compromete a qualidade estrutural e a manutenibilidade do código produzido. 
+A adoção de assistentes de Inteligência Artificial (IA) generativa transformou o panorama do desenvolvimento de software, prometendo ganhos significativos de produtividade. No entanto, é fundamental quantificar empiricamente se a velocidade de entrega compromete a qualidade estrutural e a manutenibilidade do código produzido.
 
 Este experimento visa avaliar o impacto do uso de IA na resolução de problemas algorítmicos (*Katas*), medindo tanto o tempo de desenvolvimento até à aprovação nos testes automáticos (*time-to-green*) quanto as métricas estáticas do código fonte gerado.
 
@@ -30,7 +30,7 @@ O experimento utilizou um design *crossover within-subject*, onde os três parti
 Os katas consistiram em problemas clássicos de lógica e estruturas de dados, com testes unitários (Pytest) previamente redigidos e imutáveis durante a execução (Sprint 02). Exemplos de desafios incluíram: extração de dados de *logs* (K1), cálculo de troco com controlo de stock (K3), validação robusta de palavras-passe (K4) e achatamento de dicionários aninhados por recursividade (K5).
 
 ### 2.3 Assistente de IA e Versão
-No tratamento `com_ia`, os participantes utilizaram o assistente **Claude** integrado ao ambiente de desenvolvimento (modelo específico não fixado previamente — ver `docs/ambiente-execucao.md` e a ameaça à validade de construto na Seção 5.2). O *prompting* foi livre, mas focado na geração da lógica necessária para satisfazer os critérios de aceitação. No tratamento `sem_ia`, qualquer ferramenta de preenchimento inteligente de código foi estritamente desativada.
+No tratamento `com_ia`, os participantes utilizaram o assistente **Claude** integrado ao ambiente de desenvolvimento (modelo específico não fixado previamente, ver `docs/ambiente-execucao.md` e a ameaça à validade de construto na Seção 5.2). O *prompting* foi livre, mas focado na geração da lógica necessária para satisfazer os critérios de aceitação. No tratamento `sem_ia`, qualquer ferramenta de preenchimento inteligente de código foi estritamente desativada.
 
 ### 2.4 Ambiente de Execução e Coleta de Dados
 A automação da coleta de métricas foi o pilar da reprodutibilidade:
@@ -46,16 +46,16 @@ A automação da coleta de métricas foi o pilar da reprodutibilidade:
 > `docs/resultados-rq1-rq2.md` e `docs/resultados-rq3.md`. Figura consolidada:
 > `reports/figures/dashboard_tratamentos.png` (Figura 1, abaixo).
 
-![Dashboard comparando Com IA e Sem IA nas três RQs — mediana/IQR (boxplot) com os 9 trials individuais sobrepostos por tratamento](figures/dashboard_tratamentos.png)
+![Dashboard comparando Com IA e Sem IA nas três RQs - mediana/IQR (boxplot) com os 9 trials individuais sobrepostos por tratamento](figures/dashboard_tratamentos.png)
 
-*Figura 1 — Tempo (RQ1), taxa de sucesso dos testes (RQ2) e quatro métricas
+*Figura 1 - Tempo (RQ1), taxa de sucesso dos testes (RQ2) e quatro métricas
 estruturais da RQ3 (complexidade ciclomática, SLOC, complexidade normalizada
 por LOC e índice de manutenibilidade) por tratamento. Cada ponto é um trial;
 a caixa mostra mediana/IQR, não a média, como recomendado no enunciado dado
 o N pequeno. Duplicação de código fica fora do gráfico por ser 0% em todos
 os 18 trials, sem variância para mostrar.*
 
-### RQ1 — O uso de assistente de IA reduz o tempo necessário para resolver uma tarefa de programação?
+### RQ1 - O uso de assistente de IA reduz o tempo necessário para resolver uma tarefa de programação?
 
 | Tratamento | N | Mediana (min) | IQR | Mín | Máx |
 |---|---|---|---|---|---|
@@ -63,34 +63,34 @@ os 18 trials, sem variância para mostrar.*
 | Sem IA | 9 | 11.37 | 13.24 | 9.06 | 35.00 |
 
 Wilcoxon pareado por integrante (N=3 pares, mediana dos 3 trials de cada
-tratamento por pessoa): **estatística = 0.0, p = 0.25** — o menor p-valor
+tratamento por pessoa): **estatística = 0.0, p = 0.25**, o menor p-valor
 bilateral possível com N=3 no teste exato, portanto não significativo a 5%,
 mas os **três integrantes foram individualmente mais rápidos Com IA**
 (Davi: 1.67 vs 19.57 min; Gustavo: 6.68 vs 10.55 min; Lucas: 3.65 vs 11.37
-min) — direção consistente apesar do N pequeno não permitir confirmação
+min), direção consistente apesar do N pequeno não permitir confirmação
 estatística. Houve 1 trial censurado (35 min, Sem IA), tratado como
 outlier de instrumentação e não descartado (Seção 5.1).
 
-![Tempo até time-to-green por integrante, Com IA vs Sem IA — cada linha liga os dois pontos da mesma pessoa](figures/rq1_pareado_por_integrante.png)
+![Tempo até time-to-green por integrante, Com IA vs Sem IA - cada linha liga os dois pontos da mesma pessoa](figures/rq1_pareado_por_integrante.png)
 
-*Figura 2 — Comparação pareada por integrante: é exatamente essa figura que
+*Figura 2 - Comparação pareada por integrante: é exatamente essa figura que
 o Wilcoxon acima está testando (mediana de 3 pontos por pessoa e
-tratamento). As três linhas sobem de Com IA para Sem IA — direção
+tratamento). As três linhas sobem de Com IA para Sem IA, direção
 consistente mesmo sem significância estatística.*
 
-### RQ2 — O uso de assistente de IA reduz a quantidade de defeitos (testes que falham) no código produzido?
+### RQ2 - O uso de assistente de IA reduz a quantidade de defeitos (testes que falham) no código produzido?
 
 | Tratamento | N | Mediana (% testes passando) | IQR |
 |---|---|---|---|
 | Com IA | 9 | 100.00 | 0.00 |
 | Sem IA | 9 | 100.00 | 0.00 |
 
-Wilcoxon pareado por integrante (N=3): **p = 1.00** — nenhuma diferença
+Wilcoxon pareado por integrante (N=3): **p = 1.00**, nenhuma diferença
 detectável. Praticamente todos os trials terminaram com 100% dos testes de
-aceitação passando, nos dois tratamentos (efeito teto — Seção 5.2). Os dados
+aceitação passando, nos dois tratamentos (efeito teto - Seção 5.2). Os dados
 não sugerem qualquer efeito do assistente de IA sobre defeitos nesta amostra.
 
-### RQ3 — O uso de assistente de IA altera a complexidade ciclomática ou a duplicação do código produzido?
+### RQ3 - O uso de assistente de IA altera a complexidade ciclomática ou a duplicação do código produzido?
 
 | Métrica | Mediana Com IA (IQR) | Mediana Sem IA (IQR) | p (por integrante, N=3) | p (por kata, N=6) |
 |---|---|---|---|---|
@@ -100,22 +100,22 @@ não sugerem qualquer efeito do assistente de IA sobre defeitos nesta amostra.
 | CC por 10 SLOC | 4.29 (1.11) | 4.00 (1.25) | 1.00 | 0.84 |
 | MI | 66.45 (13.66) | 75.16 (35.14) | 0.75 | 0.44 |
 
-¹ Duplicação zero em todos os 18 trials — diferenças pareadas todas zero, teste não informativo.
+¹ Duplicação zero em todos os 18 trials - diferenças pareadas todas zero, teste não informativo.
 
 Nenhum Wilcoxon se aproxima de significância. As medianas de CC e MI variam
 mais por *kata* do que por tratamento (ex.: K1 sem IA usa `split`/`if`
-encadeados, CC 11; as duas soluções com IA do K1 usam regex, CC 4–5 — troca
+encadeados, CC 11; as duas soluções com IA do K1 usam regex, CC 4–5, troca
 de estratégia, não de qualidade, e a CC de McCabe não enxerga a
 complexidade escondida no regex). O código Com IA tende a ser um pouco mais
 longo (SLOC), coerente com a ressalva do enunciado sobre verbosidade de
 código gerado por IA; normalizando por LOC (CC/10 SLOC), os tratamentos
 ficam praticamente iguais. **Não há evidência de que a IA altere a
-complexidade ou a duplicação nesta amostra** — não rejeita H0, mas o poder
+complexidade ou a duplicação nesta amostra**, não rejeita H0, mas o poder
 estatístico (N=3/N=6) também não permite afirmar equivalência. Detalhamento
 completo, incluindo o cenário sem o outlier de instrumentação, em
 `docs/resultados-rq3.md`.
 
-### 3.1 Contribuição extra — Vulnerabilidades de segurança (RQ exploratória)
+### 3.1 Contribuição extra - Vulnerabilidades de segurança (RQ exploratória)
 
 Além das RQ1-RQ3 do enunciado, o grupo rodou uma análise exploratória extra:
 o assistente de IA introduz mais ou menos vulnerabilidades de segurança que
@@ -126,27 +126,27 @@ estático padrão para Python (mesma categoria do Radon/jscpd usados na RQ3).
 trials** (mediana e IQR = 0 em Com IA e Sem IA; Wilcoxon pareado por
 integrante não tem o que detectar, p = 1.0).
 
-![Vulnerabilidades de segurança por tratamento — 0 em todos os 18 trials](figures/seguranca_vulnerabilidades.png)
+![Vulnerabilidades de segurança por tratamento - 0 em todos os 18 trials](figures/seguranca_vulnerabilidades.png)
 
-*Figura 3 — Nº de vulnerabilidades (Bandit) por tratamento. Antes de aceitar
+*Figura 3 - Nº de vulnerabilidades (Bandit) por tratamento. Antes de aceitar
 o zero como resultado, `tests/test_bandit_scan.py` prova com um controle
 positivo (um arquivo com `eval()` deliberado) que o scanner detecta
-vulnerabilidades reais quando existem — o zero não é um scanner quebrado.*
+vulnerabilidades reais quando existem, o zero não é um scanner quebrado.*
 
 Este é um **resultado nulo informativo, não uma resposta**: os 6 katas são
 funções puras e pequenas (6-29 SLOC), sem I/O de arquivo, rede,
-subprocess/shell, SQL, criptografia ou segredos — nenhuma das superfícies
+subprocess/shell, SQL, criptografia ou segredos, nenhuma das superfícies
 que o Bandit cobre esteve presente na tarefa, por construção (os katas
 foram escolhidos por dificuldade comparável e baixa indexação, Seção 5.3,
 não para cobrir padrões de segurança). A pergunta "IA introduz mais/menos
 vulnerabilidades" exigiria tarefas com superfície de ataque real (parsing de
-entrada não confiável, acesso a arquivo/rede, autenticação) — nenhum dos 6
+entrada não confiável, acesso a arquivo/rede, autenticação), nenhum dos 6
 katas tem isso.
 
 Como checagem de corroboração, também rodamos o **Semgrep** (200 regras,
-`p/python` + `p/security-audit` — ruleset bem mais amplo que o do Bandit)
+`p/python` + `p/security-audit`, ruleset bem mais amplo que o do Bandit)
 sobre todo `katas/`: **0 achados em 85 arquivos**. Duas ferramentas
-independentes, mesma conclusão — evidência de que o zero é real, não uma
+independentes, mesma conclusão, evidência de que o zero é real, não uma
 lacuna de cobertura de uma lista de regras específica. Detalhamento completo
 em `docs/resultados-seguranca.md`.
 
@@ -208,7 +208,7 @@ trials de um kata; (iv) modelo de IA fixado e registrado em todos os trials;
 (v) tarefas maiores, em que complexidade e duplicação tenham espaço para
 variar; (vi) tarefas com superfície de ataque real (entrada não confiável,
 arquivo, rede, autenticação), para a análise extra de vulnerabilidades
-(Seção 3.1) ter o que medir — nos katas atuais, o resultado é
+(Seção 3.1) ter o que medir, nos katas atuais, o resultado é
 estruturalmente nulo.
 
 ---
