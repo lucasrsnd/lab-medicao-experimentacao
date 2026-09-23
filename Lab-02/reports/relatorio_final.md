@@ -30,7 +30,7 @@ O experimento utilizou um design *crossover within-subject*, onde os três parti
 Os katas consistiram em problemas clássicos de lógica e estruturas de dados, com testes unitários (Pytest) previamente redigidos e imutáveis durante a execução (Sprint 02). Exemplos de desafios incluíram: extração de dados de *logs* (K1), cálculo de troco com controlo de stock (K3), validação robusta de palavras-passe (K4) e achatamento de dicionários aninhados por recursividade (K5).
 
 ### 2.3 Assistente de IA e Versão
-No tratamento `com_ia`, os participantes utilizaram o assistente **[INSERIR NOME DA IA AQUI - ex: GitHub Copilot / Gemini 1.5 Pro]** integrado ao ambiente de desenvolvimento. O *prompting* foi livre, mas focado na geração da lógica necessária para satisfazer os critérios de aceitação. No tratamento `sem_ia`, qualquer ferramenta de preenchimento inteligente de código foi estritamente desativada.
+No tratamento `com_ia`, os participantes utilizaram o assistente **Claude** integrado ao ambiente de desenvolvimento (modelo específico não fixado previamente — ver `docs/ambiente-execucao.md` e a ameaça à validade de construto na Seção 5.2). O *prompting* foi livre, mas focado na geração da lógica necessária para satisfazer os critérios de aceitação. No tratamento `sem_ia`, qualquer ferramenta de preenchimento inteligente de código foi estritamente desativada.
 
 ### 2.4 Ambiente de Execução e Coleta de Dados
 A automação da coleta de métricas foi o pilar da reprodutibilidade:
@@ -41,9 +41,79 @@ A automação da coleta de métricas foi o pilar da reprodutibilidade:
 
 ## 3. Resultados por RQ
 
-> Consolidação na Issue #79 (revisão final). Texto-fonte de cada RQ:
-> RQ1 e RQ2 em `docs/resultados-rq1-rq2.md` (Issue #76) e RQ3 em
-> `docs/resultados-rq3.md` (Issue #72). Números em `reports/analysis/`.
+> Números completos e os dois cenários de sensibilidade (com/sem o outlier de
+> instrumentação, ver Seção 5.1) em `reports/analysis/` e nos textos-fonte
+> `docs/resultados-rq1-rq2.md` e `docs/resultados-rq3.md`. Figura consolidada:
+> `reports/figures/dashboard_tratamentos.png` (Figura 1, abaixo).
+
+![Dashboard comparando Com IA e Sem IA nas três RQs — mediana/IQR (boxplot) com os 9 trials individuais sobrepostos por tratamento](figures/dashboard_tratamentos.png)
+
+*Figura 1 — Tempo (RQ1), taxa de sucesso dos testes (RQ2) e quatro métricas
+estruturais da RQ3 (complexidade ciclomática, SLOC, complexidade normalizada
+por LOC e índice de manutenibilidade) por tratamento. Cada ponto é um trial;
+a caixa mostra mediana/IQR, não a média, como recomendado no enunciado dado
+o N pequeno. Duplicação de código fica fora do gráfico por ser 0% em todos
+os 18 trials, sem variância para mostrar.*
+
+### RQ1 — O uso de assistente de IA reduz o tempo necessário para resolver uma tarefa de programação?
+
+| Tratamento | N | Mediana (min) | IQR | Mín | Máx |
+|---|---|---|---|---|---|
+| Com IA | 9 | 3.17 | 1.92 | 1.40 | 8.31 |
+| Sem IA | 9 | 11.37 | 13.24 | 9.06 | 35.00 |
+
+Wilcoxon pareado por integrante (N=3 pares, mediana dos 3 trials de cada
+tratamento por pessoa): **estatística = 0.0, p = 0.25** — o menor p-valor
+bilateral possível com N=3 no teste exato, portanto não significativo a 5%,
+mas os **três integrantes foram individualmente mais rápidos Com IA**
+(Davi: 1.67 vs 19.57 min; Gustavo: 6.68 vs 10.55 min; Lucas: 3.65 vs 11.37
+min) — direção consistente apesar do N pequeno não permitir confirmação
+estatística. Houve 1 trial censurado (35 min, Sem IA), tratado como
+outlier de instrumentação e não descartado (Seção 5.1).
+
+![Tempo até time-to-green por integrante, Com IA vs Sem IA — cada linha liga os dois pontos da mesma pessoa](figures/rq1_pareado_por_integrante.png)
+
+*Figura 2 — Comparação pareada por integrante: é exatamente essa figura que
+o Wilcoxon acima está testando (mediana de 3 pontos por pessoa e
+tratamento). As três linhas sobem de Com IA para Sem IA — direção
+consistente mesmo sem significância estatística.*
+
+### RQ2 — O uso de assistente de IA reduz a quantidade de defeitos (testes que falham) no código produzido?
+
+| Tratamento | N | Mediana (% testes passando) | IQR |
+|---|---|---|---|
+| Com IA | 9 | 100.00 | 0.00 |
+| Sem IA | 9 | 100.00 | 0.00 |
+
+Wilcoxon pareado por integrante (N=3): **p = 1.00** — nenhuma diferença
+detectável. Praticamente todos os trials terminaram com 100% dos testes de
+aceitação passando, nos dois tratamentos (efeito teto — Seção 5.2). Os dados
+não sugerem qualquer efeito do assistente de IA sobre defeitos nesta amostra.
+
+### RQ3 — O uso de assistente de IA altera a complexidade ciclomática ou a duplicação do código produzido?
+
+| Métrica | Mediana Com IA (IQR) | Mediana Sem IA (IQR) | p (por integrante, N=3) | p (por kata, N=6) |
+|---|---|---|---|---|
+| CC média por função | 5.00 (2.00) | 4.00 (5.00) | 1.00 | 1.00 |
+| Duplicação (%) | 0.00 (0.00) | 0.00 (0.00) | n/a¹ | n/a¹ |
+| SLOC (controle) | 14.00 (5.00) | 11.00 (4.00) | 0.50 | 0.56 |
+| CC por 10 SLOC | 4.29 (1.11) | 4.00 (1.25) | 1.00 | 0.84 |
+| MI | 66.45 (13.66) | 75.16 (35.14) | 0.75 | 0.44 |
+
+¹ Duplicação zero em todos os 18 trials — diferenças pareadas todas zero, teste não informativo.
+
+Nenhum Wilcoxon se aproxima de significância. As medianas de CC e MI variam
+mais por *kata* do que por tratamento (ex.: K1 sem IA usa `split`/`if`
+encadeados, CC 11; as duas soluções com IA do K1 usam regex, CC 4–5 — troca
+de estratégia, não de qualidade, e a CC de McCabe não enxerga a
+complexidade escondida no regex). O código Com IA tende a ser um pouco mais
+longo (SLOC), coerente com a ressalva do enunciado sobre verbosidade de
+código gerado por IA; normalizando por LOC (CC/10 SLOC), os tratamentos
+ficam praticamente iguais. **Não há evidência de que a IA altere a
+complexidade ou a duplicação nesta amostra** — não rejeita H0, mas o poder
+estatístico (N=3/N=6) também não permite afirmar equivalência. Detalhamento
+completo, incluindo o cenário sem o outlier de instrumentação, em
+`docs/resultados-rq3.md`.
 
 ---
 
@@ -205,4 +275,4 @@ Todos os 18 trials estão registrados como Issues individuais (#51 a #68, uma
 por kata/tratamento, com o integrante como Assignee), e os commits de cada
 trial referenciam o número da Issue correspondente.
 
-![Board do GitHub Projects ao final da Sprint 03](figures/board_github_projects.png)
+![Board do GitHub Projects ao final da Sprint 03](figures/board_github_projects.JPG)
