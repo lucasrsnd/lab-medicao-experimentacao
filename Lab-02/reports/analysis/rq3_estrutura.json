@@ -1,0 +1,861 @@
+{
+  "todos_os_trials": {
+    "complexidade_media": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 5.0,
+          "iqr": 2.0,
+          "minimo": 3.0,
+          "maximo": 9.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 9,
+          "mediana": 4.0,
+          "iqr": 5.0,
+          "minimo": 3.0,
+          "maximo": 11.0
+        }
+      ],
+      "outliers_iqr": [],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 4.0,
+            "mediana_sem_ia": 4.0
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 5.0,
+            "mediana_sem_ia": 4.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 4.0,
+            "mediana_sem_ia": 4.0
+          }
+        ],
+        "estatistica": 0.0,
+        "p_valor": 1.0,
+        "erro": null
+      },
+      "wilcoxon_pareado_por_kata": {
+        "n_pares": 6,
+        "pares": [
+          {
+            "kata": "k1",
+            "mediana_com_ia": 4.5,
+            "mediana_sem_ia": 11.0
+          },
+          {
+            "kata": "k2",
+            "mediana_com_ia": 5.0,
+            "mediana_sem_ia": 3.0
+          },
+          {
+            "kata": "k3",
+            "mediana_com_ia": 7.0,
+            "mediana_sem_ia": 4.0
+          },
+          {
+            "kata": "k4",
+            "mediana_com_ia": 9.0,
+            "mediana_sem_ia": 9.0
+          },
+          {
+            "kata": "k5",
+            "mediana_com_ia": 3.5,
+            "mediana_sem_ia": 4.0
+          },
+          {
+            "kata": "k6",
+            "mediana_com_ia": 4.0,
+            "mediana_sem_ia": 4.0
+          }
+        ],
+        "estatistica": 5.0,
+        "p_valor": 1.0,
+        "erro": null
+      }
+    },
+    "duplicacao": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 0.0,
+          "iqr": 0.0,
+          "minimo": 0.0,
+          "maximo": 0.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 9,
+          "mediana": 0.0,
+          "iqr": 0.0,
+          "minimo": 0.0,
+          "maximo": 0.0
+        }
+      ],
+      "outliers_iqr": [],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          }
+        ],
+        "estatistica": 0.0,
+        "p_valor": 1.0,
+        "erro": null
+      },
+      "wilcoxon_pareado_por_kata": {
+        "n_pares": 6,
+        "pares": [
+          {
+            "kata": "k1",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "kata": "k2",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "kata": "k3",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "kata": "k4",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "kata": "k5",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "kata": "k6",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          }
+        ],
+        "estatistica": 0.0,
+        "p_valor": 1.0,
+        "erro": null
+      }
+    },
+    "sloc": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 14.0,
+          "iqr": 5.0,
+          "minimo": 9.0,
+          "maximo": 19.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 9,
+          "mediana": 11.0,
+          "iqr": 4.0,
+          "minimo": 6.0,
+          "maximo": 29.0
+        }
+      ],
+      "outliers_iqr": [
+        {
+          "kata": "k1",
+          "integrante": "lucasrsnd",
+          "tratamento": "sem_ia",
+          "sloc": 29
+        }
+      ],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 14.0,
+            "mediana_sem_ia": 10.0
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 18.0,
+            "mediana_sem_ia": 11.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 11.0,
+            "mediana_sem_ia": 11.0
+          }
+        ],
+        "estatistica": 0.0,
+        "p_valor": 0.5,
+        "erro": null
+      },
+      "wilcoxon_pareado_por_kata": {
+        "n_pares": 6,
+        "pares": [
+          {
+            "kata": "k1",
+            "mediana_com_ia": 17.0,
+            "mediana_sem_ia": 29.0
+          },
+          {
+            "kata": "k2",
+            "mediana_com_ia": 10.0,
+            "mediana_sem_ia": 7.0
+          },
+          {
+            "kata": "k3",
+            "mediana_com_ia": 16.0,
+            "mediana_sem_ia": 11.0
+          },
+          {
+            "kata": "k4",
+            "mediana_com_ia": 15.0,
+            "mediana_sem_ia": 14.5
+          },
+          {
+            "kata": "k5",
+            "mediana_com_ia": 9.0,
+            "mediana_sem_ia": 9.0
+          },
+          {
+            "kata": "k6",
+            "mediana_com_ia": 11.0,
+            "mediana_sem_ia": 10.5
+          }
+        ],
+        "estatistica": 5.0,
+        "p_valor": 0.5625,
+        "erro": null
+      }
+    },
+    "cc_por_10_sloc": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 4.29,
+          "iqr": 1.1100000000000003,
+          "minimo": 2.63,
+          "maximo": 6.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 9,
+          "mediana": 4.0,
+          "iqr": 1.25,
+          "minimo": 3.64,
+          "maximo": 6.92
+        }
+      ],
+      "outliers_iqr": [
+        {
+          "kata": "k4",
+          "integrante": "DaviSantos23",
+          "tratamento": "sem_ia",
+          "cc_por_10_sloc": 6.92
+        }
+      ],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 3.33,
+            "mediana_sem_ia": 4.0
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 4.44,
+            "mediana_sem_ia": 4.44
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 4.44,
+            "mediana_sem_ia": 3.79
+          }
+        ],
+        "estatistica": 1.0,
+        "p_valor": 1.0,
+        "erro": null
+      },
+      "wilcoxon_pareado_por_kata": {
+        "n_pares": 6,
+        "pares": [
+          {
+            "kata": "k1",
+            "mediana_com_ia": 2.65,
+            "mediana_sem_ia": 3.79
+          },
+          {
+            "kata": "k2",
+            "mediana_com_ia": 5.0,
+            "mediana_sem_ia": 4.375
+          },
+          {
+            "kata": "k3",
+            "mediana_com_ia": 4.365,
+            "mediana_sem_ia": 3.64
+          },
+          {
+            "kata": "k4",
+            "mediana_com_ia": 6.0,
+            "mediana_sem_ia": 6.27
+          },
+          {
+            "kata": "k5",
+            "mediana_com_ia": 3.8850000000000002,
+            "mediana_sem_ia": 4.44
+          },
+          {
+            "kata": "k6",
+            "mediana_com_ia": 3.64,
+            "mediana_sem_ia": 3.8200000000000003
+          }
+        ],
+        "estatistica": 9.0,
+        "p_valor": 0.84375,
+        "erro": null
+      }
+    },
+    "mi": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 66.45,
+          "iqr": 13.660000000000004,
+          "minimo": 57.05,
+          "maximo": 100.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 9,
+          "mediana": 75.16,
+          "iqr": 35.14,
+          "minimo": 52.91,
+          "maximo": 100.0
+        }
+      ],
+      "outliers_iqr": [
+        {
+          "kata": "k6",
+          "integrante": "lucasrsnd",
+          "tratamento": "com_ia",
+          "mi": 100.0
+        }
+      ],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 71.13,
+            "mediana_sem_ia": 75.16
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 63.85,
+            "mediana_sem_ia": 100.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 76.54,
+            "mediana_sem_ia": 64.86
+          }
+        ],
+        "estatistica": 2.0,
+        "p_valor": 0.75,
+        "erro": null
+      },
+      "wilcoxon_pareado_por_kata": {
+        "n_pares": 6,
+        "pares": [
+          {
+            "kata": "k1",
+            "mediana_com_ia": 68.78999999999999,
+            "mediana_sem_ia": 52.91
+          },
+          {
+            "kata": "k2",
+            "mediana_com_ia": 63.85,
+            "mediana_sem_ia": 73.88
+          },
+          {
+            "kata": "k3",
+            "mediana_com_ia": 58.715,
+            "mediana_sem_ia": 64.86
+          },
+          {
+            "kata": "k4",
+            "mediana_com_ia": 58.2,
+            "mediana_sem_ia": 72.73
+          },
+          {
+            "kata": "k5",
+            "mediana_com_ia": 75.29,
+            "mediana_sem_ia": 100.0
+          },
+          {
+            "kata": "k6",
+            "mediana_com_ia": 100.0,
+            "mediana_sem_ia": 100.0
+          }
+        ],
+        "estatistica": 4.0,
+        "p_valor": 0.4375,
+        "erro": null
+      }
+    }
+  },
+  "excluindo_outliers_instrumentacao": {
+    "complexidade_media": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 5.0,
+          "iqr": 2.0,
+          "minimo": 3.0,
+          "maximo": 9.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 8,
+          "mediana": 4.0,
+          "iqr": 5.0,
+          "minimo": 3.0,
+          "maximo": 11.0
+        }
+      ],
+      "outliers_iqr": [],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 4.0,
+            "mediana_sem_ia": 6.5
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 5.0,
+            "mediana_sem_ia": 4.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 4.0,
+            "mediana_sem_ia": 4.0
+          }
+        ],
+        "estatistica": 1.0,
+        "p_valor": 1.0,
+        "erro": null
+      },
+      "wilcoxon_pareado_por_kata": {
+        "n_pares": 6,
+        "pares": [
+          {
+            "kata": "k1",
+            "mediana_com_ia": 4.5,
+            "mediana_sem_ia": 11.0
+          },
+          {
+            "kata": "k2",
+            "mediana_com_ia": 5.0,
+            "mediana_sem_ia": 3.0
+          },
+          {
+            "kata": "k3",
+            "mediana_com_ia": 7.0,
+            "mediana_sem_ia": 4.0
+          },
+          {
+            "kata": "k4",
+            "mediana_com_ia": 9.0,
+            "mediana_sem_ia": 9.0
+          },
+          {
+            "kata": "k5",
+            "mediana_com_ia": 3.5,
+            "mediana_sem_ia": 4.0
+          },
+          {
+            "kata": "k6",
+            "mediana_com_ia": 4.0,
+            "mediana_sem_ia": 4.0
+          }
+        ],
+        "estatistica": 5.0,
+        "p_valor": 1.0,
+        "erro": null
+      }
+    },
+    "duplicacao": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 0.0,
+          "iqr": 0.0,
+          "minimo": 0.0,
+          "maximo": 0.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 8,
+          "mediana": 0.0,
+          "iqr": 0.0,
+          "minimo": 0.0,
+          "maximo": 0.0
+        }
+      ],
+      "outliers_iqr": [],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          }
+        ],
+        "estatistica": 0.0,
+        "p_valor": 1.0,
+        "erro": null
+      },
+      "wilcoxon_pareado_por_kata": {
+        "n_pares": 6,
+        "pares": [
+          {
+            "kata": "k1",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "kata": "k2",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "kata": "k3",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "kata": "k4",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "kata": "k5",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          },
+          {
+            "kata": "k6",
+            "mediana_com_ia": 0.0,
+            "mediana_sem_ia": 0.0
+          }
+        ],
+        "estatistica": 0.0,
+        "p_valor": 1.0,
+        "erro": null
+      }
+    },
+    "sloc": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 14.0,
+          "iqr": 5.0,
+          "minimo": 9.0,
+          "maximo": 19.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 8,
+          "mediana": 11.0,
+          "iqr": 4.0,
+          "minimo": 6.0,
+          "maximo": 29.0
+        }
+      ],
+      "outliers_iqr": [
+        {
+          "kata": "k1",
+          "integrante": "lucasrsnd",
+          "tratamento": "sem_ia",
+          "sloc": 29
+        }
+      ],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 14.0,
+            "mediana_sem_ia": 11.5
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 18.0,
+            "mediana_sem_ia": 11.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 11.0,
+            "mediana_sem_ia": 11.0
+          }
+        ],
+        "estatistica": 0.0,
+        "p_valor": 0.5,
+        "erro": null
+      },
+      "wilcoxon_pareado_por_kata": {
+        "n_pares": 6,
+        "pares": [
+          {
+            "kata": "k1",
+            "mediana_com_ia": 17.0,
+            "mediana_sem_ia": 29.0
+          },
+          {
+            "kata": "k2",
+            "mediana_com_ia": 10.0,
+            "mediana_sem_ia": 6.0
+          },
+          {
+            "kata": "k3",
+            "mediana_com_ia": 16.0,
+            "mediana_sem_ia": 11.0
+          },
+          {
+            "kata": "k4",
+            "mediana_com_ia": 15.0,
+            "mediana_sem_ia": 14.5
+          },
+          {
+            "kata": "k5",
+            "mediana_com_ia": 9.0,
+            "mediana_sem_ia": 9.0
+          },
+          {
+            "kata": "k6",
+            "mediana_com_ia": 11.0,
+            "mediana_sem_ia": 10.5
+          }
+        ],
+        "estatistica": 5.0,
+        "p_valor": 0.5625,
+        "erro": null
+      }
+    },
+    "cc_por_10_sloc": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 4.29,
+          "iqr": 1.1100000000000003,
+          "minimo": 2.63,
+          "maximo": 6.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 8,
+          "mediana": 4.220000000000001,
+          "iqr": 1.4024999999999999,
+          "minimo": 3.64,
+          "maximo": 6.92
+        }
+      ],
+      "outliers_iqr": [],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 3.33,
+            "mediana_sem_ia": 5.46
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 4.44,
+            "mediana_sem_ia": 4.44
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 4.44,
+            "mediana_sem_ia": 3.79
+          }
+        ],
+        "estatistica": 1.0,
+        "p_valor": 1.0,
+        "erro": null
+      },
+      "wilcoxon_pareado_por_kata": {
+        "n_pares": 6,
+        "pares": [
+          {
+            "kata": "k1",
+            "mediana_com_ia": 2.65,
+            "mediana_sem_ia": 3.79
+          },
+          {
+            "kata": "k2",
+            "mediana_com_ia": 5.0,
+            "mediana_sem_ia": 5.0
+          },
+          {
+            "kata": "k3",
+            "mediana_com_ia": 4.365,
+            "mediana_sem_ia": 3.64
+          },
+          {
+            "kata": "k4",
+            "mediana_com_ia": 6.0,
+            "mediana_sem_ia": 6.27
+          },
+          {
+            "kata": "k5",
+            "mediana_com_ia": 3.8850000000000002,
+            "mediana_sem_ia": 4.44
+          },
+          {
+            "kata": "k6",
+            "mediana_com_ia": 3.64,
+            "mediana_sem_ia": 3.8200000000000003
+          }
+        ],
+        "estatistica": 4.0,
+        "p_valor": 0.4375,
+        "erro": null
+      }
+    },
+    "mi": {
+      "descritivas_por_tratamento": [
+        {
+          "tratamento": "com_ia",
+          "n": 9,
+          "mediana": 66.45,
+          "iqr": 13.660000000000004,
+          "minimo": 57.05,
+          "maximo": 100.0
+        },
+        {
+          "tratamento": "sem_ia",
+          "n": 8,
+          "mediana": 78.845,
+          "iqr": 36.2625,
+          "minimo": 52.91,
+          "maximo": 100.0
+        }
+      ],
+      "outliers_iqr": [
+        {
+          "kata": "k6",
+          "integrante": "lucasrsnd",
+          "tratamento": "com_ia",
+          "mi": 100.0
+        }
+      ],
+      "wilcoxon_pareado_por_integrante": {
+        "n_pares": 3,
+        "pares": [
+          {
+            "integrante": "DaviSantos23",
+            "mediana_com_ia": 71.13,
+            "mediana_sem_ia": 80.185
+          },
+          {
+            "integrante": "gustavoprehl",
+            "mediana_com_ia": 63.85,
+            "mediana_sem_ia": 100.0
+          },
+          {
+            "integrante": "lucasrsnd",
+            "mediana_com_ia": 76.54,
+            "mediana_sem_ia": 64.86
+          }
+        ],
+        "estatistica": 2.0,
+        "p_valor": 0.75,
+        "erro": null
+      },
+      "wilcoxon_pareado_por_kata": {
+        "n_pares": 6,
+        "pares": [
+          {
+            "kata": "k1",
+            "mediana_com_ia": 68.78999999999999,
+            "mediana_sem_ia": 52.91
+          },
+          {
+            "kata": "k2",
+            "mediana_com_ia": 63.85,
+            "mediana_sem_ia": 72.6
+          },
+          {
+            "kata": "k3",
+            "mediana_com_ia": 58.715,
+            "mediana_sem_ia": 64.86
+          },
+          {
+            "kata": "k4",
+            "mediana_com_ia": 58.2,
+            "mediana_sem_ia": 72.73
+          },
+          {
+            "kata": "k5",
+            "mediana_com_ia": 75.29,
+            "mediana_sem_ia": 100.0
+          },
+          {
+            "kata": "k6",
+            "mediana_com_ia": 100.0,
+            "mediana_sem_ia": 100.0
+          }
+        ],
+        "estatistica": 4.0,
+        "p_valor": 0.4375,
+        "erro": null
+      }
+    }
+  }
+}

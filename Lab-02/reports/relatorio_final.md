@@ -1,7 +1,7 @@
 # Relatório de Experimento: Impacto de Assistentes de IA no Desenvolvimento de Software
 
 **Disciplina:** Medição e Experimentação em Engenharia de Software (PUC Minas)  
-**Equipa:** Davi Érico, Gustavo Prehl, Lucas Rosendo  
+**Equipa:** Davi Érico, Gustavo Prehl, Lucas Resende  
 
 ---
 
@@ -36,3 +36,173 @@ No tratamento `com_ia`, os participantes utilizaram o assistente **[INSERIR NOME
 A automação da coleta de métricas foi o pilar da reprodutibilidade:
 * **Tempo Real (Time-to-Green):** Desenvolveu-se um *script* customizado em Python (`trial_timer.py`) rodando em *background* via *polling* a cada 10 segundos. O relógio parava automaticamente assim que todos os testes passassem, ou era aplicado um limite de censura de 35 minutos (*time-box*).
 * **Métricas Estáticas:** A análise de código foi extraída através das bibliotecas **Radon** (Complexidade Ciclomática, *Maintainability Index* e SLOC) e **jscpd** (taxa de duplicação de *tokens*). Os ficheiros de teste (`test_*.py`) foram isolados e ignorados pelo analisador para não corromper os resultados do código-fonte submetido.
+
+---
+
+## 3. Resultados por RQ
+
+> Consolidação na Issue #79 (revisão final). Texto-fonte de cada RQ:
+> RQ1 e RQ2 em `docs/resultados-rq1-rq2.md` (Issue #76) e RQ3 em
+> `docs/resultados-rq3.md` (Issue #72). Números em `reports/analysis/`.
+
+---
+
+## 4. Discussão
+
+**Produtividade sem custo mensurável de qualidade.** O resultado mais claro do
+experimento é o de tempo (RQ1). A mediana do *time-to-green* caiu de 11.37 min
+(Sem IA) para 3.17 min (Com IA), e os três integrantes foram mais rápidos com
+IA. Esse ganho não veio acompanhado de piora detectável nas outras duas
+dimensões. A taxa de sucesso foi de 100% nos dois tratamentos (RQ2), e
+complexidade ciclomática, duplicação e complexidade normalizada por LOC ficaram
+praticamente iguais (RQ3). Nenhum teste de Wilcoxon atingiu significância.
+Portanto, a leitura correta é que o efeito sobre o tempo é **consistente em
+direção, mas não confirmado estatisticamente**, e que não há evidência de
+efeito sobre defeitos ou estrutura. Nas duas últimas dimensões, H0 não foi
+rejeitada. As hipóteses H2 e H3 da Seção 1.1 (sem diferença de complexidade;
+duplicação com IA igual ou inferior) são compatíveis com os dados, mas o N não
+permite afirmar equivalência.
+
+**Por que o ganho de tempo foi tão grande.** Os katas são problemas curtos (6 a
+29 SLOC, uma função cada), bem especificados e com testes de aceitação prontos.
+Esse é o cenário mais favorável possível para um assistente de IA: o enunciado
+cabe inteiro em um prompt e a resposta é verificável na hora. O
+`log_trials.csv` sugere que pouca interação bastou. Nos trials Com IA
+registrados (Gustavo), houve 0 ou 1 prompt de chat, e o resto foi autocomplete
+aceito via Tab. Não se deve extrapolar esse ganho para tarefas maiores, com
+contexto espalhado em vários arquivos ou requisitos ambíguos.
+
+**A IA mudou a estratégia, não a qualidade.** O caso do K1 (parser de log)
+ilustra bem a RQ3. A solução manual usou `split`/`if` encadeados (CC 11, 29
+SLOC), e as duas soluções com IA usaram uma expressão regular (CC 4 a 5). Pela
+métrica, a solução com IA é "menos complexa". Na prática, a complexidade foi
+transferida para dentro do regex, que a CC de McCabe não enxerga. Isso reforça
+a recomendação do enunciado de ler as métricas estáticas junto com LOC e com
+cautela. Em código deste tamanho, elas refletem mais o *estilo* de solução do
+que a qualidade estrutural.
+
+**Duplicação não é observável nesta escala.** Com uma função por solução,
+nenhum trial teve clone interno. O único clone que o jscpd encontrou apareceu
+*entre* trials: o mesmo laço do K4 no trial do Lucas (Com IA) e no do Davi (Sem
+IA). É convergência para a solução idiomática, e não indício de que a IA gere
+código repetido. Para responder de fato à pergunta de duplicação da RQ3 seriam
+necessárias tarefas com mais de uma responsabilidade (várias funções ou
+classes).
+
+**Escolha do cenário de análise.** Um trial (Davi, K2 Sem IA) foi censurado por
+um bug de infraestrutura do pytest, e não pela dificuldade da tarefa. Todas as
+análises foram rodadas com e sem ele, e as conclusões das três RQs são as
+mesmas nos dois cenários. Por isso a decisão de incluí-lo ou não altera os
+números, mas não as respostas.
+
+**Trabalhos futuros.** Para um experimento conclusivo, seria preciso: (i) mais
+participantes, porque com N=3 pares o Wilcoxon exato nunca fica abaixo de
+p = 0.25 (ver Seção 5.4); (ii) ordem de tratamentos realmente alternada para
+todos (ex.: quadrado latino); (iii) a mesma suíte de testes para todos os
+trials de um kata; (iv) modelo de IA fixado e registrado em todos os trials;
+(v) tarefas maiores, em que complexidade e duplicação tenham espaço para
+variar.
+
+---
+
+## 5. Ameaças à Validade
+
+Organizadas pela classificação de Wohlin et al. (interna, de construto,
+externa e de conclusão).
+
+### 5.1 Validade interna
+
+- **Ordem dos tratamentos confundida com o tratamento.** Pelos timestamps de
+  `trials_tempo.csv`, Gustavo e Lucas fizeram **os três trials Sem IA antes
+  dos três Com IA** (Gustavo: K4→K5→K6 sem IA, depois K1→K2→K3 com IA; Lucas:
+  K1→K2→K3 sem IA, depois K4→K5→K6 com IA). Só o Davi intercalou
+  (K2 sem → K1, K3, K5 com → K4, K6 sem). O contrabalanceamento de
+  `katas/README.md` alternava *katas* entre integrantes, mas não a *ordem* dos
+  tratamentos dentro da sessão. Aquecimento no ambiente e familiaridade com o
+  formato dos katas favorecem os trials Com IA na RQ1, e o efeito de tempo
+  pode estar superestimado.
+- **Conhecimento prévio dos katas.** O Davi elaborou os katas e o scaffold dos
+  testes de aceitação (Milestone `Lab02S01`) e depois os resolveu como
+  participante. Os tempos dele Com IA (1.4 a 2.97 min) são os menores do
+  experimento. Parte disso pode ser conhecimento do problema, e não efeito da
+  IA.
+- **Falha de instrumentação.** O trial Davi/K2 Sem IA foi censurado por
+  colisão de import do pytest, e não pela tarefa (corrigido no commit
+  `9a79389`). Ele foi tratado com análise de sensibilidade (dois cenários),
+  sem descarte silencioso.
+- **Contaminação do tratamento Sem IA.** A desativação do assistente seguiu a
+  checklist de `docs/ambiente-execucao.md`, mas dependeu da disciplina de cada
+  integrante, sem monitoramento externo.
+- **Resolução do cronômetro.** O `trial_timer.py` faz *polling* a cada 10 s,
+  então o *time-to-green* tem erro de até ~10 s. Isso é irrelevante para
+  diferenças de minutos, mas pesa nos trials Com IA mais curtos (~1.5 min).
+
+### 5.2 Validade de construto
+
+- **Critérios de aceitação diferentes para o mesmo kata.** Os trials do
+  Gustavo usaram suítes de teste diferentes das do Lucas e do Davi, com mais
+  testes (ex.: K2 com 8 testes contra 3; K1 e K3 com 5 contra 3) e até nomes de
+  função diferentes (`parse_log` contra `extrair_dados_log` no K1). Lucas e
+  Davi usaram arquivos de teste idênticos entre si. Assim, *time-to-green* e
+  taxa de sucesso não foram medidos contra exatamente o mesmo critério em
+  todos os trials de um kata.
+- **Efeito teto na RQ2.** Quase todos os trials terminaram com 100% dos testes
+  passando. Com suítes de 2 a 8 testes, a taxa de sucesso tem pouca
+  resolução para distinguir qualidade funcional.
+- **Limitações das métricas estáticas nesta escala.** A CC de McCabe não
+  captura a complexidade de expressões regulares (caso do K1). O MI do Radon
+  satura em 100 em arquivos pequenos (4 dos 18 trials). A duplicação ficou em
+  0% em todos os trials porque soluções de uma função não atingem o limiar do
+  jscpd (3 linhas / 20 tokens), um efeito piso que torna a métrica pouco
+  informativa aqui.
+- **Modelo de IA não fixado.** O assistente foi fixado (Claude), mas o modelo
+  não foi. O `log_trials.csv` registra o modelo (Sonnet 5) apenas nos trials do
+  Gustavo, e não há registro do modelo nem do número de prompts nos trials Com
+  IA do Lucas e do Davi. Uma variação de modelo entre trials não pode ser
+  descartada.
+
+### 5.3 Validade externa
+
+- **Amostra.** São 3 participantes, todos estudantes de graduação do mesmo
+  grupo e também pesquisadores do experimento. Não representam
+  desenvolvedores profissionais nem pessoas sem interesse no resultado.
+- **Tarefas.** Os katas são pequenos, isolados e bem especificados, bem
+  diferentes de manutenção em sistemas reais (código legado, múltiplos
+  arquivos, requisitos ambíguos). Linguagem única (Python) e um único
+  assistente (Claude).
+- **Memorização.** Os katas são autorais, o que reduz o risco de a IA
+  reproduzir uma solução vista no treinamento. Mesmo assim, alguns seguem
+  padrões muito comuns (validação de senha no K4, parsing de log no K1), para
+  os quais o modelo certamente viu soluções parecidas.
+
+### 5.4 Validade de conclusão
+
+- **Poder estatístico muito baixo.** No pareamento por integrante (N=3), o
+  menor p-valor bilateral possível no Wilcoxon exato é 0.25. **O desenho não
+  tinha como rejeitar H0 a 5%**, mesmo com um efeito real e grande, como
+  sugere a RQ1. O pareamento complementar por kata na RQ3 (N=6) tem mínimo de
+  p ≈ 0.031, ainda muito pouco poder.
+- **Agregação por mediana antes do teste.** Parear medianas de 3 trials por
+  integrante descarta a variabilidade dentro de cada pessoa. Isso foi
+  necessário porque o desenho não pareia trial a trial, mas reduz ainda mais a
+  informação disponível.
+- **Múltiplas comparações.** A RQ3 testa 5 métricas × 2 pareamentos × 2
+  cenários sem correção (ex.: Bonferroni). Como nenhum resultado foi
+  significativo, isso não gera falso positivo aqui, mas uma replicação com N
+  maior deveria aplicar a correção.
+
+---
+
+## 6. Repositório e GitHub Projects
+
+- **Repositório:** https://github.com/lucasrsnd/lab-medicao-experimentacao
+  (código em `Lab-02/`)
+- **GitHub Projects (board Kanban):** https://github.com/users/lucasrsnd/projects/2
+  (projeto "Laboratório - Medição e Experimentação", com Milestones `Lab02S01`,
+  `Lab02S02`, `Lab02S03` e `Lab02-RelatorioFinal`)
+
+Todos os 18 trials estão registrados como Issues individuais (#51 a #68, uma
+por kata/tratamento, com o integrante como Assignee), e os commits de cada
+trial referenciam o número da Issue correspondente.
+
+![Board do GitHub Projects ao final da Sprint 03](figures/board_github_projects.png)
