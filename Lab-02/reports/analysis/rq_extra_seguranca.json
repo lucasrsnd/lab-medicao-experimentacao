@@ -1,0 +1,45 @@
+{
+  "n_trials": 18,
+  "total_vulnerabilidades": 0,
+  "descritivas_por_tratamento": [
+    {
+      "tratamento": "com_ia",
+      "n": 9,
+      "mediana": 0.0,
+      "iqr": 0.0,
+      "minimo": 0.0,
+      "maximo": 0.0
+    },
+    {
+      "tratamento": "sem_ia",
+      "n": 9,
+      "mediana": 0.0,
+      "iqr": 0.0,
+      "minimo": 0.0,
+      "maximo": 0.0
+    }
+  ],
+  "wilcoxon_pareado_por_integrante": {
+    "n_pares": 3,
+    "pares": [
+      {
+        "integrante": "DaviSantos23",
+        "mediana_com_ia": 0.0,
+        "mediana_sem_ia": 0.0
+      },
+      {
+        "integrante": "gustavoprehl",
+        "mediana_com_ia": 0.0,
+        "mediana_sem_ia": 0.0
+      },
+      {
+        "integrante": "lucasrsnd",
+        "mediana_com_ia": 0.0,
+        "mediana_sem_ia": 0.0
+      }
+    ],
+    "estatistica": 0.0,
+    "p_valor": 1.0,
+    "erro": null
+  }
+}

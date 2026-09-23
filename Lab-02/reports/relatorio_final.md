@@ -115,6 +115,34 @@ estatístico (N=3/N=6) também não permite afirmar equivalência. Detalhamento
 completo, incluindo o cenário sem o outlier de instrumentação, em
 `docs/resultados-rq3.md`.
 
+### 3.1 Contribuição extra — Vulnerabilidades de segurança (RQ exploratória)
+
+Além das RQ1-RQ3 do enunciado, o grupo rodou uma análise exploratória extra:
+o assistente de IA introduz mais ou menos vulnerabilidades de segurança que
+o desenvolvimento manual? Ferramenta: **Bandit**, o scanner de segurança
+estático padrão para Python (mesma categoria do Radon/jscpd usados na RQ3).
+
+**Resultado: 0 vulnerabilidades encontradas, nos dois tratamentos, nos 18
+trials** (mediana e IQR = 0 em Com IA e Sem IA; Wilcoxon pareado por
+integrante não tem o que detectar, p = 1.0).
+
+![Vulnerabilidades de segurança por tratamento — 0 em todos os 18 trials](figures/seguranca_vulnerabilidades.png)
+
+*Figura 3 — Nº de vulnerabilidades (Bandit) por tratamento. Antes de aceitar
+o zero como resultado, `tests/test_bandit_scan.py` prova com um controle
+positivo (um arquivo com `eval()` deliberado) que o scanner detecta
+vulnerabilidades reais quando existem — o zero não é um scanner quebrado.*
+
+Este é um **resultado nulo informativo, não uma resposta**: os 6 katas são
+funções puras e pequenas (6-29 SLOC), sem I/O de arquivo, rede,
+subprocess/shell, SQL, criptografia ou segredos — nenhuma das superfícies
+que o Bandit cobre esteve presente na tarefa, por construção (os katas
+foram escolhidos por dificuldade comparável e baixa indexação, Seção 5.3,
+não para cobrir padrões de segurança). A pergunta "IA introduz mais/menos
+vulnerabilidades" exigiria tarefas com superfície de ataque real (parsing de
+entrada não confiável, acesso a arquivo/rede, autenticação) — nenhum dos 6
+katas tem isso. Detalhamento completo em `docs/resultados-seguranca.md`.
+
 ---
 
 ## 4. Discussão
@@ -171,7 +199,10 @@ p = 0.25 (ver Seção 5.4); (ii) ordem de tratamentos realmente alternada para
 todos (ex.: quadrado latino); (iii) a mesma suíte de testes para todos os
 trials de um kata; (iv) modelo de IA fixado e registrado em todos os trials;
 (v) tarefas maiores, em que complexidade e duplicação tenham espaço para
-variar.
+variar; (vi) tarefas com superfície de ataque real (entrada não confiável,
+arquivo, rede, autenticação), para a análise extra de vulnerabilidades
+(Seção 3.1) ter o que medir — nos katas atuais, o resultado é
+estruturalmente nulo.
 
 ---
 

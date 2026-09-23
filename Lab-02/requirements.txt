@@ -6,6 +6,7 @@ matplotlib>=3.8
 seaborn>=0.13
 scipy>=1.11
 requests>=2.31
+bandit>=1.7
 
 # jscpd (duplicação de código, RQ3) roda via Node/npm, não é um pacote pip:
 #   npm install -g jscpd

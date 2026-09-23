@@ -14,6 +14,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.visualization.gerar_dashboard import gerar_dashboard  # noqa: E402
 from src.visualization.gerar_grafico_pareado import OUT_DIR, gerar_grafico_pareado  # noqa: E402
+from src.visualization.gerar_grafico_seguranca import gerar_grafico_seguranca  # noqa: E402
+from src.visualization.gerar_grafico_seguranca import OUT_DIR as SEGURANCA_OUT_DIR  # noqa: E402
 
 # Um painel em branco (só grade 0-1, sem dado) gera um PNG bem menor que um
 # painel com boxplot+pontos de verdade — usar um piso de tamanho como proxy
@@ -36,3 +38,11 @@ def test_gerar_grafico_pareado_produz_png_com_conteudo():
     caminho = OUT_DIR / "rq1_pareado_por_integrante.png"
     assert caminho.exists()
     assert caminho.stat().st_size > 30_000
+
+
+def test_gerar_grafico_seguranca_produz_png_com_conteudo():
+    gerar_grafico_seguranca()
+
+    caminho = SEGURANCA_OUT_DIR / "seguranca_vulnerabilidades.png"
+    assert caminho.exists()
+    assert caminho.stat().st_size > 20_000
