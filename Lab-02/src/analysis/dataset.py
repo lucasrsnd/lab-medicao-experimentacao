@@ -17,6 +17,7 @@ RAW_DIR = LAB02_ROOT / "data" / "raw"
 
 TRIALS_TEMPO_CSV = RAW_DIR / "trials_tempo.csv"
 TRIALS_METRICAS_CSV = RAW_DIR / "trials_metricas.csv"
+TRIALS_SEGURANCA_CSV = RAW_DIR / "trials_seguranca.csv"
 
 
 class KnownIssue(TypedDict):
@@ -58,6 +59,19 @@ def load_trials_metricas() -> pd.DataFrame:
     """Carrega `data/raw/trials_metricas.csv` (RQ2 usa testes_passando/total
     de lá também, via trials_tempo; este arquivo é mais usado pela RQ3)."""
     df = pd.read_csv(TRIALS_METRICAS_CSV)
+    return _flag_known_issues(df)
+
+
+def load_trials_seguranca() -> pd.DataFrame:
+    """Carrega `data/raw/trials_seguranca.csv` (scan de vulnerabilidades via
+    Bandit — análise exploratória extra, `src/security/bandit_scan.py`)."""
+    df = pd.read_csv(TRIALS_SEGURANCA_CSV)
+    return _flag_known_issues(df)
+
+
+def flag_known_issues(df: pd.DataFrame) -> pd.DataFrame:
+    """Versão pública de `_flag_known_issues`, para módulos que montam o
+    próprio DataFrame em vez de usar um dos `load_*` acima."""
     return _flag_known_issues(df)
 
 

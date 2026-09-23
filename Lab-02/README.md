@@ -1,10 +1,10 @@
-# Lab02 — Assistentes de IA vs. Codificação Manual
+# Lab02 - Assistentes de IA vs. Codificação Manual
 
 Experimento controlado (crossover within-subject) comparando trials de
 programação com e sem assistente de IA, em 6 katas resolvidos pelos 3
 integrantes do grupo. Enunciado completo em `Laboratório 02.pdf`. Issues e
 Milestones (`Lab02S01`, `Lab02S02`, `Lab02S03`, `Lab02-RelatorioFinal`) vivem
-no GitHub Projects do grupo — fonte de verdade para a correção, não replicadas aqui.
+no GitHub Projects do grupo, fonte de verdade para a correção, não replicadas aqui.
 
 **Repositório / GitHub Projects:** https://github.com/lucasrsnd/lab-medicao-experimentacao
 (projeto "Laboratório - Medição e Experimentação", mesmo board do Lab01).
@@ -40,7 +40,7 @@ pip install -r requirements.txt
 cp .env.example .env     # preencher AI_ASSISTANT_NAME etc.
 ```
 
-`jscpd` (duplicação de código, RQ3) roda via Node/npm — ver nota em
+`jscpd` (duplicação de código, RQ3) roda via Node/npm - ver nota em
 `requirements.txt`.
 
 ## Sprints
