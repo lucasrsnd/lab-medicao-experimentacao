@@ -1,0 +1,41 @@
+name: Lab03 - testes e cobertura
+on:
+  push:
+    paths:
+      - "Lab-03/**"
+      - ".github/workflows/lab03-tests.yml"
+  pull_request:
+    paths:
+      - "Lab-03/**"
+      - ".github/workflows/lab03-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+    defaults:
+      run:
+        working-directory: Lab-03
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: Lab-03/pyproject.toml
+      - name: Instalar projeto e ferramentas
+        run: python -m pip install -e ".[dev]"
+      - name: Testar (cobertura de métricas >=80%)
+        run: python -m pytest
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lab03-coverage-${{ matrix.python-version }}
+          path: Lab-03/coverage.xml
+

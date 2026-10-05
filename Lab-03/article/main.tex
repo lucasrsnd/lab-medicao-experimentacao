@@ -1,0 +1,51 @@
+\documentclass[12pt]{article}
+\usepackage{sbc-template}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{url}
+\usepackage{graphicx}
+\sloppy
+
+\title{Mineração de proxies DORA em repositórios open-source:
+validade e sensibilidade das definições operacionais}
+% Conferir nomes completos e afiliação com o trio antes da entrega.
+\author{Gustavo Prehl\inst{1}, Davi Santos\inst{1}, Lucas\inst{1}}
+\address{Curso de Engenharia de Software\\
+Laboratório de Experimentação de Software}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This study proposes mining software delivery proxies from public GitHub
+repositories using GitHub Actions. Releases, commit timestamps and workflow
+runs support alternative operational definitions of DORA metrics. Manual
+annotation and sensitivity analysis will assess how these definitions affect
+the interpretation of delivery performance. This preliminary version presents
+the research motivation and hypotheses; no empirical findings are reported.
+\end{abstract}
+
+\begin{resumo}
+Este estudo propõe minerar proxies de entrega de software em repositórios
+públicos do GitHub que utilizam GitHub Actions. Releases, datas de commits e
+execuções de workflows sustentam definições operacionais alternativas das
+métricas DORA. A validação manual e a análise de sensibilidade avaliarão como
+essas definições afetam a interpretação do desempenho de entrega. Esta versão
+preliminar apresenta motivação e hipóteses, sem relatar resultados empíricos.
+\end{resumo}
+
+\input{sections/introducao}
+\begin{thebibliography}{9}
+\bibitem{accelerate}
+Forsgren, N.; Humble, J.; Kim, G. (2018).
+\textit{Accelerate: The Science of Lean Software and DevOps}.
+IT Revolution Press.
+\bibitem{dora}
+DORA. \textit{DORA's software delivery metrics: the four keys}.
+Disponível em: \url{https://dora.dev/guides/dora-metrics-four-keys/}.
+\bibitem{github}
+GitHub. \textit{REST API endpoints for commits}.
+Disponível em: \url{https://docs.github.com/en/rest/commits/commits}.
+\end{thebibliography}
+\end{document}
+
