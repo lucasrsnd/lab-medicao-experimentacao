@@ -1,0 +1,74 @@
+\section{Introdução}
+
+A entrega frequente de mudanças precisa ser analisada em conjunto com a
+estabilidade do software. O trabalho de Forsgren, Humble e Kim
+\cite{accelerate} e as métricas de desempenho de entrega do DORA \cite{dora}
+motivam o estudo dessa relação. Neste laboratório, o interesse recai sobre
+frequência de entrega, tempo entre a escrita e a entrega de mudanças,
+proporção de entregas com falha e tempo de recuperação.
+
+Repositórios públicos oferecem releases, commits e registros de integração
+contínua, mas esses registros não demonstram, por si só, quando uma mudança
+chegou à produção ou provocou um incidente. Uma release de biblioteca pode
+ser disponibilizada sem adoção imediata; uma falha de CI pode impedir uma
+entrega em vez de representar falha em produção. Os valores minerados são,
+portanto, \textit{proxies}, cujo significado depende de suas definições
+operacionais.
+
+O objetivo deste estudo é caracterizar proxies DORA em projetos open-source
+que utilizam GitHub Actions e avaliar a confiança nas comparações resultantes.
+As questões de pesquisa investigam frequência de releases (RQ01), lead time
+(RQ02), taxas de falha (RQ03), recuperação de workflows (RQ04), associação
+entre frequência e falha (RQ05), diferenças entre características dos projetos
+(RQ06) e sensibilidade da classificação às definições operacionais (RQ07).
+
+O protocolo da disciplina prevê uma janela de doze meses, uma amostra final
+de pelo menos 300 repositórios elegíveis e definições comuns. Para lead time,
+serão comparadas a mediana dos tempos por release, considerando o commit
+mais antigo de cada entrega, e a mediana dos tempos de todos os commits
+incluídos nas releases. A paginação da API evita que essas comparações sejam
+limitadas silenciosamente a uma fração dos commits \cite{github}.
+
+A validade dos proxies será examinada por três avaliadores independentes em
+60 repositórios, com cinco releases por projeto. A concordância e a qualidade
+da heurística corretiva fornecerão evidências para interpretar as métricas.
+A comparação entre combinações de releases, pré-releases, tags e variantes
+de lead time e CFR avaliará a estabilidade das classificações.
+
+\subsection{Hipóteses informais propostas}
+
+As hipóteses abaixo constituem uma proposta anterior à coleta deste estudo e
+devem ser aprovadas pelo trio no protocolo. Elas expressam expectativas a
+confrontar com os dados, não resultados observados.
+
+\begin{description}
+\item[H01 (RQ01).] Espera-se heterogeneidade na frequência de releases,
+com concentração abaixo de uma entrega semanal, pois projetos podem
+agrupar mudanças em ciclos distintos de publicação.
+\item[H02 (RQ02).] Espera-se que a variante por release apresente, em geral,
+lead times superiores aos da variante por commit, pela influência de commits
+antigos. Não é uma identidade matemática: as variantes ponderam as releases
+de formas diferentes.
+\item[H03 (RQ03).] Espera-se divergência entre CFR baseado em CI e baseado
+em releases corretivas, pois capturam eventos distintos. Não se antecipa
+ordenação obrigatória entre seus valores.
+\item[H04 (RQ04).] Espera-se distribuição assimétrica dos tempos de
+recuperação, com muitos episódios curtos e alguns prolongados. Episódios
+não encerrados durante a janela deverão permanecer registrados como censurados.
+\item[H05 (RQ05).] Espera-se associação monotônica fraca ou não positiva
+entre frequência e CFR. Spearman será calculado para ambas as variantes
+de CFR, sem interpretar associação como causalidade.
+\item[H06 (RQ06).] Espera-se diferença entre subgrupos em pelo menos uma
+métrica. Propõem-se linguagem principal, quartis de estrelas e quartis de
+contribuidores como fatores, sujeitos à aprovação antes de observar resultados.
+\item[H07 (RQ07).] Espera-se que parte dos repositórios mude de categoria
+DORA ao alterar as definições de entrega, lead time e CFR, especialmente
+próximo aos cortes de classificação.
+\end{description}
+
+Os artefatos serão organizados em módulos de coleta, normalização, métricas e
+análise, com testes e rastreabilidade por issues. Validação manual, sensibilidade
+e replicação cruzada deverão sustentar a discussão dos limites do estudo.
+Repositório: \url{https://github.com/lucasrsnd/lab-medicao-experimentacao}.
+Acompanhamento: \url{https://github.com/users/lucasrsnd/projects/2}.
+

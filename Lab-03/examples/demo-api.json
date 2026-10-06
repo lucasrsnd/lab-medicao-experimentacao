@@ -1,0 +1,351 @@
+{
+  "description": "Dados inteiramente sintéticos; janela demonstrativa, não definida pelo professor.",
+  "responses": {
+    "https://api.github.com/repos/demo/project": {
+      "data": {
+        "default_branch": "main"
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/commits/main": {
+      "data": {
+        "sha": "head"
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/releases?per_page=100": {
+      "data": [
+        {
+          "id": 4,
+          "tag_name": "v1.2",
+          "published_at": "2025-03-20T00:00:00Z",
+          "draft": false,
+          "prerelease": false,
+          "body": "Release sintética para testes; não é dado do estudo.",
+          "html_url": "https://github.com/demo/project/releases/tag/v1.2",
+          "target_commitish": "main"
+        },
+        {
+          "id": 2,
+          "tag_name": "v1.1",
+          "published_at": "2025-03-15T00:00:00Z",
+          "draft": false,
+          "prerelease": false,
+          "body": "Release sintética para testes; não é dado do estudo.",
+          "html_url": "https://github.com/demo/project/releases/tag/v1.1",
+          "target_commitish": "main"
+        }
+      ],
+      "headers": {
+        "Link": "<https://api.github.com/repos/demo/project/releases?per_page=100&page=2>; rel=\"next\""
+      }
+    },
+    "https://api.github.com/repos/demo/project/releases?per_page=100&page=2": {
+      "data": [
+        {
+          "id": 1,
+          "tag_name": "v1.0",
+          "published_at": "2025-02-20T00:00:00Z",
+          "draft": false,
+          "prerelease": false,
+          "body": "Release sintética para testes; não é dado do estudo.",
+          "html_url": "https://github.com/demo/project/releases/tag/v1.0",
+          "target_commitish": "main"
+        },
+        {
+          "id": 3,
+          "tag_name": "v1.2-rc",
+          "published_at": "2025-03-18T00:00:00Z",
+          "draft": false,
+          "prerelease": true,
+          "body": "Release sintética para testes; não é dado do estudo.",
+          "html_url": "https://github.com/demo/project/releases/tag/v1.2-rc",
+          "target_commitish": "main"
+        }
+      ],
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/tags?per_page=100": {
+      "data": [
+        {
+          "name": "v1.0",
+          "commit": {
+            "sha": "a"
+          }
+        },
+        {
+          "name": "v1.1",
+          "commit": {
+            "sha": "b"
+          }
+        },
+        {
+          "name": "v1.2-rc",
+          "commit": {
+            "sha": "c"
+          }
+        },
+        {
+          "name": "v1.2",
+          "commit": {
+            "sha": "d"
+          }
+        }
+      ],
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/commits/v1.0": {
+      "data": {
+        "sha": "a",
+        "commit": {
+          "author": {
+            "date": "2025-02-19T00:00:00Z"
+          },
+          "committer": {
+            "date": "2025-03-15T00:00:00Z"
+          },
+          "message": "feat: exemplo"
+        }
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/commits/a": {
+      "data": {
+        "sha": "a",
+        "commit": {
+          "author": {
+            "date": "2025-02-19T00:00:00Z"
+          },
+          "committer": {
+            "date": "2025-03-15T00:00:00Z"
+          },
+          "message": "feat: exemplo"
+        }
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/compare/a...head?per_page=1": {
+      "data": {
+        "status": "ahead"
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/commits/v1.1": {
+      "data": {
+        "sha": "b",
+        "commit": {
+          "author": {
+            "date": "2025-03-14T00:00:00Z"
+          },
+          "committer": {
+            "date": "2025-03-15T00:00:00Z"
+          },
+          "message": "feat: exemplo"
+        }
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/commits/b": {
+      "data": {
+        "sha": "b",
+        "commit": {
+          "author": {
+            "date": "2025-03-14T00:00:00Z"
+          },
+          "committer": {
+            "date": "2025-03-15T00:00:00Z"
+          },
+          "message": "feat: exemplo"
+        }
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/compare/b...head?per_page=1": {
+      "data": {
+        "status": "ahead"
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/commits/v1.2-rc": {
+      "data": {
+        "sha": "c",
+        "commit": {
+          "author": {
+            "date": "2025-03-17T00:00:00Z"
+          },
+          "committer": {
+            "date": "2025-03-15T00:00:00Z"
+          },
+          "message": "feat: exemplo"
+        }
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/commits/c": {
+      "data": {
+        "sha": "c",
+        "commit": {
+          "author": {
+            "date": "2025-03-17T00:00:00Z"
+          },
+          "committer": {
+            "date": "2025-03-15T00:00:00Z"
+          },
+          "message": "feat: exemplo"
+        }
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/compare/c...head?per_page=1": {
+      "data": {
+        "status": "ahead"
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/commits/v1.2": {
+      "data": {
+        "sha": "d",
+        "commit": {
+          "author": {
+            "date": "2025-03-19T00:00:00Z"
+          },
+          "committer": {
+            "date": "2025-03-15T00:00:00Z"
+          },
+          "message": "feat: exemplo"
+        }
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/commits/d": {
+      "data": {
+        "sha": "d",
+        "commit": {
+          "author": {
+            "date": "2025-03-19T00:00:00Z"
+          },
+          "committer": {
+            "date": "2025-03-15T00:00:00Z"
+          },
+          "message": "feat: exemplo"
+        }
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/compare/d...head?per_page=1": {
+      "data": {
+        "status": "ahead"
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/compare/a...b?per_page=100": {
+      "data": {
+        "status": "ahead",
+        "total_commits": 3,
+        "commits": [
+          {
+            "sha": "old",
+            "commit": {
+              "author": {
+                "date": "2025-03-02T00:00:00Z"
+              },
+              "committer": {
+                "date": "2025-03-15T00:00:00Z"
+              },
+              "message": "feat: exemplo"
+            }
+          },
+          {
+            "sha": "middle",
+            "commit": {
+              "author": {
+                "date": "2025-03-10T00:00:00Z"
+              },
+              "committer": {
+                "date": "2025-03-15T00:00:00Z"
+              },
+              "message": "feat: exemplo"
+            }
+          },
+          {
+            "sha": "b",
+            "commit": {
+              "author": {
+                "date": "2025-03-14T00:00:00Z"
+              },
+              "committer": {
+                "date": "2025-03-15T00:00:00Z"
+              },
+              "message": "feat: exemplo"
+            }
+          }
+        ]
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/compare/b...d?per_page=100": {
+      "data": {
+        "status": "ahead",
+        "total_commits": 1,
+        "commits": [
+          {
+            "sha": "d",
+            "commit": {
+              "author": {
+                "date": "2025-03-18T00:00:00Z"
+              },
+              "committer": {
+                "date": "2025-03-15T00:00:00Z"
+              },
+              "message": "fix: exemplo"
+            }
+          }
+        ]
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/compare/b...c?per_page=100": {
+      "data": {
+        "status": "ahead",
+        "total_commits": 1,
+        "commits": [
+          {
+            "sha": "c",
+            "commit": {
+              "author": {
+                "date": "2025-03-17T00:00:00Z"
+              },
+              "committer": {
+                "date": "2025-03-15T00:00:00Z"
+              },
+              "message": "feat: exemplo"
+            }
+          }
+        ]
+      },
+      "headers": {}
+    },
+    "https://api.github.com/repos/demo/project/compare/c...d?per_page=100": {
+      "data": {
+        "status": "ahead",
+        "total_commits": 1,
+        "commits": [
+          {
+            "sha": "d",
+            "commit": {
+              "author": {
+                "date": "2025-03-18T00:00:00Z"
+              },
+              "committer": {
+                "date": "2025-03-15T00:00:00Z"
+              },
+              "message": "feat: exemplo"
+            }
+          }
+        ]
+      },
+      "headers": {}
+    }
+  }
+}
+
