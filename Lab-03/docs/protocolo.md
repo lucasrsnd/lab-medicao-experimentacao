@@ -80,7 +80,9 @@ estiverem vazios, não iniciar coleta real nem análise do estudo.
 ## Métricas e variantes
 
 - **RQ01 — frequência:** número de releases publicadas na janela dividido pela
-  duração da janela em semanas.
+  duração exata da janela em semanas (`segundos / 604800`). O corte de uma
+  release por mês equivale a `12/52` releases por semana, assumindo 52 semanas
+  por ano (mês médio de `52/12` semanas).
 - **RQ02 — lead time:** comparar cada release da janela com sua release
   anterior, que pode estar fora da janela. Ignorar releases sem release
   anterior. Variante (a): mediana, por repositório, do intervalo entre a data
@@ -116,6 +118,12 @@ estiverem vazios, não iniciar coleta real nem análise do estudo.
 
 Para a classificação geral, converter Elite/High/Medium/Low em 4/3/2/1,
 respectivamente; usar a mediana das quatro notas e arredondar para baixo.
+Cada métrica sem observação ou com denominador zero fica sem categoria. A
+classificação geral só é calculada quando as quatro métricas estão disponíveis;
+não imputar zero nem atribuir categoria geral para resultados incompletos.
+O relatório inclui numeradores/denominadores disponíveis e o motivo da
+incompletude. Enquanto o pipeline não coletar CFR e recuperação, a classificação
+geral permanece incompleta mesmo quando frequência e lead time estão calculados.
 
 | Configuração | Unidade de entrega | Lead time | CFR |
 |---|---|---|---|

@@ -62,6 +62,7 @@ sem token ou fallback de rede.
 5. Excluir toda a release quando qualquer commit tem data inválida ou posterior à publicação, preservando os motivos.
 6. Deduplicar releases por ID, tags por nome e commits por SHA dentro do compare. O mesmo commit em releases diferentes segue a definição por pares commit-release.
 7. 404 esperado gera exclusão; rate limit, autenticação e truncamento interrompem a coleta. Recuperação operacional pertence a #95/#96.
-8. `None` não significa zero nem Elite. CFR, recuperação e classificação DORA ainda não pertencem a este recorte.
+8. Frequência usa o número de releases na janela dividido pela duração exata em semanas. O corte de uma release mensal equivale a `12/52` releases por semana.
+9. `None` não significa zero nem Elite. A classificação geral exige as quatro métricas com dados e denominadores positivos; até CFR e recuperação serem coletados, o pipeline marca a classificação geral como incompleta.
 
 O cálculo segue a RQ02 do enunciado. Compare paginado segue a [documentação REST do GitHub](https://docs.github.com/en/rest/commits/commits#compare-two-commits). As políticas complementares precisam de revisão do trio antes da coleta.

@@ -22,6 +22,12 @@ def test_pipeline_deterministico_nos_resultados(client, window):
     assert result["lead_time"]["by_commit_hours"] == 84
     assert result["catalog"]["default_branch"] == "main"
     assert len(result["changes"]) == 2
+    assert result["deployment_frequency"]["releases_in_window"] == 2
+    assert result["deployment_frequency"]["window_weeks"] == 365 / 7
+    assert result["deployment_frequency"]["releases_per_week"] == 2 / (365 / 7)
+    assert result["dora_classification"]["metrics"]["lead_time_hours"]["points"] == 2
+    assert result["dora_classification"]["metrics"]["change_failure_rate"]["category"] is None
+    assert result["dora_classification"]["overall"]["status"] == "incomplete"
 
 
 def test_cli_offline_sem_token(tmp_path, monkeypatch):

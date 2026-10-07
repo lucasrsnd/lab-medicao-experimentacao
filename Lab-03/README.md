@@ -80,8 +80,9 @@ coleta final de um estudo longo até esses pré-requisitos serem concluídos.
 - `src/lab03/collectors/`: coleta de releases e commits.
 - `src/lab03/normalization.py`: adaptação dos payloads REST para os contratos
   tipados de domínio.
-- `src/lab03/metrics/`: funções de cálculo sem acesso à rede; lead time em
-  horas nas variantes por release e por commit.
+- `src/lab03/metrics/`: funções puras para frequência de releases por semana
+  exata, lead time em horas nas variantes por release e por commit, e
+  classificação DORA com tratamento explícito de dados incompletos.
 - `src/lab03/analysis/`: projeção dos contratos e métricas no relatório JSON.
 - `src/lab03/pipeline.py`: orquestra os coletores, métricas e análise, sem
   persistência.
@@ -97,3 +98,10 @@ Execute a suíte no diretório `Lab-03`:
 ```powershell
 python -m pytest
 ```
+
+Frequência usa `releases na janela / (segundos da janela / 604800)`. Para
+classificação, o corte de uma release por mês é convertido em `12/52` releases
+por semana (mês médio de `52/12` semanas). A classificação geral só é emitida
+quando as quatro métricas têm denominadores não nulos; no pipeline atual, CFR
+e recuperação permanecem sem coleta, portanto a categoria geral é marcada
+como incompleta, nunca como zero ou Elite.
