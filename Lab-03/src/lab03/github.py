@@ -44,9 +44,10 @@ class HttpTransport:
 
     def get(self, url: str) -> Response:
         validate_url(url)
+        authorization_header = "Bearer " + self.token
         request = Request(url, headers={
             "Accept": "application/vnd.github+json",
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": authorization_header,
             "X-GitHub-Api-Version": "2022-11-28",
             "User-Agent": "lab03-dora/0.1",
         })

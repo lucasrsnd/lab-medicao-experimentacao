@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "mode": "sample",
+  "purpose": "Demonstração offline com dados sintéticos; não usar como dados do estudo.",
+  "sample_size": 1,
+  "repository": "demo/project",
+  "window": {
+    "start": "2025-03-01T00:00:00Z",
+    "end": "2026-03-01T00:00:00Z"
+  },
+  "snapshot": "../examples/demo-api.json"
+}

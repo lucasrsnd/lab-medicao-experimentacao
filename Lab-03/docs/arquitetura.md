@@ -7,15 +7,27 @@ flowchart LR
   CLI[CLI: parâmetros e saída] --> P[Pipeline]
   P --> R[Coletor de releases/tags]
   P --> C[Coletor de commits]
-  P --> M[Lead time: função pura]
+  R --> N[Normalização para domínio]
+  C --> N
+  N --> M[Métricas puras]
+  M --> A[Análise e relatório]
+  P --> A
   R --> G[GitHubClient: paginação]
   C --> G
   G --> T[Transport]
   T --> H[HTTP direto]
+  T --> DB[Cache SQLite]
   T --> S[Snapshot offline]
+  CLI --> PL[Piloto de 100 elegíveis]
+  PL --> G
 ~~~
 
-`domain.py` concentra contratos sem dependências externas. Coletores normalizam a API; métricas recebem objetos de domínio. `pipeline.run` coordena, sem persistir; a CLI valida parâmetros e grava somente após sucesso.
+`domain.py` concentra contratos sem dependências externas, com IDs explícitos
+e timestamps timezone-aware em UTC. Coletores fazem a aquisição;
+`normalization.py` adapta payloads REST para os contratos; métricas recebem
+objetos de domínio e `analysis.report` projeta resultados para JSON.
+`pipeline.run` coordena sem persistir; a CLI valida a configuração e grava
+somente após sucesso.
 
 A separação aplica responsabilidade única e inversão de dependência na fronteira HTTP. Há transportes de rede e snapshot, sem framework de injeção ou SDK GitHub.
 
@@ -29,9 +41,28 @@ A separação aplica responsabilidade única e inversão de dependência na fron
 | `ReleaseCatalog` | Branch/SHA observado, histórico, variantes na janela e exclusões. Histórico preserva `sha=None` para ref não resolvida. |
 | `ReleaseChanges` | Release, antecessora, commits e eventual motivo de exclusão. |
 | `LeadTimeResult` | Medianas em horas ou `None`, quantidades total/utilizada e exclusões por motivo. |
+| `Repository` | ID, nome completo, default branch/SHA, estrelas, linguagem e data de criação UTC. |
+| `Release` | ID, tag, SHA resolvido quando disponível, data de publicação UTC e metadados. |
+| `Commit` | SHA, `author.date` UTC quando válido e mensagem. |
+| `WorkflowRun` | IDs do run/workflow, branch, evento, conclusão e timestamps UTC. |
+| `normalization.py` | Conversores de payloads REST para contratos validados do domínio. |
+| `analysis.report` | Montagem da saída JSON a partir dos contratos e métricas. |
 | JSON | `schema_version=1`; datas ISO 8601, unidades nos nomes e origem explícita. |
 
 Lucas pode decorar/substituir `Transport` com cache, rate limit e retentativas (#95/#96). Davi pode chamar `pipeline.run` para os elegíveis e integrar funil (#97/#106). Runs e demais métricas devem usar os mesmos contratos de datas, exclusões e funções puras.
+
+`configuration.py` carrega os arquivos JSON antes de executar. A configuração
+do estudo bloqueia chamadas de rede até a janela oficial ser preenchida e
+aprovada; `config/amostra.json` executa um repositório sintético por snapshot,
+sem token ou fallback de rede.
+
+`pilot.run_pilot` expande o prefixo de candidatos ordenados por estrelas até
+obter o tamanho elegível configurado. Em seguida, integra o relatório por
+repositório e a coleta completa de workflow runs. A CLI envolve o transporte
+HTTP em `SQLiteCacheTransport`: cada resposta bem-sucedida e seu cabeçalho de
+paginação ficam associados à URL para permitir retomada após interrupção. O
+arquivo do cache não guarda o token e deve ser trocado ou removido para uma
+coleta nova.
 
 ## Decisões a ratificar no protocolo
 
@@ -42,7 +73,7 @@ Lucas pode decorar/substituir `Transport` com cache, rate limit e retentativas (
 5. Excluir toda a release quando qualquer commit tem data inválida ou posterior à publicação, preservando os motivos.
 6. Deduplicar releases por ID, tags por nome e commits por SHA dentro do compare. O mesmo commit em releases diferentes segue a definição por pares commit-release.
 7. 404 esperado gera exclusão; rate limit, autenticação e truncamento interrompem a coleta. Recuperação operacional pertence a #95/#96.
-8. `None` não significa zero nem Elite. CFR, recuperação e classificação DORA ainda não pertencem a este recorte.
+8. Frequência usa o número de releases na janela dividido pela duração exata em semanas. O corte de uma release mensal equivale a `12/52` releases por semana.
+9. `None` não significa zero nem Elite. A classificação geral exige as quatro métricas com dados e denominadores positivos; até CFR e recuperação serem coletados, o pipeline marca a classificação geral como incompleta.
 
 O cálculo segue a RQ02 do enunciado. Compare paginado segue a [documentação REST do GitHub](https://docs.github.com/en/rest/commits/commits#compare-two-commits). As políticas complementares precisam de revisão do trio antes da coleta.
-

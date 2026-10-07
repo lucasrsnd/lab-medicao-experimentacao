@@ -44,8 +44,6 @@ def test_mediana_global_por_commit_nao_mediana_das_medianas():
     (change(()), "no_new_commits"),
     (replace(change(), exclusion="compare_not_found"), "compare_not_found"),
     (replace(change(), commits=(Commit("x", None, ""),)), "invalid_timestamp"),
-    (replace(change(), commits=(Commit("x", datetime(2025, 3, 1), ""),)), "invalid_timestamp"),
-    (replace(change(), release=replace(release(), published_at=datetime(2025, 3, 15))), "invalid_timestamp"),
     (change((2, 16)), "negative_lead_time"),
 ])
 def test_exclusoes_auditaveis_sem_zero_falso(item, reason):
@@ -54,6 +52,13 @@ def test_exclusoes_auditaveis_sem_zero_falso(item, reason):
     assert result.by_commit_hours is None
     assert result.releases_used == result.commits_used == 0
     assert result.exclusions == {reason: 1}
+
+
+def test_contratos_rejeitam_timestamp_sem_timezone():
+    with pytest.raises(ValueError, match="UTC"):
+        Commit("x", datetime(2025, 3, 1), "")
+    with pytest.raises(ValueError, match="UTC"):
+        Release(1, "v1", "sha", datetime(2025, 3, 15), False, "", "")
 
 
 def test_entrada_vazia():
@@ -79,4 +84,3 @@ def test_exclusao_nao_contamina_release_valida():
     assert result.releases_used == 1
     assert result.by_release_hours == 312
     assert result.exclusions == {"no_new_commits": 1}
-
