@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "issue": 93,
+  "status": "blocked_pending_professor_window",
+  "collection_allowed": false,
+  "protocol": "docs/protocolo.md",
+  "window": {
+    "duration_months": 12,
+    "start": null,
+    "end": null,
+    "timezone": null,
+    "interval": "[start, end)",
+    "source": "A definir pelo professor na abertura do Lab03S01"
+  },
+  "proposed_window": {
+    "start": "2025-10-06T00:00:00-03:00",
+    "end": "2026-10-06T23:59:59-03:00",
+    "timezone": "-03:00",
+    "source": "Proposta do grupo; aguarda confirmação do professor",
+    "interval": "[start, end)",
+    "collection_allowed": false
+  },
+  "population": {
+    "repository_visibility": "public",
+    "stars_min_exclusive": 1000,
+    "requires_github_actions": true,
+    "minimum_releases_in_window": 5,
+    "minimum_valid_workflow_runs_in_default_branch": 50,
+    "initial_sprint_sample": 100,
+    "final_sample_minimum": 300
+  },
+  "workflow_runs": {
+    "branch": "default_branch",
+    "event": "push",
+    "valid_conclusions": [
+      "success",
+      "failure",
+      "timed_out",
+      "startup_failure"
+    ],
+    "ignored_conclusions": [
+      "cancelled",
+      "skipped",
+      "neutral",
+      "action_required",
+      "stale",
+      null
+    ]
+  },
+  "units": {
+    "deployment_frequency": "releases_per_week",
+    "lead_time": "hours",
+    "change_failure_rate": "proportion",
+    "recovery_time": "hours"
+  },
+  "censoring": {
+    "recovery_episode": "right_censored_at_window_end",
+    "corrective_release_follow_up_days": 7,
+    "releases_in_final_follow_up_days_excluded_from_cfr_denominator": true
+  },
+  "rq06_factors": [
+    "primary_language",
+    "stars_quartile",
+    "contributor_count_quartile"
+  ],
+  "rq07_variants": {
+    "C1": {
+      "delivery_unit": "published_releases",
+      "lead_time": "per_release",
+      "cfr": "ci_runs"
+    },
+    "C2": {
+      "delivery_unit": "published_releases_and_prereleases",
+      "lead_time": "per_commit",
+      "cfr": "corrective_release"
+    },
+    "C3": {
+      "delivery_unit": "tags",
+      "lead_time": "per_commit",
+      "cfr": "ci_runs"
+    }
+  },
+  "missing_data_policy": {
+    "imputation": "none",
+    "invalid_or_missing_required_fields": "exclude_and_count_by_reason",
+    "unresolved_release_sha": "exclude_and_count_by_reason",
+    "api_or_pagination_failure": "stop_collection_with_error"
+  }
+}
