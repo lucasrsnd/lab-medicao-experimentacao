@@ -124,3 +124,57 @@ def test_timestamp_sem_timezone_rejeitado():
 def test_janela_inicio_inclusivo_fim_exclusivo(window):
     assert window.contains(window.start)
     assert not window.contains(window.end)
+
+
+def _runs(conclusions):
+    from datetime import timedelta
+    from lab03.domain import WorkflowRun
+    base = timestamp("2025-06-01T00:00:00Z")
+    return tuple(
+        WorkflowRun(
+            id=index, workflow_id=1, workflow_name="CI", branch="main", event="push",
+            status="completed", conclusion=conclusion, head_sha=f"s{index}",
+            created_at=base + timedelta(hours=index),
+            run_started_at=base + timedelta(hours=index),
+            updated_at=base + timedelta(hours=index, minutes=10),
+        )
+        for index, conclusion in enumerate(conclusions)
+    )
+
+
+def test_pipeline_com_workflow_runs_calcula_cfr_e_recuperacao(client, window):
+    runs = _runs(["success", "failure", "success", "success", "failure"])
+    result = run(client, "demo/project", window, runs)
+    assert result["ci_failure_rate"]["rate"] == 0.4
+    assert result["recovery"]["episodes_total"] == 2
+    assert result["recovery"]["censored_episodes"] == 1
+    metrics = result["dora_classification"]["metrics"]
+    assert metrics["change_failure_rate"]["points"] == 2   # 40% -> Medium
+    assert metrics["change_failure_rate"]["category"] == "Medium"
+    assert metrics["recovery_time_hours"]["value"] == pytest.approx(1 + 10 / 60)  # 1h10
+    assert result["dora_classification"]["overall"]["status"] == "classified"
+
+
+def test_pipeline_sem_falhas_deixa_recuperacao_incompleta_com_motivo(client, window):
+    result = run(client, "demo/project", window, _runs(["success"] * 5))
+    metrics = result["dora_classification"]["metrics"]
+    assert metrics["change_failure_rate"]["category"] == "Elite"
+    assert metrics["recovery_time_hours"]["category"] is None
+    assert metrics["recovery_time_hours"]["missing_reason"] == "no_failure_episodes"
+
+
+def test_pipeline_so_episodios_censurados_tem_motivo_proprio(client, window):
+    result = run(client, "demo/project", window, _runs(["success", "failure"]))
+    metrics = result["dora_classification"]["metrics"]
+    assert metrics["recovery_time_hours"]["missing_reason"] == "all_failure_episodes_censored"
+
+
+def test_ctrl_c_sai_com_130_e_orienta_retomada(monkeypatch, tmp_path, capsys):
+    def interrupted(*args, **kwargs):
+        raise KeyboardInterrupt
+    monkeypatch.setattr("lab03.cli.run", interrupted)
+    with pytest.raises(SystemExit) as exit_info:
+        main(arguments(tmp_path / "out.json"))
+    assert exit_info.value.code == 130
+    assert "retomar" in capsys.readouterr().err
+    assert not (tmp_path / "out.json").exists()

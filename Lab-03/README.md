@@ -99,8 +99,12 @@ parcial. O `.gitignore` exclui `.env`, variantes `.env.*`, arquivos `*.token`,
 - `src/lab03/pilot.py`: integra seleção, elegibilidade, coleta de métricas e
   workflows para a amostra de 100.
 - `src/lab03/cache.py`: persistência SQLite das respostas HTTP bem-sucedidas
-  para retomada.
-- `src/lab03/collectors/workflow_runs.py`: coleta e valida os runs da janela.
+  (e de 404/410/451) para retomada.
+- `src/lab03/resilience.py`: espera automática por rate limit
+  (`X-RateLimit-*`, `Retry-After`) e backoff exponencial para 5xx/rede. A CLI
+  empilha `cache -> resiliência -> HTTP`; respostas em cache não gastam cota.
+- `src/lab03/collectors/workflow_runs.py`: coleta os runs da janela fatiando
+  por mês e subdividindo fatias que atingem o teto de 1.000 resultados.
 - `src/lab03/github.py`: cliente REST próprio, paginação, transporte HTTP e
   snapshot offline.
 - `src/lab03/configuration.py`: validação das configurações antes da execução.
@@ -117,6 +121,10 @@ python -m pytest
 Frequência usa `releases na janela / (segundos da janela / 604800)`. Para
 classificação, o corte de uma release por mês é convertido em `12/52` releases
 por semana (mês médio de `52/12` semanas). A classificação geral só é emitida
-quando as quatro métricas têm denominadores não nulos; no pipeline atual, CFR
-e recuperação permanecem sem coleta, portanto a categoria geral é marcada
+quando as quatro métricas têm denominadores não nulos. CFR (a) e recuperação
+vêm dos workflow runs (`metrics/change_failure_rate.py`, `metrics/recovery.py`);
+sem runs, ou sem episódio de falha recuperado, a categoria geral é marcada
 como incompleta, nunca como zero ou Elite.
+
+Se a coleta for interrompida (rate limit persistente, queda de rede ou
+`Ctrl+C`), rode o mesmo comando: o que já está no cache não é consultado de novo.

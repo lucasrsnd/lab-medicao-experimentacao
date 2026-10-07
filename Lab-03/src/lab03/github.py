@@ -1,7 +1,9 @@
 """Cliente REST próprio com paginação e transportes intercambiáveis.
 
-A interface Transport permite integrar cache/retry de #95/#96 sem alterar
-coletores. O adaptador HTTP inicial falha explicitamente em rate limit.
+A interface Transport permite empilhar cache (#96) e rate limit/retentativas
+(#95, ver resilience.py) sem alterar coletores. O adaptador HTTP não decide
+política: apenas traduz falhas em ApiError/NetworkError com os cabeçalhos
+relevantes, para que a camada acima escolha entre esperar, repetir ou falhar.
 """
 
 import json
@@ -16,11 +18,17 @@ API_ROOT = "https://api.github.com/"
 
 
 class ApiError(RuntimeError):
-    def __init__(self, status: int, url: str):
+    def __init__(self, status: int, url: str, headers: dict[str, str] | None = None):
         self.status = status
         self.url = url
+        # Cabeçalhos em minúsculas (retry-after, x-ratelimit-*); nunca o corpo.
+        self.headers = headers or {}
         # Não incluir corpo remoto, headers ou token na mensagem.
         super().__init__(f"GitHub HTTP {status}: {urlsplit(url).path}")
+
+
+class NetworkError(RuntimeError):
+    """Falha de transporte (DNS, conexão, timeout); candidata a nova tentativa."""
 
 
 class DataError(ValueError):
@@ -57,9 +65,15 @@ class HttpTransport:
                     key.lower(): value for key, value in response.headers.items()
                 })
         except HTTPError as error:
-            raise ApiError(error.code, url) from None
-        except URLError:
-            raise RuntimeError("Falha de rede ao consultar GitHub; nenhuma métrica foi gerada.") from None
+            raise ApiError(error.code, url, _response_headers(error.headers)) from None
+        except (URLError, TimeoutError, ConnectionError):
+            raise NetworkError("Falha de rede ao consultar GitHub; nenhuma métrica foi gerada.") from None
+
+
+def _response_headers(headers) -> dict[str, str]:
+    if not headers:
+        return {}
+    return {key.lower(): value for key, value in headers.items()}
 
 
 class SnapshotTransport:
@@ -72,7 +86,9 @@ class SnapshotTransport:
             raise DataError(f"Resposta ausente no snapshot: {url}")
         item = self.responses[url]
         if item.get("status", 200) != 200:
-            raise ApiError(item["status"], url)
+            raise ApiError(item["status"], url, {
+                key.lower(): value for key, value in item.get("headers", {}).items()
+            })
         return Response(item["data"], {
             key.lower(): value for key, value in item.get("headers", {}).items()
         })
