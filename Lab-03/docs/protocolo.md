@@ -18,7 +18,13 @@ estiverem vazios, não iniciar coleta real nem análise do estudo.
 - **População-alvo:** repositórios públicos open-source do GitHub com mais de
   1.000 estrelas e que usem GitHub Actions. A consulta de candidatos deve ser
   fatiada quando necessário para contornar o limite de 1.000 resultados por
-  busca; registrar consulta, data e páginas/faixas usadas.
+  busca; registrar consulta, data e páginas/faixas usadas. Consultas com 1.000
+  ou mais resultados são subdivididas recursivamente por data de criação e,
+  em fatias de um dia, por faixa de estrelas. Se um único dia e uma estrela
+  exata ainda alcançarem o limite, a coleta falha em vez de aceitar dados
+  truncados. IDs repetidos entre fatias são deduplicados.
+  O limiar implementado é `stargazers_count > 1000`, configurado em
+  `config/estudo.json`.
 - **Unidade de análise:** repositório. Releases e workflow runs são unidades
   observacionais das métricas.
 - **Inclusão:** ter, dentro da janela, pelo menos 5 releases publicadas
@@ -30,6 +36,12 @@ estiverem vazios, não iniciar coleta real nem análise do estudo.
   no funil, com motivo; não completar a amostra com registros sintéticos.
 - **Tamanho da amostra:** pipeline inicial de 100 repositórios para Lab03S01;
   amostra final de pelo menos 300 elegíveis para Lab03S02.
+- **Ordem do funil:** depois da busca e seleção por popularidade, verificar
+  GitHub Actions antes de consultar contribuidores, releases ou workflow runs.
+  Os mínimos de releases e runs são aplicados somente após as duas contagens.
+  Registrar entradas, aprovados e exclusões por motivo em cada etapa. A idade
+  coletada é a quantidade de dias entre `created_at` e o instante `collected_at`
+  registrado pelo seletor.
 - **Branch:** identificar e registrar `default_branch` por repositório. Usar
   somente runs desse branch. Registrar também o SHA do default branch observado
   na coleta, conforme a arquitetura. Não tratar o branch como reconstrução

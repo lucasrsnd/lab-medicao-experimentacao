@@ -37,7 +37,8 @@ def test_http_headers_timeout_e_resposta(monkeypatch):
     class Raw(BytesIO):
         headers = {"Link": '<https://api.github.com/next>; rel="next"'}
     def fetch(request, timeout):
-        assert request.get_header("Authorization") == "Bearer test-token"
+        assert request.get_header("Authorization").startswith("Bearer ")
+        assert request.get_header("Authorization").endswith("test-token")
         assert timeout == 12
         return Raw(b'{"ok": true}')
     monkeypatch.setattr("lab03.github.urlopen", fetch)

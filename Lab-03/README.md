@@ -45,11 +45,32 @@ $env:GITHUB_TOKEN = "seu-token"
 python -m lab03 --config config/estudo.json --repo owner/repo --output data/repo.json
 ```
 
+Para selecionar os 100 candidatos iniciais e gerar o funil de elegibilidade:
+
+```powershell
+python -m lab03 --config config/estudo.json --select-candidates --output data/funil.json
+```
+
+A busca usa o critério estrito `stars:>1000` da configuração. Consultas com
+1.000 ou mais resultados são subdivididas por intervalos de criação; IDs
+repetidos entre fatias são deduplicados. Se uma fatia diária ainda alcançar o
+limite, ela é subdividida por faixas de estrelas; uma faixa de um único valor
+que ainda exceda o limite interrompe a coleta sem aceitar resultados truncados.
+O funil verifica Actions antes de consultar contribuidores, releases e runs;
+somente depois das contagens de releases e runs aplica os mínimos de
+elegibilidade. O resultado registra cada etapa, totais e motivos de exclusão.
+`age_days_at_collection` é calculada de `created_at` até o instante de início
+registrado em `collected_at`.
+
 Não inclua tokens nos arquivos, argumentos do comando, fixtures, logs ou
 commits. A saída é gravada atomicamente somente após uma coleta completa. Erros
 da API, dados incompletos e falhas de rede encerram a execução sem produzir
 resultado parcial. O `.gitignore` exclui `.env`, variantes `.env.*`, arquivos
 `*.token`, `tokens/`, cache e dados gerados.
+
+O transporte atual ainda não implementa a persistência/cache e a retomada das
+issues #95 e #96; erros da API interrompem a execução. Não use esta versão como
+coleta final de um estudo longo até esses pré-requisitos serem concluídos.
 
 ## Estrutura e contratos
 

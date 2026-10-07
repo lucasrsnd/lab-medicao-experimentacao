@@ -15,6 +15,13 @@ class PipelineConfig:
     window: Window | None
     snapshot: Path | None
     collection_allowed: bool
+    stars_min_exclusive: int = 1000
+    initial_sprint_sample: int = 100
+    minimum_releases: int = 5
+    minimum_valid_workflow_runs: int = 50
+    valid_workflow_conclusions: tuple[str, ...] = (
+        "success", "failure", "timed_out", "startup_failure",
+    )
 
 
 def _read_window(raw: object) -> Window:
@@ -78,6 +85,12 @@ def load_config(path: Path) -> PipelineConfig:
             or population.get("minimum_releases_in_window") != 5
             or population.get("minimum_valid_workflow_runs_in_default_branch") != 50):
         raise ValueError("Duração da janela e critérios de elegibilidade incompatíveis com o protocolo.")
+    stars_min_exclusive = population.get("stars_min_exclusive")
+    initial_sprint_sample = population.get("initial_sprint_sample")
+    if (not isinstance(stars_min_exclusive, int) or isinstance(stars_min_exclusive, bool)
+            or stars_min_exclusive < 0 or not isinstance(initial_sprint_sample, int)
+            or isinstance(initial_sprint_sample, bool) or initial_sprint_sample < 1):
+        raise ValueError("Limiar de estrelas e tamanho da amostra inicial são inválidos.")
     runs = raw.get("workflow_runs")
     valid_conclusions = runs.get("valid_conclusions") if isinstance(runs, dict) else None
     if (not isinstance(runs, dict)
@@ -104,4 +117,11 @@ def load_config(path: Path) -> PipelineConfig:
         window = _read_window(raw_window)
     if allowed and (status != "ready" or window is None):
         raise ValueError("A coleta só pode ser liberada com status ready e janela oficial completa.")
-    return PipelineConfig("study", None, window, None, allowed)
+    return PipelineConfig(
+        "study", None, window, None, allowed,
+        stars_min_exclusive=stars_min_exclusive,
+        initial_sprint_sample=initial_sprint_sample,
+        minimum_releases=population["minimum_releases_in_window"],
+        minimum_valid_workflow_runs=population["minimum_valid_workflow_runs_in_default_branch"],
+        valid_workflow_conclusions=tuple(valid_conclusions),
+    )
