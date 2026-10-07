@@ -45,32 +45,42 @@ $env:GITHUB_TOKEN = "seu-token"
 python -m lab03 --config config/estudo.json --repo owner/repo --output data/repo.json
 ```
 
-Para selecionar os 100 candidatos iniciais e gerar o funil de elegibilidade:
+Para coletar o piloto integrado de 100 repositórios elegíveis, gerar o funil e
+salvar releases, commits, workflow runs e metadados:
 
 ```powershell
-python -m lab03 --config config/estudo.json --select-candidates --output data/funil.json
+python -m lab03 --config config/estudo.json --pilot --output data/piloto.json
 ```
 
-A busca usa o critério estrito `stars:>1000` da configuração. Consultas com
+A busca usa o critério estrito `stars:>1000` da configuração. O seletor avalia
+candidatos em ordem decrescente de estrelas e amplia a busca até reunir os 100
+elegíveis; se a população disponível não for suficiente, falha sem gravar uma
+saída parcial. O JSON registra o comando, a configuração, a versão do pipeline,
+contagens por etapa, resultados por repositório e estatísticas do cache.
+Respostas bem-sucedidas da API ficam em `data/cache.sqlite3`, ignorado pelo Git;
+reexecutar o mesmo comando retoma a coleta sem repetir as requisições já
+armazenadas. Para iniciar uma coleta nova, use outro caminho em `--cache` ou
+remova especificamente o arquivo de cache após encerrar os processos que o
+utilizam. O cache guarda apenas respostas públicas e cabeçalhos de paginação,
+nunca o token de autenticação.
+
+Consultas com
 1.000 ou mais resultados são subdivididas por intervalos de criação; IDs
 repetidos entre fatias são deduplicados. Se uma fatia diária ainda alcançar o
 limite, ela é subdividida por faixas de estrelas; uma faixa de um único valor
 que ainda exceda o limite interrompe a coleta sem aceitar resultados truncados.
 O funil verifica Actions antes de consultar contribuidores, releases e runs;
 somente depois das contagens de releases e runs aplica os mínimos de
-elegibilidade. O resultado registra cada etapa, totais e motivos de exclusão.
+elegibilidade. Para cada repositório elegível, o piloto também persiste os
+registros completos de workflow runs do default branch.
 `age_days_at_collection` é calculada de `created_at` até o instante de início
 registrado em `collected_at`.
 
 Não inclua tokens nos arquivos, argumentos do comando, fixtures, logs ou
-commits. A saída é gravada atomicamente somente após uma coleta completa. Erros
-da API, dados incompletos e falhas de rede encerram a execução sem produzir
-resultado parcial. O `.gitignore` exclui `.env`, variantes `.env.*`, arquivos
-`*.token`, `tokens/`, cache e dados gerados.
-
-O transporte atual ainda não implementa a persistência/cache e a retomada das
-issues #95 e #96; erros da API interrompem a execução. Não use esta versão como
-coleta final de um estudo longo até esses pré-requisitos serem concluídos.
+commits. A saída é gravada atomicamente somente após uma coleta completa. Erros da API,
+dados incompletos e falhas de rede encerram a execução sem produzir resultado
+parcial. O `.gitignore` exclui `.env`, variantes `.env.*`, arquivos `*.token`,
+`tokens/`, cache e dados gerados.
 
 ## Estrutura e contratos
 
@@ -84,8 +94,13 @@ coleta final de um estudo longo até esses pré-requisitos serem concluídos.
   exata, lead time em horas nas variantes por release e por commit, e
   classificação DORA com tratamento explícito de dados incompletos.
 - `src/lab03/analysis/`: projeção dos contratos e métricas no relatório JSON.
-- `src/lab03/pipeline.py`: orquestra os coletores, métricas e análise, sem
-  persistência.
+- `src/lab03/pipeline.py`: orquestra os coletores, métricas e análise de um
+  repositório.
+- `src/lab03/pilot.py`: integra seleção, elegibilidade, coleta de métricas e
+  workflows para a amostra de 100.
+- `src/lab03/cache.py`: persistência SQLite das respostas HTTP bem-sucedidas
+  para retomada.
+- `src/lab03/collectors/workflow_runs.py`: coleta e valida os runs da janela.
 - `src/lab03/github.py`: cliente REST próprio, paginação, transporte HTTP e
   snapshot offline.
 - `src/lab03/configuration.py`: validação das configurações antes da execução.

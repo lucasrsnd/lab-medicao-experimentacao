@@ -16,7 +16,10 @@ flowchart LR
   C --> G
   G --> T[Transport]
   T --> H[HTTP direto]
+  T --> DB[Cache SQLite]
   T --> S[Snapshot offline]
+  CLI --> PL[Piloto de 100 elegíveis]
+  PL --> G
 ~~~
 
 `domain.py` concentra contratos sem dependências externas, com IDs explícitos
@@ -52,6 +55,14 @@ Lucas pode decorar/substituir `Transport` com cache, rate limit e retentativas (
 do estudo bloqueia chamadas de rede até a janela oficial ser preenchida e
 aprovada; `config/amostra.json` executa um repositório sintético por snapshot,
 sem token ou fallback de rede.
+
+`pilot.run_pilot` expande o prefixo de candidatos ordenados por estrelas até
+obter o tamanho elegível configurado. Em seguida, integra o relatório por
+repositório e a coleta completa de workflow runs. A CLI envolve o transporte
+HTTP em `SQLiteCacheTransport`: cada resposta bem-sucedida e seu cabeçalho de
+paginação ficam associados à URL para permitir retomada após interrupção. O
+arquivo do cache não guarda o token e deve ser trocado ou removido para uma
+coleta nova.
 
 ## Decisões a ratificar no protocolo
 
