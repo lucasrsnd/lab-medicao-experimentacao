@@ -55,22 +55,25 @@ def run_pilot(
     results = []
     for metadata in selected:
         repository = metadata["full_name"]
-        report = run(client, repository, window)
+        collection = {}
         workflow_runs = collect_workflow_runs(
             client,
             repository,
             window,
             metadata["default_branch"],
             valid_conclusions,
+            stats=collection,
         )
         if len(workflow_runs) < minimum_valid_runs:
             raise DataError(
                 f"{repository}: contagem de workflow runs mudou após a elegibilidade "
                 f"({len(workflow_runs)} < {minimum_valid_runs})."
             )
+        report = run(client, repository, window, workflow_runs)
         results.append({
             "metadata": metadata,
             "report": report,
+            "workflow_run_collection": collection,
             "workflow_runs": [asdict(workflow_run) for workflow_run in workflow_runs],
         })
 

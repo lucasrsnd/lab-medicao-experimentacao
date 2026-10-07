@@ -122,8 +122,10 @@ Cada métrica sem observação ou com denominador zero fica sem categoria. A
 classificação geral só é calculada quando as quatro métricas estão disponíveis;
 não imputar zero nem atribuir categoria geral para resultados incompletos.
 O relatório inclui numeradores/denominadores disponíveis e o motivo da
-incompletude. Enquanto o pipeline não coletar CFR e recuperação, a classificação
-geral permanece incompleta mesmo quando frequência e lead time estão calculados.
+incompletude. Sem workflow runs coletados (modo amostra), ou se o repositório
+não tiver nenhum episódio de falha recuperado, a recuperação fica sem categoria
+(`no_failure_episodes` ou `all_failure_episodes_censored`) e a classificação
+geral permanece incompleta, mesmo com as outras três métricas calculadas.
 
 | Configuração | Unidade de entrega | Lead time | CFR |
 |---|---|---|---|
@@ -160,7 +162,23 @@ nos workflow runs, sem reinterpretar tags como falhas de CI.
   Um episódio iniciado dentro da janela sem sucesso observado até o fim é
   censurado à direita no fim da janela, mesmo que uma execução posterior venha
   a encerrá-lo.
-- Erros de autenticação, rate limit, paginação truncada e falhas inesperadas
+- Implementação de RQ04 (`metrics/recovery.py`): o pipeline não consulta runs
+  anteriores à janela. Falhas iniciais sem sucesso anterior *dentro da janela*
+  não abrem episódio e são contadas em `leading_failures_without_prior_success`
+  (censura à esquerda aproximada). A mediana usa só episódios recuperados;
+  `censored_proportion` = censurados / episódios totais. O tempo usa
+  `run_started_at` da primeira falha (`created_at` se ausente) e `updated_at` do
+  sucesso; intervalos negativos ou sem `updated_at` são excluídos e contados em
+  `exclusions`.
+- Workflow runs (`collectors/workflow_runs.py`): a janela é fatiada por mês (UTC);
+  fatia com `total_count > 1000` é bisseccionada até caber; se nem 2 s couberem, a
+  coleta falha. Fronteiras inclusivas geram duplicatas, removidas por ID.
+- Rate limit é esperado e não é erro: o cliente aguarda `X-RateLimit-Reset`
+  (ou `Retry-After`) e repete a requisição; respostas 5xx e falhas de rede são
+  repetidas com backoff exponencial (1 s, 2 s, 4 s, 8 s, 16 s, até 5 tentativas).
+  Só rate limit persistente (20 esperas seguidas numa requisição) ou esgotamento
+  das tentativas interrompem a coleta, que pode ser retomada pelo cache.
+- Erros de autenticação, paginação truncada e falhas inesperadas
   da API interrompem a coleta com erro explícito. Não os registrar como
   ausência de dados nem como exclusão de repositório.
 - Manter contagens por motivo no funil e registrar os limites da janela

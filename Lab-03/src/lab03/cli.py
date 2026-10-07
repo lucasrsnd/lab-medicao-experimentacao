@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import sqlite3
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -16,6 +17,7 @@ from lab03.github import (
 from lab03.pipeline import run
 from lab03.collectors.candidates import select_candidates
 from lab03.pilot import run_pilot
+from lab03.resilience import ResilientTransport
 
 
 def json_default(value):
@@ -43,6 +45,7 @@ def main(argv=None) -> int:
     parser.add_argument("--output", type=Path, help="Arquivo JSON de saída")
     parser.add_argument("--validate-config", action="store_true", help="Validar configuração sem coletar")
     args = parser.parse_args(argv)
+    cache = None
     try:
         config = load_config(args.config)
         if args.validate_config:
@@ -68,7 +71,7 @@ def main(argv=None) -> int:
             transport = SnapshotTransport(
                 json.loads(config.snapshot.read_text(encoding="utf-8"))["responses"]
             )
-            cache = None
+            cache = resilient = None
             source = "snapshot"
         else:
             if not config.collection_allowed or config.window is None:
@@ -90,7 +93,11 @@ def main(argv=None) -> int:
             cache_path = args.cache
             if not cache_path.is_absolute():
                 cache_path = Path.cwd() / cache_path
-            cache = SQLiteCacheTransport(HttpTransport(token), cache_path)
+            resilient = ResilientTransport(
+                HttpTransport(token),
+                notify=lambda message: print(message, file=sys.stderr, flush=True),
+            )
+            cache = SQLiteCacheTransport(resilient, cache_path)
             transport = cache
             source = "github"
 
@@ -118,6 +125,11 @@ def main(argv=None) -> int:
                     "path": str(cache_path),
                     "hits": cache.hits,
                     "misses": cache.misses,
+                },
+                "resilience": {
+                    "retries": resilient.retries,
+                    "rate_limit_waits": resilient.rate_limit_waits,
+                    "waited_seconds": round(resilient.waited_seconds, 1),
                 },
                 "counts": {
                     "eligible_repositories": len(output["repositories"]),
@@ -157,9 +169,17 @@ def main(argv=None) -> int:
             encoding="utf-8",
         )
         temporary.replace(args.output)
+    except KeyboardInterrupt:
+        parser.exit(130, (
+            "Interrompido. Respostas já coletadas estão no cache; rode o mesmo "
+            "comando para retomar de onde parou.\n"
+        ))
     except (
         ApiError, DataError, ValueError, KeyError, OSError, RuntimeError, sqlite3.Error,
     ) as error:
         parser.exit(1, f"Erro: {error}\n")
+    finally:
+        if cache is not None:
+            cache.close()
     print(f"Resultado: {args.output}")
     return 0
