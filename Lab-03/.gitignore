@@ -8,10 +8,13 @@ build/
 dist/
 *.egg-info/
 .env
+.env.*
+!.env.example
+*.token
+tokens/
 data/
 .cache/
 article/*.aux
 article/*.log
 article/*.out
 article/*.toc
-

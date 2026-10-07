@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "mode": "study",
   "issue": 93,
   "status": "blocked_pending_professor_window",
   "collection_allowed": false,

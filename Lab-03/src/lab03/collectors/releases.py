@@ -5,6 +5,7 @@ from urllib.parse import quote
 
 from lab03.domain import Exclusion, Release, ReleaseCatalog, Tag, Window, timestamp
 from lab03.github import ApiError, GitHubClient
+from lab03.normalization import normalize_release
 
 
 def repo_path(repository: str) -> str:
@@ -65,10 +66,7 @@ def collect_releases(client: GitHubClient, repository: str, window: Window) -> R
                 exclusions.append(Exclusion("release", identifier, "unresolved_ref_404"))
                 # Preservar posição temporal: não saltar uma antecessora apagada.
                 sha = None
-            history.append(Release(
-                raw["id"], raw["tag_name"], sha, published, raw["prerelease"],
-                raw.get("body") or "", raw["html_url"],
-            ))
+            history.append(normalize_release(raw, sha, published))
     history.sort(key=lambda release: (release.published_at, release.id))
     # Não confiar na ordem da API nem em target_commitish (pode estar desatualizado).
     tags = []

@@ -2,9 +2,10 @@
 
 from urllib.parse import quote
 
-from lab03.domain import Commit, ReleaseCatalog, ReleaseChanges, Window, timestamp
+from lab03.domain import ReleaseCatalog, ReleaseChanges, Window
 from lab03.github import ApiError, DataError, GitHubClient
 from lab03.collectors.releases import repo_path
+from lab03.normalization import normalize_commit
 
 
 def collect_changes(
@@ -43,13 +44,8 @@ def collect_changes(
                     elif expected != page["total_commits"]:
                         raise DataError("Comparação mudou durante a paginação.")
                     for raw in page["commits"]:
-                        try:
-                            authored = timestamp(raw["commit"]["author"]["date"])
-                        except (ValueError, TypeError, AttributeError):
-                            authored = None
-                        commits[raw["sha"]] = Commit(
-                            raw["sha"], authored, raw["commit"]["message"],
-                        )
+                        commit = normalize_commit(raw)
+                        commits[commit.sha] = commit
             except ApiError as error:
                 if error.status != 404:
                     raise

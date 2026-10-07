@@ -1,4 +1,4 @@
-"""Comando único para amostra explícita de um repositório ou snapshot offline."""
+"""Executa a coleta de um repositório a partir de uma configuração validada."""
 
 import argparse
 import json
@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-from lab03.domain import Window, timestamp
+from lab03.configuration import load_config
 from lab03.github import ApiError, DataError, GitHubClient, HttpTransport, SnapshotTransport
 from lab03.pipeline import run
 
@@ -19,26 +19,53 @@ def json_default(value):
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repo", required=True, help="owner/repo")
-    parser.add_argument("--start", required=True, help="ISO 8601 com timezone, inclusivo")
-    parser.add_argument("--end", required=True, help="ISO 8601 com timezone, exclusivo")
-    parser.add_argument("--snapshot", type=Path, help="Respostas REST locais; sem rede")
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--config", type=Path, required=True, help="Configuração JSON do estudo ou da amostra")
+    parser.add_argument("--repo", help="owner/repo; obrigatório para coleta real")
+    parser.add_argument("--output", type=Path, help="Arquivo JSON de saída")
+    parser.add_argument("--validate-config", action="store_true", help="Validar configuração sem coletar")
     args = parser.parse_args(argv)
     try:
-        window = Window(timestamp(args.start), timestamp(args.end))
-        if args.snapshot:
-            snapshot = json.loads(args.snapshot.read_text(encoding="utf-8"))
-            transport = SnapshotTransport(snapshot["responses"])
+        config = load_config(args.config)
+        if args.validate_config:
+            if config.mode == "study" and not config.collection_allowed:
+                print("Configuração válida; coleta bloqueada até a janela oficial ser confirmada.")
+            else:
+                print(f"Configuração válida para modo {config.mode}.")
+            return 0
+        if args.output is None:
+            parser.error("Defina --output para executar o pipeline.")
+
+        if config.mode == "sample":
+            if args.repo and args.repo != config.repository:
+                parser.error("No modo sample, o repositório é fixado pelo arquivo de configuração.")
+            if config.repository is None or config.window is None or config.snapshot is None:
+                raise ValueError("Configuração da amostra incompleta.")
+            repository = config.repository
+            window = config.window
+            transport = SnapshotTransport(
+                json.loads(config.snapshot.read_text(encoding="utf-8"))["responses"]
+            )
+            source = "snapshot"
         else:
+            if not config.collection_allowed or config.window is None:
+                parser.exit(
+                    2,
+                    "Coleta bloqueada: confirme a janela oficial no arquivo de configuração "
+                    "antes de iniciar consultas à API.\n",
+                )
+            if not args.repo:
+                parser.error("Defina --repo owner/repo para a coleta real.")
             token = os.environ.get("GITHUB_TOKEN")
             if not token:
-                parser.error("Defina GITHUB_TOKEN ou use --snapshot para demonstração offline.")
+                parser.error("Defina GITHUB_TOKEN no ambiente para a coleta real.")
+            repository = args.repo
+            window = config.window
             transport = HttpTransport(token)
-        output = run(GitHubClient(transport), args.repo, window)
-        output["source"] = "snapshot" if args.snapshot else "github"
+            source = "github"
+
+        output = run(GitHubClient(transport), repository, window)
+        output["source"] = source
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        # Não persistir resultado parcial em caso de erro de coleta.
         temporary = args.output.with_suffix(args.output.suffix + ".tmp")
         temporary.write_text(
             json.dumps(output, default=json_default, ensure_ascii=False, indent=2) + "\n",
@@ -49,4 +76,3 @@ def main(argv=None) -> int:
         parser.exit(1, f"Erro: {error}\n")
     print(f"Resultado: {args.output}")
     return 0
-

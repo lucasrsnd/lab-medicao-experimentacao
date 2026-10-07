@@ -1,0 +1,78 @@
+# Lab 03 — coleta de proxies DORA
+
+O pipeline usa Python 3.12+, biblioteca padrão para HTTP (`urllib`) e testes
+com `pytest`. Não usa PyGithub nem SDK de consulta à API do GitHub.
+
+## Instalação e demonstração local
+
+No diretório `Lab-03`, instale o pacote e dependências de desenvolvimento:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev]"
+```
+
+Execute a amostra pequena offline com um comando:
+
+```powershell
+python -m lab03 --config config/amostra.json --output data/demo.json
+```
+
+A configuração fixa um repositório e usa `examples/demo-api.json`, um snapshot
+inteiramente sintético. A saída também é apenas demonstração; não a misture
+com dados do estudo. O snapshot nunca faz fallback para a rede e não requer
+token.
+
+## Coleta real
+
+A janela oficial ainda aguarda confirmação do professor. Por isso,
+`config/estudo.json` mantém `collection_allowed: false` e início/fim oficiais
+vazios. A coleta real falha antes de fazer qualquer requisição enquanto essa
+pré-condição não for atendida. Para testar apenas a configuração:
+
+```powershell
+python -m lab03 --config config/estudo.json --validate-config
+```
+
+Depois que o professor confirmar os limites e o trio revisar o protocolo,
+atualize `window.start`, `window.end`, `window.timezone`, `status` para `ready`
+e `collection_allowed` para `true` em `config/estudo.json`. O token deve ser
+definido somente no ambiente do processo:
+
+```powershell
+$env:GITHUB_TOKEN = "seu-token"
+python -m lab03 --config config/estudo.json --repo owner/repo --output data/repo.json
+```
+
+Não inclua tokens nos arquivos, argumentos do comando, fixtures, logs ou
+commits. A saída é gravada atomicamente somente após uma coleta completa. Erros
+da API, dados incompletos e falhas de rede encerram a execução sem produzir
+resultado parcial. O `.gitignore` exclui `.env`, variantes `.env.*`, arquivos
+`*.token`, `tokens/`, cache e dados gerados.
+
+## Estrutura e contratos
+
+- `src/lab03/domain.py`: contratos imutáveis de repositório, release, commit,
+  tag, workflow run e janela. Os timestamps dos contratos são timezone-aware e
+  normalizados para UTC pela função `timestamp`.
+- `src/lab03/collectors/`: coleta de releases e commits.
+- `src/lab03/normalization.py`: adaptação dos payloads REST para os contratos
+  tipados de domínio.
+- `src/lab03/metrics/`: funções de cálculo sem acesso à rede; lead time em
+  horas nas variantes por release e por commit.
+- `src/lab03/analysis/`: projeção dos contratos e métricas no relatório JSON.
+- `src/lab03/pipeline.py`: orquestra os coletores, métricas e análise, sem
+  persistência.
+- `src/lab03/github.py`: cliente REST próprio, paginação, transporte HTTP e
+  snapshot offline.
+- `src/lab03/configuration.py`: validação das configurações antes da execução.
+- `tests/fixtures/contracts.json`: fixture sintética dos contratos
+  normalizados; `examples/demo-api.json` contém respostas REST sintéticas para
+  integração offline.
+
+Execute a suíte no diretório `Lab-03`:
+
+```powershell
+python -m pytest
+```
