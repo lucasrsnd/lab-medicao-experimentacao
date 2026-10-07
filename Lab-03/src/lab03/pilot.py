@@ -70,6 +70,10 @@ def run_pilot(
                 f"({len(workflow_runs)} < {minimum_valid_runs})."
             )
         report = run(client, repository, window, workflow_runs)
+        if len(report["catalog"]["releases"]) < minimum_releases:
+            raise DataError(
+                f"{repository}: releases do default branch abaixo do mínimo após integração."
+            )
         results.append({
             "metadata": metadata,
             "report": report,

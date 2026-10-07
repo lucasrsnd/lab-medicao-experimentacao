@@ -21,9 +21,10 @@ KEPT_HEADERS = frozenset({
 
 
 class SQLiteCacheTransport:
-    def __init__(self, transport: Transport, path: Path):
+    def __init__(self, transport: Transport, path: Path, *, namespace: str = ""):
         self.transport = transport
         self.path = path
+        self.namespace = namespace
         self.hits = 0
         self.misses = 0
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -44,10 +45,13 @@ class SQLiteCacheTransport:
             self.connection.execute(
                 "ALTER TABLE responses ADD COLUMN status INTEGER NOT NULL DEFAULT 200"
             )
+        if "fetched_at" not in columns:
+            self.connection.execute("ALTER TABLE responses ADD COLUMN fetched_at TEXT")
         self.connection.commit()
 
     def get(self, url: str) -> Response:
-        cached = self._lookup(url)
+        key = f"{self.namespace}\n{url}" if self.namespace else url
+        cached = self._lookup(key)
         if cached is not None:
             self.hits += 1
             status, response = cached
@@ -60,10 +64,10 @@ class SQLiteCacheTransport:
             response = self.transport.get(url)
         except ApiError as error:
             if error.status in PERMANENT_ERRORS:
-                self._store(url, error.status, None, error.headers)
+                self._store(key, error.status, None, error.headers)
             raise
         headers = self._kept(response.headers)
-        self._store(url, 200, response.data, headers)
+        self._store(key, 200, response.data, headers)
         return Response(response.data, headers)
 
     def __len__(self) -> int:
@@ -71,6 +75,17 @@ class SQLiteCacheTransport:
 
     def close(self) -> None:
         self.connection.close()
+
+    def clear(self) -> None:
+        """Invalida apenas o snapshot desta configuração; outros ficam intactos."""
+        prefix = self.namespace + "\n"
+        if self.namespace:
+            self.connection.execute(
+                "DELETE FROM responses WHERE substr(url, 1, ?) = ?", (len(prefix), prefix),
+            )
+        else:
+            self.connection.execute("DELETE FROM responses WHERE instr(url, char(10)) = 0")
+        self.connection.commit()
 
     def __enter__(self) -> "SQLiteCacheTransport":
         return self
@@ -98,7 +113,8 @@ class SQLiteCacheTransport:
 
     def _store(self, url: str, status: int, data, headers: dict[str, str]) -> None:
         self.connection.execute(
-            "INSERT OR REPLACE INTO responses (url, data, headers, status) VALUES (?, ?, ?, ?)",
+            "INSERT OR REPLACE INTO responses (url, data, headers, status, fetched_at) "
+            "VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
             (
                 url,
                 json.dumps(data, ensure_ascii=False),

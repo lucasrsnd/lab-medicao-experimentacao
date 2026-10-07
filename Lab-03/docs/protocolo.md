@@ -1,17 +1,17 @@
 # Protocolo do estudo — Lab 03 (Issue #93)
 
-**Status:** bloqueado para coleta de dados do estudo até o professor informar a
-janela de 12 meses e o trio revisar este protocolo.
+**Status:** janela definida pelo grupo em 07/10/2026, por solicitação de Gustavo.
+Coleta habilitada; confirmação do professor e revisão conjunta ainda pendentes.
 **Sprint:** Lab03S01.
 **Configuração canônica:** [`config/estudo.json`](../config/estudo.json).
 
 Este protocolo fixa as decisões operacionais antes da coleta. As hipóteses são
-expectativas, não resultados. A janela oficial ainda não foi fornecida nos
-arquivos disponíveis. O grupo propôs um intervalo, registrado separadamente
-na configuração, que aguarda confirmação do professor e não libera coleta.
-Não usar datas do `examples/demo-api.json`, que contém dados e janela
-inteiramente sintéticos. Enquanto `window.start` e `window.end` oficiais
-estiverem vazios, não iniciar coleta real nem análise do estudo.
+expectativas, não resultados. A proposta existente foi adotada com ajuste do
+limite final para exatamente doze meses. A decisão e a ausência de confirmação
+do professor estão registradas em `window_decision` na configuração. Não usar
+datas do `examples/demo-api.json`, que contém dados inteiramente sintéticos.
+Se o professor alterar a janela, registrar a revisão e repetir a coleta com a
+nova configuração antes de comparar resultados.
 
 ## População e elegibilidade
 
@@ -49,16 +49,12 @@ estiverem vazios, não iniciar coleta real nem análise do estudo.
 
 ## Janela, limites e unidades
 
-- Janela de 12 meses definida pelo professor. Os instantes oficiais de início,
-  fim e fuso horário precisam ser transcritos para `config/estudo.json` sem
-  conversão ambígua. Até então, ficam `null` e a coleta do estudo permanece
-  bloqueada.
-- Proposta do grupo ainda não ratificada: início
-  `2025-10-06T00:00:00-03:00`, fim
-  `2026-10-06T23:59:59-03:00`. Como o intervalo é semiaberto, o próprio
-  instante final fica excluído. O professor deve confirmar ou corrigir esses
-  limites antes de promovê-los à janela oficial; não presumir que a proposta
-  satisfaz a duração exata de doze meses.
+- Janela adotada pelo grupo: início `2025-10-06T00:00:00-03:00`,
+  fim exclusivo `2026-10-06T00:00:00-03:00`, fuso fixo `-03:00`.
+  A configuração valida a duração de doze meses de calendário.
+- A proposta original terminava em `2026-10-06T23:59:59-03:00`, excedendo
+  doze meses. Ela permanece em `proposed_window` como histórico; somente
+  `window` orienta a execução. A confirmação do professor permanece pendente.
 - Todos os intervalos são **`[início, fim)`**: eventos no início entram;
   eventos exatamente no fim não entram. Releases e runs são selecionados por
   `published_at` e `created_at`, respectivamente.
@@ -167,12 +163,18 @@ nos workflow runs, sem reinterpretar tags como falhas de CI.
   não abrem episódio e são contadas em `leading_failures_without_prior_success`
   (censura à esquerda aproximada). A mediana usa só episódios recuperados;
   `censored_proportion` = censurados / episódios totais. O tempo usa
-  `run_started_at` da primeira falha (`created_at` se ausente) e `updated_at` do
-  sucesso; intervalos negativos ou sem `updated_at` são excluídos e contados em
-  `exclusions`.
+  `run_started_at` da primeira falha e `updated_at` do sucesso, sem substituir
+  datas ausentes. Intervalos negativos ou sem datas são excluídos e contados
+  em `exclusions`. Falhas iniciadas fora da janela são excluídas. Sucessos
+  concluídos no limite final ou depois dele não encerram episódios; episódios
+  abertos registram esse limite em `censored_at`.
 - Workflow runs (`collectors/workflow_runs.py`): a janela é fatiada por mês (UTC);
-  fatia com `total_count > 1000` é bisseccionada até caber; se nem 2 s couberem, a
-  coleta falha. Fronteiras inclusivas geram duplicatas, removidas por ID.
+  fatia com `total_count > 1000` é bisseccionada até caber; se não houver mais
+  divisão possível na precisão de segundos da API, a coleta falha. A consulta
+  arredonda limites fracionários e aplica o intervalo exato localmente; IDs
+  repetidos são deduplicados. A elegibilidade usa esse mesmo coletor e usa
+  o coletor de releases com verificação de ancestralidade no default branch.
+  Runs ignorados e registros inválidos têm contagens separadas.
 - Rate limit é esperado e não é erro: o cliente aguarda `X-RateLimit-Reset`
   (ou `Retry-After`) e repete a requisição; respostas 5xx e falhas de rede são
   repetidas com backoff exponencial (1 s, 2 s, 4 s, 8 s, 16 s, até 5 tentativas).
@@ -200,13 +202,14 @@ como exploratória, datada e justificada.
 | RQ06 | Pelo menos uma métrica difere entre subgrupos de linguagem principal, quartis de estrelas ou quartis de contribuidores. |
 | RQ07 | Parte dos repositórios muda de categoria DORA quando se alteram unidade de entrega, lead time ou CFR, sobretudo perto dos limites de classificação. |
 
-## Pré-condições para liberar a coleta
+## Execução e rastreabilidade
 
-1. Receber do professor as datas exatas de início e fim e o fuso horário dos
-   doze meses.
-2. Preencher `window.start`, `window.end` e `window.timezone` em
-   `config/estudo.json`, mantendo o intervalo semiaberto e confirmando que
-   corresponde a doze meses.
-3. Revisar o protocolo em trio e registrar a aprovação antes de examinar
-   resultados.
-4. Só então mudar `status` para `ready` e `collection_allowed` para `true`.
+1. A decisão do grupo habilita a coleta com a janela acima; não representa
+   confirmação do professor nem aprovação já realizada pelo trio.
+2. Registrar a revisão conjunta e eventual confirmação ou correção do
+   professor antes de interpretar os resultados finais.
+3. Cada relatório inclui a configuração e seu SHA-256. O cache é separado
+   por esse identificador; usar `--refresh-cache` para renovar respostas da
+   mesma configuração. O cache registra o instante de obtenção das respostas.
+4. Executar o piloto real de 100 elegíveis e registrar sua evidência no
+   manifesto. Testes e snapshots sintéticos não comprovam essa entrega.

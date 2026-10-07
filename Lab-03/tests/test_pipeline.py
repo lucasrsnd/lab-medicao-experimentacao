@@ -43,9 +43,14 @@ def test_cli_offline_sem_token(tmp_path, monkeypatch):
 
 def test_config_estudo_bloqueia_coleta_e_nao_acessa_rede(tmp_path, monkeypatch):
     monkeypatch.setenv("GITHUB_TOKEN", "token-de-teste")
-    assert main(["--config", str(STUDY_CONFIG), "--validate-config"]) == 0
+    blocked = json.loads(STUDY_CONFIG.read_text(encoding="utf-8"))
+    blocked["collection_allowed"] = False
+    blocked["status"] = "blocked_pending_professor_window"
+    blocked_path = tmp_path / "blocked.json"
+    blocked_path.write_text(json.dumps(blocked), encoding="utf-8")
+    assert main(["--config", str(blocked_path), "--validate-config"]) == 0
     with pytest.raises(SystemExit) as error:
-        main(["--config", str(STUDY_CONFIG), "--repo", "demo/project",
+        main(["--config", str(blocked_path), "--repo", "demo/project",
               "--output", str(tmp_path / "out.json")])
     assert error.value.code == 2
     assert not (tmp_path / "out.json").exists()
@@ -92,6 +97,8 @@ def test_config_estudo_rejeita_liberacao_sem_janela_completa(tmp_path):
     config = json.loads(STUDY_CONFIG.read_text(encoding="utf-8"))
     config["status"] = "ready"
     config["collection_allowed"] = True
+    config["window"]["start"] = None
+    config["window"]["end"] = None
     invalid = tmp_path / "invalid.json"
     invalid.write_text(json.dumps(config), encoding="utf-8")
     with pytest.raises(ValueError, match="janela oficial completa"):

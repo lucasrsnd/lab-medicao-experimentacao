@@ -33,6 +33,8 @@ def test_cache_sqlite_persiste_respostas_e_headers_de_paginacao(tmp_path: Path):
     assert resumed.headers == response.headers
     assert resumed_run.hits == 1
     assert transport.calls == 1
+    first_run.close()
+    resumed_run.close()
 
 
 class FailingTransport:

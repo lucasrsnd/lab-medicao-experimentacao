@@ -17,7 +17,7 @@
     "execution_command",
     "cache_statistics"
   ],
-  "execution_status": "blocked_pending_professor_window",
+  "execution_status": "ready_pending_execution",
   "execution_evidence": null,
   "synthetic_validation": {
     "command": "python -m pytest tests/test_pilot.py",
@@ -27,5 +27,5 @@
     "commits": 400,
     "workflow_runs": 5000
   },
-  "notes": "Não registrar dados reais até a janela oficial ser confirmada e collection_allowed ser true."
+  "notes": "Janela definida pelo grupo em 2026-10-07, pendente de confirmacao docente. Registrar evidencia somente apos execucao real completa; validacao sintetica nao substitui piloto."
 }

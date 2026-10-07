@@ -1,9 +1,10 @@
 """Seleção da amostra e funil de elegibilidade de repositórios."""
 
 from datetime import date, datetime, timedelta, timezone
-from lab03.domain import timestamp
+from lab03.domain import Window, timestamp
 from lab03.github import ApiError, DataError, GitHubClient
-from lab03.collectors.releases import repo_path
+from lab03.collectors.releases import collect_releases, repo_path
+from lab03.collectors.workflow_runs import collect_workflow_runs
 
 SEARCH_START = date(2008, 1, 1)
 SEARCH_RESULT_LIMIT = 1000
@@ -204,76 +205,13 @@ def _metadata(client: GitHubClient, record: dict, root: str, collected_at: datet
     }
 
 
-def _count_releases(client: GitHubClient, root: str, window_start: datetime, window_end: datetime) -> tuple[int, int]:
-    count = 0
-    invalid_dates = 0
-    seen = set()
-    for page in client.pages(f"{root}/releases", {"per_page": SEARCH_PAGE_SIZE}):
-        if not isinstance(page, list):
-            raise DataError("Resposta inválida ao listar releases.")
-        for release in page:
-            if (not isinstance(release, dict)
-                    or not isinstance(release.get("id"), int)
-                    or isinstance(release.get("id"), bool)):
-                raise DataError("Release sem ID numérico.")
-            if release["id"] in seen:
-                continue
-            seen.add(release["id"])
-            if release.get("draft") or release.get("prerelease"):
-                continue
-            try:
-                published_at = timestamp(release.get("published_at"))
-            except (ValueError, TypeError, AttributeError):
-                invalid_dates += 1
-                continue
-            if window_start <= published_at < window_end:
-                count += 1
-    return count, invalid_dates
-
-
-def _count_valid_runs(
-    client: GitHubClient, root: str, branch: str, window_start: datetime,
-    window_end: datetime, valid_conclusions: tuple[str, ...],
-) -> tuple[int, int]:
-    query = f"{window_start.isoformat()}..{window_end.isoformat()}"
-    count = 0
-    observed = 0
-    seen = set()
-    expected_total = None
-    for page in client.pages(f"{root}/actions/runs", {
-        "branch": branch,
-        "event": "push",
-        "created": query,
-        "per_page": SEARCH_PAGE_SIZE,
-    }):
-        if (not isinstance(page, dict) or not isinstance(page.get("workflow_runs"), list)):
-            raise DataError("Resposta inválida ao listar workflow runs.")
-        page_total = page.get("total_count")
-        if (not isinstance(page_total, int) or isinstance(page_total, bool)
-                or page_total < 0):
-            raise DataError("Resposta de workflow runs sem total_count válido.")
-        if expected_total is not None and page_total != expected_total:
-            raise DataError("Total de workflow runs mudou durante a paginação.")
-        expected_total = page_total
-        for run in page["workflow_runs"]:
-            if (not isinstance(run, dict) or not isinstance(run.get("id"), int)
-                    or isinstance(run.get("id"), bool)):
-                raise DataError("Workflow run sem ID numérico.")
-            if run["id"] in seen:
-                continue
-            seen.add(run["id"])
-            observed += 1
-            if run.get("event") != "push" or run.get("head_branch") != branch:
-                continue
-            try:
-                created_at = timestamp(run.get("created_at"))
-            except (ValueError, TypeError, AttributeError):
-                continue
-            if window_start <= created_at < window_end and run.get("conclusion") in valid_conclusions:
-                count += 1
-    if expected_total is not None and observed < expected_total:
-        raise DataError("Paginação de workflow runs incompleta.")
-    return count, observed
+def _count_valid_runs(client, root, branch, window_start, window_end, valid_conclusions):
+    stats = {}
+    runs = collect_workflow_runs(
+        client, root.removeprefix("/repos/"), Window(window_start, window_end),
+        branch, valid_conclusions, stats=stats,
+    )
+    return len(runs), stats["observed"]
 
 
 def select_candidates(
@@ -344,6 +282,8 @@ def select_candidates(
     for record, root in with_actions:
         try:
             candidate = _metadata(client, record, root, collected_at)
+        except DataError:
+            raise  # pagina??o/resposta inv?lida n?o ? exclus?o de metadados
         except ValueError as error:
             reason = str(error)
             funnel["metadata"]["excluded"][reason] = funnel["metadata"]["excluded"].get(reason, 0) + 1
@@ -355,15 +295,25 @@ def select_candidates(
     funnel["releases"]["input"] = len(candidates)
     funnel["workflow_runs"]["input"] = len(candidates)
     for candidate, root in candidates:
-        release_count, invalid_release_dates = _count_releases(
-            client, root, window_start, window_end,
+        catalog = collect_releases(
+            client, candidate["full_name"], Window(window_start, window_end),
+            include_tags=False,
         )
+        # Usar o branch observado pelo coletor, não o valor possivelmente
+        # desatualizado da busca de repositórios.
+        candidate["default_branch"] = catalog.default_branch
+        candidate["default_head_sha"] = catalog.default_head
         run_count, observed_runs = _count_valid_runs(
             client, root, candidate["default_branch"], window_start, window_end,
             valid_conclusions,
         )
-        candidate["release_count"] = release_count
-        candidate["invalid_release_dates"] = invalid_release_dates
+        candidate["release_count"] = len(catalog.releases)
+        candidate["invalid_release_dates"] = sum(
+            item.reason == "invalid_published_at" for item in catalog.exclusions
+        )
+        candidate["release_exclusions"] = [
+            {"id": item.identifier, "reason": item.reason} for item in catalog.exclusions
+        ]
         candidate["valid_workflow_run_count"] = run_count
         candidate["observed_workflow_run_count"] = observed_runs
         measured.append(candidate)

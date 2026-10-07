@@ -2,9 +2,11 @@
 
 import argparse
 import json
+import hashlib
 import os
 import sqlite3
 import sys
+from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 
@@ -16,6 +18,8 @@ from lab03.github import (
 )
 from lab03.pipeline import run
 from lab03.collectors.candidates import select_candidates
+from lab03.collectors.releases import repo_path
+from lab03.collectors.workflow_runs import collect_workflow_runs
 from lab03.pilot import run_pilot
 from lab03.resilience import ResilientTransport
 
@@ -44,10 +48,15 @@ def main(argv=None) -> int:
     )
     parser.add_argument("--output", type=Path, help="Arquivo JSON de saída")
     parser.add_argument("--validate-config", action="store_true", help="Validar configuração sem coletar")
+    parser.add_argument("--refresh-cache", action="store_true", help="Invalidar respostas desta configuração antes da coleta")
     args = parser.parse_args(argv)
     cache = None
     try:
         config = load_config(args.config)
+        config_snapshot = json.loads(args.config.read_text(encoding="utf-8"))
+        config_hash = hashlib.sha256(
+            json.dumps(config_snapshot, sort_keys=True).encode("utf-8")
+        ).hexdigest()
         if args.validate_config:
             if config.mode == "study" and not config.collection_allowed:
                 print("Configuração válida; coleta bloqueada até a janela oficial ser confirmada.")
@@ -97,7 +106,9 @@ def main(argv=None) -> int:
                 HttpTransport(token),
                 notify=lambda message: print(message, file=sys.stderr, flush=True),
             )
-            cache = SQLiteCacheTransport(resilient, cache_path)
+            cache = SQLiteCacheTransport(resilient, cache_path, namespace=config_hash)
+            if args.refresh_cache:
+                cache.clear()
             transport = cache
             source = "github"
 
@@ -160,8 +171,20 @@ def main(argv=None) -> int:
                 valid_conclusions=config.valid_workflow_conclusions,
             )
         else:
-            output = run(client, repository, window)
+            workflow_runs = None
+            collection = {}
+            if config.mode == "study":
+                branch = client.get(repo_path(repository))["default_branch"]
+                workflow_runs = collect_workflow_runs(
+                    client, repository, window, branch,
+                    config.valid_workflow_conclusions, stats=collection,
+                )
+            output = run(client, repository, window, workflow_runs)
+            if workflow_runs is not None:
+                output["workflow_runs"] = [asdict(item) for item in workflow_runs]
+                output["workflow_run_collection"] = collection
         output["source"] = source
+        output["configuration"] = {"sha256": config_hash, "values": config_snapshot}
         args.output.parent.mkdir(parents=True, exist_ok=True)
         temporary = args.output.with_suffix(args.output.suffix + ".tmp")
         temporary.write_text(
