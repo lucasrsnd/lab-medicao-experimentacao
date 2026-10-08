@@ -14,7 +14,9 @@ def repo_path(repository: str) -> str:
     return f"/repos/{repository}"
 
 
-def collect_releases(client: GitHubClient, repository: str, window: Window) -> ReleaseCatalog:
+def collect_releases(
+    client: GitHubClient, repository: str, window: Window, *, include_tags: bool = True,
+) -> ReleaseCatalog:
     root = repo_path(repository)
     branch = client.get(root)["default_branch"]
     head = client.get(f"{root}/commits/{quote(branch, safe='')}")["sha"]
@@ -71,7 +73,8 @@ def collect_releases(client: GitHubClient, repository: str, window: Window) -> R
     # Não confiar na ordem da API nem em target_commitish (pode estar desatualizado).
     tags = []
     seen_tags = set()
-    for page in client.pages(f"{root}/tags", {"per_page": 100}):
+    tag_pages = client.pages(f"{root}/tags", {"per_page": 100}) if include_tags else ()
+    for page in tag_pages:
         for raw in page:
             if raw["name"] in seen_tags:
                 continue

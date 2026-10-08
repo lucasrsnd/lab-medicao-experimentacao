@@ -1,6 +1,7 @@
 """Integra seleção, elegibilidade, métricas e registros de workflow runs."""
 
 from dataclasses import asdict
+from typing import Callable
 
 from lab03 import __version__
 from lab03.collectors.candidates import select_candidates
@@ -19,7 +20,10 @@ def run_pilot(
     minimum_releases: int,
     minimum_valid_runs: int,
     valid_conclusions: tuple[str, ...],
+    notify: Callable[[str], None] | None = None,
+    required_repositories: tuple[str, ...] = (),
 ) -> dict:
+    notify = notify or (lambda message: None)
     candidate_limit = target_size
     selection = None
     while True:
@@ -32,8 +36,15 @@ def run_pilot(
             minimum_releases=minimum_releases,
             minimum_valid_runs=minimum_valid_runs,
             valid_conclusions=valid_conclusions,
+            ranked_search=True,
+            notify=notify,
+            required_repositories=required_repositories,
         )
         eligible = selection["eligible_repositories"]
+        eligible_names = {r["full_name"].lower() for r in eligible}
+        missing_required = [r for r in required_repositories if r.lower() not in eligible_names]
+        if missing_required:
+            raise DataError(f"Repositórios obrigatórios não elegíveis: {missing_required}")
         selected_count = selection["funnel"]["search"]["selected"]
         available_count = selection["funnel"]["search"]["matching_candidates"]
         if len(eligible) >= target_size:
@@ -53,8 +64,9 @@ def run_pilot(
         "eligible_not_selected": len(eligible) - len(selected),
     }
     results = []
-    for metadata in selected:
+    for index, metadata in enumerate(selected, 1):
         repository = metadata["full_name"]
+        notify(f"Coleta completa {index}/{target_size}: {repository}")
         collection = {}
         workflow_runs = collect_workflow_runs(
             client,
@@ -70,6 +82,10 @@ def run_pilot(
                 f"({len(workflow_runs)} < {minimum_valid_runs})."
             )
         report = run(client, repository, window, workflow_runs)
+        if len(report["catalog"]["releases"]) < minimum_releases:
+            raise DataError(
+                f"{repository}: releases do default branch abaixo do mínimo após integração."
+            )
         results.append({
             "metadata": metadata,
             "report": report,

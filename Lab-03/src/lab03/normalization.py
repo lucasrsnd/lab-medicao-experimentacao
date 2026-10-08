@@ -82,7 +82,7 @@ def normalize_workflow_run(raw: dict[str, Any]) -> WorkflowRun:
             run_started_at=_optional_timestamp(raw.get("run_started_at"), "run.run_started_at"),
             updated_at=_optional_timestamp(raw.get("updated_at"), "run.updated_at"),
         )
-    except (KeyError, TypeError, ValueError) as error:
+    except (AttributeError, KeyError, TypeError, ValueError) as error:
         if isinstance(error, DataError):
             raise
         raise DataError("Payload de workflow run inválido.") from error

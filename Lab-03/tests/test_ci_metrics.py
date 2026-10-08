@@ -165,10 +165,12 @@ def test_usa_run_started_at_da_primeira_falha_e_updated_at_do_sucesso():
     assert calculate_recovery(runs).median_hours == pytest.approx(80 / 60)
 
 
-def test_run_started_at_ausente_usa_created_at():
+def test_run_started_at_ausente_e_excluido_sem_imputacao():
     runs = [run("success", at(1)), run("failure", at(2), started=None),
             run("success", at(3), end=at(3))]
-    assert calculate_recovery(runs).median_hours == pytest.approx(1.0)
+    result = calculate_recovery(runs)
+    assert result.median_hours is None
+    assert result.exclusions == {"invalid_recovery_timestamps": 1}
 
 
 def test_ordem_de_entrada_nao_importa():

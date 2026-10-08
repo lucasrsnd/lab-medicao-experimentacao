@@ -44,13 +44,14 @@ def run(
     }
     if workflow_runs is not None:
         ci_failure_rate = calculate_ci_failure_rate(workflow_runs)
-        recovery = calculate_recovery(workflow_runs)
+        recovery = calculate_recovery(workflow_runs, window)
         numerators["change_failure_rate"] = ci_failure_rate.failures
         denominators["change_failure_rate"] = ci_failure_rate.runs_evaluated
         denominators["recovery_time_hours"] = recovery.episodes_recovered
         missing_reasons["change_failure_rate"] = "no_valid_ci_runs"
         missing_reasons["recovery_time_hours"] = (
             "all_failure_episodes_censored" if recovery.episodes_total
+            else "invalid_recovery_timestamps" if recovery.exclusions
             else "no_failure_episodes"
         )
     classification = classify_dora(

@@ -2,6 +2,8 @@
 
 import json
 import re
+import calendar
+from datetime import datetime
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -97,10 +99,12 @@ def load_config(path: Path) -> PipelineConfig:
             or runs.get("branch") != "default_branch"
             or runs.get("event") != "push"
             or not isinstance(valid_conclusions, list)
-            or not {"success", "failure", "timed_out", "startup_failure"}.issubset(valid_conclusions)):
+            or any(not isinstance(value, str) for value in valid_conclusions)
+            or set(valid_conclusions) != {"success", "failure", "timed_out", "startup_failure"}):
         raise ValueError("Critérios de workflow runs incompatíveis com o protocolo.")
     factors = raw.get("rq06_factors")
-    if not isinstance(factors, list) or len(factors) < 3:
+    if (not isinstance(factors, list) or any(not isinstance(f, str) for f in factors)
+            or len(set(factors)) < 3):
         raise ValueError("RQ06 deve declarar pelo menos três fatores.")
     variants = raw.get("rq07_variants")
     if not isinstance(variants, dict) or not {"C1", "C2", "C3"}.issubset(variants):
@@ -115,6 +119,11 @@ def load_config(path: Path) -> PipelineConfig:
     window = None
     if raw_window.get("start") is not None or raw_window.get("end") is not None:
         window = _read_window(raw_window)
+        start = datetime.fromisoformat(raw_window["start"].replace("Z", "+00:00"))
+        last_day = calendar.monthrange(start.year + 1, start.month)[1]
+        anniversary = start.replace(year=start.year + 1, day=min(start.day, last_day))
+        if window.end != anniversary:
+            raise ValueError("A janela do estudo deve corresponder a exatamente 12 meses.")
     if allowed and (status != "ready" or window is None):
         raise ValueError("A coleta só pode ser liberada com status ready e janela oficial completa.")
     return PipelineConfig(

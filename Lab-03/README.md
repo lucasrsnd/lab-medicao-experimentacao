@@ -26,24 +26,25 @@ token.
 
 ## Coleta real
 
-A janela oficial ainda aguarda confirmação do professor. Por isso,
-`config/estudo.json` mantém `collection_allowed: false` e início/fim oficiais
-vazios. A coleta real falha antes de fazer qualquer requisição enquanto essa
-pré-condição não for atendida. Para testar apenas a configuração:
+A janela adotada pelo grupo em `config/estudo.json` vai de
+`2025-10-06T00:00:00-03:00` até `2026-10-06T00:00:00-03:00`, com fim exclusivo.
+A coleta está habilitada por decisão do grupo; a confirmação do professor
+permanece pendente e está registrada em `window_decision`. Para validar:
 
 ```powershell
 python -m lab03 --config config/estudo.json --validate-config
 ```
 
-Depois que o professor confirmar os limites e o trio revisar o protocolo,
-atualize `window.start`, `window.end`, `window.timezone`, `status` para `ready`
-e `collection_allowed` para `true` em `config/estudo.json`. O token deve ser
-definido somente no ambiente do processo:
+Se a janela for revisada, atualize a configuração e repita a coleta.
+O token deve ser definido somente no ambiente do processo:
 
 ```powershell
 $env:GITHUB_TOKEN = "seu-token"
 python -m lab03 --config config/estudo.json --repo owner/repo --output data/repo.json
 ```
+
+A consulta individual real coleta releases, commits e workflow runs e calcula
+as quatro métricas disponíveis para C1, com motivos explícitos de incompletude.
 
 Para coletar o piloto integrado de 100 repositórios elegíveis, gerar o funil e
 salvar releases, commits, workflow runs e metadados:
@@ -52,17 +53,34 @@ salvar releases, commits, workflow runs e metadados:
 python -m lab03 --config config/estudo.json --pilot --output data/piloto.json
 ```
 
+Para completar o piloto incluindo o repositório da validação inicial:
+
+```powershell
+python -m lab03 --config config/estudo.json --pilot --include-repo cli/cli --output data/piloto.json
+```
+
+Essa escolha fica explícita no funil: `cli/cli` mais 99 elegíveis por
+popularidade, sem duplicatas. O repositório indicado também deve passar por
+todos os filtros; se não passar, a execução falha. A opção pode ser repetida
+para outras inclusões previamente justificadas no protocolo.
+
 A busca usa o critério estrito `stars:>1000` da configuração. O seletor avalia
 candidatos em ordem decrescente de estrelas e amplia a busca até reunir os 100
 elegíveis; se a população disponível não for suficiente, falha sem gravar uma
 saída parcial. O JSON registra o comando, a configuração, a versão do pipeline,
 contagens por etapa, resultados por repositório e estatísticas do cache.
+No piloto, buscas de prefixos menores que 1.000 candidatos usam ordenação
+por estrelas e completam todos os empates na fronteira antes de ordenar por
+ID. Faixas adicionais são consultadas quando a elegibilidade exige ampliar a
+amostra. O funil distingue o universo informado pela API dos candidatos
+efetivamente recuperados. O terminal mostra a etapa e o repositório em execução.
 Respostas bem-sucedidas da API ficam em `data/cache.sqlite3`, ignorado pelo Git;
 reexecutar o mesmo comando retoma a coleta sem repetir as requisições já
-armazenadas. Para iniciar uma coleta nova, use outro caminho em `--cache` ou
-remova especificamente o arquivo de cache após encerrar os processos que o
-utilizam. O cache guarda apenas respostas públicas e cabeçalhos de paginação,
-nunca o token de autenticação.
+armazenadas. O cache separa respostas por SHA-256 da configuração, registrado
+também em cada relatório junto aos valores utilizados. Para atualizar os dados
+da mesma configuração, acrescente `--refresh-cache`; para manter uma execução
+independente, use outro caminho em `--cache`. O cache registra quando obteve
+cada resposta e guarda somente payloads e cabeçalhos de paginação, nunca o token.
 
 Consultas com
 1.000 ou mais resultados são subdivididas por intervalos de criação; IDs
@@ -73,6 +91,9 @@ O funil verifica Actions antes de consultar contribuidores, releases e runs;
 somente depois das contagens de releases e runs aplica os mínimos de
 elegibilidade. Para cada repositório elegível, o piloto também persiste os
 registros completos de workflow runs do default branch.
+Elegibilidade e coleta final usam os mesmos coletores: releases precisam
+pertencer ao histórico do default branch e runs são divididos por tempo para
+evitar truncamento no limite de 1.000 resultados da API.
 `age_days_at_collection` é calculada de `created_at` até o instante de início
 registrado em `collected_at`.
 
@@ -87,7 +108,7 @@ parcial. O `.gitignore` exclui `.env`, variantes `.env.*`, arquivos `*.token`,
 - `src/lab03/domain.py`: contratos imutáveis de repositório, release, commit,
   tag, workflow run e janela. Os timestamps dos contratos são timezone-aware e
   normalizados para UTC pela função `timestamp`.
-- `src/lab03/collectors/`: coleta de releases e commits.
+- `src/lab03/collectors/`: seleção de candidatos, releases, commits e runs.
 - `src/lab03/normalization.py`: adaptação dos payloads REST para os contratos
   tipados de domínio.
 - `src/lab03/metrics/`: funções puras para frequência de releases por semana
@@ -128,3 +149,19 @@ como incompleta, nunca como zero ou Elite.
 
 Se a coleta for interrompida (rate limit persistente, queda de rede ou
 `Ctrl+C`), rode o mesmo comando: o que já está no cache não é consultado de novo.
+
+O manifesto em `config/manifesto-piloto.json` distingue validação sintética
+de execução real. O piloto de 100 repositórios ainda precisa de evidência real;
+testes locais não substituem essa entrega. O protocolo detalha as decisões em
+[`docs/protocolo.md`](docs/protocolo.md).
+
+Após a coleta completa, confira os contratos e registre a evidência no manifesto:
+
+```powershell
+python -m lab03.validation --input data/piloto.json --manifest config/manifesto-piloto.json --require-repo cli/cli
+```
+
+O validador exige 100 projetos únicos, origem real, configuração íntegra,
+critérios mínimos, datas/branches corretos e contagens consistentes. Só então
+grava `execution_status: completed`, o SHA-256 do artefato e a lista coletada.
+Isso conclui a evidência do piloto, não a revisão do artigo ou a CI remota.
