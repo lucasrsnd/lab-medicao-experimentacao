@@ -122,6 +122,30 @@ def test_paginacao_incompleta_falha():
         collect(api)
 
 
+@pytest.mark.parametrize("problem", ["changed_total", "truncated", "extra"])
+def test_reconsulta_fatias_menores_sem_misturar_paginas_inconsistentes(problem):
+    window = Window(timestamp("2025-06-01T00:00:00Z"), timestamp("2025-07-01T00:00:00Z"))
+    rows = [raw_run(i, f"2025-06-{1 + i % 28:02d}T12:00:00Z") for i in range(150)]
+
+    class UnstableMonth(RunsApi):
+        def get(self, url):
+            response = super().get(url)
+            params = parse_qs(urlsplit(url).query)
+            if params['created'][0] == '2025-06-01T00:00:00Z..2025-06-30T23:59:59Z':
+                if problem == 'changed_total' and params.get('page') == ['2']:
+                    response.data['total_count'] += 10
+                elif problem == 'truncated':
+                    return Response(response.data, {})
+                elif problem == 'extra':
+                    response.data['workflow_runs'].append(raw_run(9999, '2025-06-01T00:00:00Z'))
+            return response
+
+    result, stats = collect(UnstableMonth(rows), window)
+    assert {run.id for run in result} == set(range(150))
+    assert stats['pagination_repairs'] == 1
+    assert stats['bisections'] == 1
+
+
 def test_filtra_conclusoes_ignoradas_branch_e_evento():
     runs = [
         raw_run(1, "2025-02-01T00:00:00Z", "success"),

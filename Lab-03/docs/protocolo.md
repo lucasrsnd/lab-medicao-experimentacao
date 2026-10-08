@@ -36,6 +36,16 @@ nova configuração antes de comparar resultados.
   no funil, com motivo; não completar a amostra com registros sintéticos.
 - **Tamanho da amostra:** pipeline inicial de 100 repositórios para Lab03S01;
   amostra final de pelo menos 300 elegíveis para Lab03S02.
+- **Seleção do piloto (decisão de 07/10/2026):** por solicitação de Gustavo,
+  manter `cli/cli`, já validado, e selecionar outros 99 elegíveis por estrelas
+  decrescentes e ID crescente nos empates. Usar `--include-repo cli/cli` para
+  registrar essa inclusão intencional no funil, sem dispensar os filtros.
+  A amostra é intencional e não deve ser apresentada como aleatória.
+- **Busca incremental:** recuperar primeiro o prefixo por popularidade,
+  completar os empates na fronteira e ampliar quando faltarem elegíveis.
+  Registrar separadamente o total informado pela API, os candidatos
+  recuperados e os avaliados. A busca exaustiva com subdivisão permanece como
+  alternativa quando o prefixo solicitado alcança o teto de 1.000 da API.
 - **Ordem do funil:** depois da busca e seleção por popularidade, verificar
   GitHub Actions antes de consultar contribuidores, releases ou workflow runs.
   Os mínimos de releases e runs são aplicados somente após as duas contagens.
@@ -175,6 +185,11 @@ nos workflow runs, sem reinterpretar tags como falhas de CI.
   repetidos são deduplicados. A elegibilidade usa esse mesmo coletor e usa
   o coletor de releases com verificação de ancestralidade no default branch.
   Runs ignorados e registros inválidos têm contagens separadas.
+  Se o total mudar entre páginas ou a quantidade de IDs únicos não coincidir
+  com o total informado, descartar a fatia inconsistente e consultar duas
+  fatias menores. Registrar a recuperação em `pagination_repairs`. Se não
+  houver divisão possível na precisão da API, interromper sem gravar resultado
+  parcial; nunca aceitar silenciosamente páginas divergentes.
 - Rate limit é esperado e não é erro: o cliente aguarda `X-RateLimit-Reset`
   (ou `Retry-After`) e repete a requisição; respostas 5xx e falhas de rede são
   repetidas com backoff exponencial (1 s, 2 s, 4 s, 8 s, 16 s, até 5 tentativas).
@@ -183,6 +198,12 @@ nos workflow runs, sem reinterpretar tags como falhas de CI.
 - Erros de autenticação, paginação truncada e falhas inesperadas
   da API interrompem a coleta com erro explícito. Não os registrar como
   ausência de dados nem como exclusão de repositório.
+- Exceção conhecida de disponibilidade de metadados: quando o endpoint de
+  contribuidores retorna a mensagem específica de que o histórico/lista é
+  grande demais para ser listado pela API, excluir com
+  `contributors_unavailable_api_limit` no funil. Não imputar a contagem.
+  Outros HTTP 403 continuam sendo erros; limites de cota seguem a política
+  de espera. Esta limitação foi observada em `torvalds/linux` no piloto.
 - Manter contagens por motivo no funil e registrar os limites da janela
   aplicados a cada fonte.
 

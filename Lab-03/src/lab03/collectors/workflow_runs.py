@@ -57,6 +57,7 @@ def _fetch_slice(
     })
     fetched: dict[int, dict] = {}
     expected_total = None
+    split_reason = None
     for page in pages:
         if not isinstance(page, dict) or not isinstance(page.get("workflow_runs"), list):
             raise DataError("Resposta inválida ao listar workflow runs.")
@@ -64,12 +65,14 @@ def _fetch_slice(
         if (not isinstance(page_total, int) or isinstance(page_total, bool)
                 or page_total < 0):
             raise DataError("Resposta de workflow runs sem total_count válido.")
-        if expected_total is not None and expected_total != page_total:
-            raise DataError("Total de workflow runs mudou durante a paginação.")
-        expected_total = page_total
         stats["requests"] += 1
+        if expected_total is not None and expected_total != page_total:
+            split_reason = "changed_total"
+            break
+        expected_total = page_total
         if page_total > SEARCH_RESULT_CAP:
             # Teto atingido: o conteúdo seria truncado. Não paginar; bisseccionar.
+            split_reason = "result_cap"
             break
         for raw in page["workflow_runs"]:
             if not isinstance(raw, dict):
@@ -79,19 +82,23 @@ def _fetch_slice(
                 raise DataError("Workflow run sem ID numérico.")
             fetched[identifier] = raw
 
-    if expected_total is not None and expected_total > SEARCH_RESULT_CAP:
+    if split_reason is None and expected_total is not None and len(fetched) != expected_total:
+        split_reason = "incomplete_pagination"
+    if split_reason is not None:
         middle = (piece.start + (piece.end - piece.start) / 2).replace(microsecond=0)
         if not piece.start < middle < piece.end:
             raise DataError(
-                f"Mais de {SEARCH_RESULT_CAP} workflow runs em {query}; "
+                f"Paginação de workflow runs incompleta em {query} ({split_reason}); "
                 "a janela não pode ser subdividida o suficiente."
             )
         stats["bisections"] += 1
+        if split_reason != "result_cap":
+            stats["pagination_repairs"] += 1
+        # Descartar todas as páginas inconsistentes da fatia original. Só as
+        # consultas menores e completas podem contribuir para o resultado.
         for half in (Window(piece.start, middle), Window(middle, piece.end)):
             _fetch_slice(client, root, default_branch, half, runs, stats)
         return
-    if expected_total is not None and len(fetched) < expected_total:
-        raise DataError("Paginação de workflow runs incompleta.")
     runs.update(fetched)
 
 
@@ -107,7 +114,7 @@ def collect_workflow_runs(
     root = repo_path(repository)
     raw_runs: dict[int, dict] = {}
     stats = stats if stats is not None else {}
-    stats.update({"slices": 0, "bisections": 0, "requests": 0})
+    stats.update({"slices": 0, "bisections": 0, "pagination_repairs": 0, "requests": 0})
     for piece in month_slices(window):
         stats["slices"] += 1
         _fetch_slice(client, root, default_branch, piece, raw_runs, stats)

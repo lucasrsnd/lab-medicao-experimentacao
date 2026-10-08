@@ -9,6 +9,7 @@ relevantes, para que a camada acima escolha entre esperar, repetir ou falhar.
 import json
 import re
 from dataclasses import dataclass
+from http.client import HTTPException
 from typing import Any, Iterator, Protocol
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urljoin, urlsplit
@@ -18,9 +19,11 @@ API_ROOT = "https://api.github.com/"
 
 
 class ApiError(RuntimeError):
-    def __init__(self, status: int, url: str, headers: dict[str, str] | None = None):
+    def __init__(self, status: int, url: str, headers: dict[str, str] | None = None,
+                 *, reason: str | None = None):
         self.status = status
         self.url = url
+        self.reason = reason
         # Cabeçalhos em minúsculas (retry-after, x-ratelimit-*); nunca o corpo.
         self.headers = headers or {}
         # Não incluir corpo remoto, headers ou token na mensagem.
@@ -65,8 +68,17 @@ class HttpTransport:
                     key.lower(): value for key, value in response.headers.items()
                 })
         except HTTPError as error:
-            raise ApiError(error.code, url, _response_headers(error.headers)) from None
-        except (URLError, TimeoutError, ConnectionError):
+            reason = None
+            if error.code == 403 and urlsplit(url).path.endswith('/contributors'):
+                try:
+                    message = json.loads(error.read(16384)).get('message')
+                except (ValueError, AttributeError):
+                    message = None
+                if message == ('The history or contributor list is too large to list '
+                               'contributors for this repository via the API.'):
+                    reason = 'contributors_too_large'
+            raise ApiError(error.code, url, _response_headers(error.headers), reason=reason) from None
+        except (URLError, TimeoutError, ConnectionError, HTTPException):
             raise NetworkError("Falha de rede ao consultar GitHub; nenhuma métrica foi gerada.") from None
 
 

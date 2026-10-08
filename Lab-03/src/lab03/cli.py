@@ -34,6 +34,8 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True, help="Configuração JSON do estudo ou da amostra")
     parser.add_argument("--repo", help="owner/repo; obrigatório para coleta real")
+    parser.add_argument("--include-repo", action="append", default=[],
+                        help="Repositório obrigatório do piloto; também deve passar pelos filtros")
     parser.add_argument(
         "--select-candidates", action="store_true",
         help="selecionar a amostra inicial e gerar o funil do estudo",
@@ -50,6 +52,8 @@ def main(argv=None) -> int:
     parser.add_argument("--validate-config", action="store_true", help="Validar configuração sem coletar")
     parser.add_argument("--refresh-cache", action="store_true", help="Invalidar respostas desta configuração antes da coleta")
     args = parser.parse_args(argv)
+    if args.include_repo and not args.pilot:
+        parser.error("--include-repo exige --pilot.")
     cache = None
     try:
         config = load_config(args.config)
@@ -124,11 +128,14 @@ def main(argv=None) -> int:
                 minimum_releases=config.minimum_releases,
                 minimum_valid_runs=config.minimum_valid_workflow_runs,
                 valid_conclusions=config.valid_workflow_conclusions,
+                notify=lambda message: print(message, file=sys.stderr, flush=True),
+                required_repositories=tuple(args.include_repo),
             )
             output["execution"] = {
                 "command": (
                     f"python -m lab03 --config {args.config} --pilot "
                     f"--output {args.output} --cache {args.cache}"
+                    + "".join(f" --include-repo {name}" for name in args.include_repo)
                 ),
                 "config": str(args.config),
                 "pipeline_version": __version__,
