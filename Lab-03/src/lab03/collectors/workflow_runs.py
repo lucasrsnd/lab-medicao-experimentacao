@@ -41,6 +41,7 @@ def _fetch_slice(
     piece: Window,
     runs: dict[int, dict],
     stats: dict,
+    tolerate_drift: bool = False,
 ) -> None:
     # Arredondar o último instante para cima antes de subtrair 1s evita
     # perder runs no último segundo de janelas com limites fracionários.
@@ -65,6 +66,11 @@ def _fetch_slice(
         if (not isinstance(page_total, int) or isinstance(page_total, bool)
                 or page_total < 0):
             raise DataError("Resposta de workflow runs sem total_count válido.")
+        if expected_total is not None and expected_total != page_total and tolerate_drift:
+            # Runs apagados/reexecutados durante a leitura: usar o menor total
+            # visto como alvo e registrar a ocorrência para auditoria.
+            stats["total_drift"] = stats.get("total_drift", 0) + 1
+            page_total = expected_total = min(page_total, expected_total)
         stats["requests"] += 1
         if expected_total is not None and expected_total != page_total:
             split_reason = "changed_total"
@@ -97,7 +103,7 @@ def _fetch_slice(
         # Descartar todas as páginas inconsistentes da fatia original. Só as
         # consultas menores e completas podem contribuir para o resultado.
         for half in (Window(piece.start, middle), Window(middle, piece.end)):
-            _fetch_slice(client, root, default_branch, half, runs, stats)
+            _fetch_slice(client, root, default_branch, half, runs, stats, tolerate_drift)
         return
     runs.update(fetched)
 
@@ -110,6 +116,7 @@ def collect_workflow_runs(
     valid_conclusions: tuple[str, ...],
     *,
     stats: dict | None = None,
+    tolerate_drift: bool = False,
 ) -> tuple[WorkflowRun, ...]:
     root = repo_path(repository)
     raw_runs: dict[int, dict] = {}
@@ -117,7 +124,7 @@ def collect_workflow_runs(
     stats.update({"slices": 0, "bisections": 0, "pagination_repairs": 0, "requests": 0})
     for piece in month_slices(window):
         stats["slices"] += 1
-        _fetch_slice(client, root, default_branch, piece, raw_runs, stats)
+        _fetch_slice(client, root, default_branch, piece, raw_runs, stats, tolerate_drift)
 
     runs = {}
     ignored = Counter()

@@ -117,3 +117,27 @@ def test_linha_corrompida_e_refeita(tmp_path: Path):
         cache.connection.commit()
         assert cache.get("https://api.github.com/a").data == {"url": "https://api.github.com/a"}
     assert transport.calls == 2
+
+
+def test_compactacao_mantem_so_campos_usados_e_preserva_o_resultado():
+    from lab03.cache import compact
+
+    runs = {"total_count": 2, "workflow_runs": [
+        {"id": 1, "workflow_id": 2, "name": "CI", "head_branch": "main", "event": "push",
+         "status": "completed", "conclusion": "success", "head_sha": "a",
+         "created_at": "2025-01-01T00:00:00Z", "run_started_at": None, "updated_at": "x",
+         "repository": {"huge": "x" * 1000}, "head_commit": {"huge": "y"}},
+    ]}
+    slim = compact("https://api.github.com/repos/o/r/actions/runs?branch=main", runs)
+    assert slim["total_count"] == 2 and "repository" not in slim["workflow_runs"][0]
+    assert slim["workflow_runs"][0]["id"] == 1 and slim["workflow_runs"][0]["run_started_at"] is None
+
+    compare = {"status": "ahead", "total_commits": 1, "files": [{"patch": "z" * 100}],
+               "commits": [{"sha": "s", "parents": [1], "commit": {
+                   "message": "fix: a", "author": {"date": "2025-01-01T00:00:00Z", "email": "e"}}}]}
+    slim = compact("https://api.github.com/repos/o/r/compare/a...b?per_page=100", compare)
+    assert slim == {"status": "ahead", "total_commits": 1, "commits": [
+        {"sha": "s", "commit": {"message": "fix: a", "author": {"date": "2025-01-01T00:00:00Z"}}}]}
+
+    other = {"anything": 1}
+    assert compact("https://api.github.com/repos/o/r/contributors", other) is other

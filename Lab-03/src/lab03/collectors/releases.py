@@ -14,9 +14,32 @@ def repo_path(repository: str) -> str:
     return f"/repos/{repository}"
 
 
+def release_pages(client: GitHubClient, root: str, window_start):
+    """Páginas de releases, da mais nova para a mais antiga (ordem da API).
+
+    Para ao fim da primeira página em que todas as releases publicadas são
+    anteriores ao início da janela: ela já contém a antecessora imediata e o
+    resto do histórico nunca entra em métrica. Repositórios com milhares de
+    releases (nightlies) deixam de custar dezenas de requisições.
+    """
+    for page in client.pages(f"{root}/releases", {"per_page": 100}):
+        yield page
+        dated = []
+        for raw in page if isinstance(page, list) else ():
+            if isinstance(raw, dict) and not raw.get("draft"):
+                try:
+                    dated.append(timestamp(raw.get("published_at")))
+                except (ValueError, TypeError, AttributeError):
+                    pass
+        if dated and all(published < window_start for published in dated):
+            return
+
+
 def collect_releases(
-    client: GitHubClient, repository: str, window: Window, *, include_tags: bool = True,
+    client: GitHubClient, repository: str, window: Window, *, collect_tags: bool = True,
 ) -> ReleaseCatalog:
+    """`collect_tags=False` pula a variante de tags (C3, RQ07): resolver cada tag
+    custa duas requisições e o repositório pode ter milhares."""
     root = repo_path(repository)
     branch = client.get(root)["default_branch"]
     head = client.get(f"{root}/commits/{quote(branch, safe='')}")["sha"]
@@ -39,9 +62,9 @@ def collect_releases(
             membership[sha] = comparison["status"] in ("ahead", "identical")
         return membership[sha]
 
-    history = []
+    raw_releases = []
     seen = set()
-    for page in client.pages(f"{root}/releases", {"per_page": 100}):
+    for page in release_pages(client, root, window.start):
         for raw in page:
             identifier = str(raw["id"])
             if raw["id"] in seen:
@@ -57,24 +80,42 @@ def collect_releases(
                 continue
             if published >= window.end:
                 continue
-            try:
-                sha = resolve(raw["tag_name"])["sha"]
-                if not on_default_branch(sha):
-                    exclusions.append(Exclusion("release", identifier, "outside_default_branch"))
-                    continue
-            except ApiError as error:
-                if error.status != 404:
-                    raise
-                exclusions.append(Exclusion("release", identifier, "unresolved_ref_404"))
-                # Preservar posição temporal: não saltar uma antecessora apagada.
-                sha = None
-            history.append(normalize_release(raw, sha, published))
+            raw_releases.append((published, raw))
+    raw_releases.sort(key=lambda item: (item[0], item[1]["id"]))
+    # Só resolvemos SHA/ramo das releases da janela e da antecessora imediata de
+    # cada cadeia (só publicadas; publicadas + pré-releases). Releases mais
+    # antigas nunca entram em compare nem em métrica.
+    needed = {
+        raw["id"] for published, raw in raw_releases if window.contains(published)
+    }
+    before = [(p, raw) for p, raw in raw_releases if p < window.start]
+    if before:
+        needed.add(before[-1][1]["id"])
+        stable = [raw for _, raw in before if not raw["prerelease"]]
+        if stable:
+            needed.add(stable[-1]["id"])
+    history = []
+    for published, raw in raw_releases:
+        if raw["id"] not in needed:
+            continue
+        identifier = str(raw["id"])
+        try:
+            sha = resolve(raw["tag_name"])["sha"]
+            if not on_default_branch(sha):
+                exclusions.append(Exclusion("release", identifier, "outside_default_branch"))
+                continue
+        except ApiError as error:
+            if error.status != 404:
+                raise
+            exclusions.append(Exclusion("release", identifier, "unresolved_ref_404"))
+            # Preservar posição temporal: não saltar uma antecessora apagada.
+            sha = None
+        history.append(normalize_release(raw, sha, published))
     history.sort(key=lambda release: (release.published_at, release.id))
     # Não confiar na ordem da API nem em target_commitish (pode estar desatualizado).
     tags = []
     seen_tags = set()
-    tag_pages = client.pages(f"{root}/tags", {"per_page": 100}) if include_tags else ()
-    for page in tag_pages:
+    for page in (client.pages(f"{root}/tags", {"per_page": 100}) if collect_tags else ()):
         for raw in page:
             if raw["name"] in seen_tags:
                 continue

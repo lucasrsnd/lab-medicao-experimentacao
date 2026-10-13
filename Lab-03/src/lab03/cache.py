@@ -10,6 +10,7 @@ autenticação e de rate limit nunca são gravados.
 
 import json
 import sqlite3
+import threading
 from pathlib import Path
 
 from lab03.github import ApiError, Response, Transport
@@ -20,6 +21,59 @@ KEPT_HEADERS = frozenset({
 })
 
 
+RUN_FIELDS = (
+    "id", "workflow_id", "name", "head_branch", "event", "status", "conclusion",
+    "head_sha", "created_at", "run_started_at", "updated_at",
+)
+RELEASE_FIELDS = (
+    "id", "draft", "prerelease", "published_at", "tag_name", "body", "html_url",
+    "target_commitish",
+)
+
+
+def _pick(item, fields):
+    return {key: item[key] for key in fields if isinstance(item, dict) and key in item}
+
+
+def compact(url: str, data):
+    """Mantém só os campos que o pipeline lê. Workflow runs, releases e compare
+    trazem dezenas de campos (repositório embutido, assets, lista de arquivos)
+    que multiplicam o cache por ~10 sem mudar nenhuma métrica."""
+    path = url.split("?", 1)[0]
+    if path.endswith("/actions/runs") and isinstance(data, dict) and isinstance(
+        data.get("workflow_runs"), list
+    ):
+        return {
+            "total_count": data.get("total_count"),
+            "workflow_runs": [_pick(run, RUN_FIELDS) for run in data["workflow_runs"]],
+        }
+    if path.endswith("/releases") and isinstance(data, list):
+        return [_pick(release, RELEASE_FIELDS) for release in data]
+    if "/compare/" in path and isinstance(data, dict) and isinstance(data.get("commits"), list):
+        slim = {key: data[key] for key in ("status", "total_commits") if key in data}
+        slim["commits"] = [
+            {
+                "sha": commit.get("sha"),
+                "commit": {
+                    "message": (commit.get("commit") or {}).get("message"),
+                    "author": _pick((commit.get("commit") or {}).get("author") or {}, ("date",)),
+                },
+            }
+            for commit in data["commits"]
+        ]
+        return slim
+    if "/commits/" in path and isinstance(data, dict) and "sha" in data and "files" in data:
+        commit = data.get("commit") or {}
+        return {
+            "sha": data["sha"],
+            "commit": {
+                "message": commit.get("message"),
+                "author": _pick(commit.get("author") or {}, ("date",)),
+            },
+        }
+    return data
+
+
 class SQLiteCacheTransport:
     def __init__(self, transport: Transport, path: Path, *, namespace: str = ""):
         self.transport = transport
@@ -28,7 +82,8 @@ class SQLiteCacheTransport:
         self.hits = 0
         self.misses = 0
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.connection = sqlite3.connect(self.path)
+        self._lock = threading.RLock()
+        self.connection = sqlite3.connect(self.path, check_same_thread=False)
         self.connection.execute("PRAGMA journal_mode=WAL")
         self.connection.execute(
             """
@@ -51,30 +106,37 @@ class SQLiteCacheTransport:
 
     def get(self, url: str) -> Response:
         key = f"{self.namespace}\n{url}" if self.namespace else url
-        cached = self._lookup(key)
+        cached = self._lookup(key)  # a decodificação do JSON fica fora da trava
         if cached is not None:
-            self.hits += 1
+            with self._lock:
+                self.hits += 1
             status, response = cached
             if status != 200:
                 raise ApiError(status, url, response.headers)
             return response
 
-        self.misses += 1
+        with self._lock:
+            self.misses += 1
         try:
             response = self.transport.get(url)
         except ApiError as error:
             if error.status in PERMANENT_ERRORS:
-                self._store(key, error.status, None, error.headers)
+                with self._lock:
+                    self._store(key, error.status, None, error.headers)
             raise
         headers = self._kept(response.headers)
-        self._store(key, 200, response.data, headers)
-        return Response(response.data, headers)
+        data = compact(url, response.data)
+        with self._lock:
+            self._store(key, 200, data, headers)
+        return Response(data, headers)
 
     def __len__(self) -> int:
-        return self.connection.execute("SELECT COUNT(*) FROM responses").fetchone()[0]
+        with self._lock:
+            return self.connection.execute("SELECT COUNT(*) FROM responses").fetchone()[0]
 
     def close(self) -> None:
-        self.connection.close()
+        with self._lock:
+            self.connection.close()
 
     def clear(self) -> None:
         """Invalida apenas o snapshot desta configuração; outros ficam intactos."""
@@ -98,17 +160,19 @@ class SQLiteCacheTransport:
         return {k.lower(): v for k, v in headers.items() if k.lower() in KEPT_HEADERS}
 
     def _lookup(self, url: str) -> tuple[int, Response] | None:
-        row = self.connection.execute(
-            "SELECT data, headers, status FROM responses WHERE url = ?", (url,),
-        ).fetchone()
+        with self._lock:
+            row = self.connection.execute(
+                "SELECT data, headers, status FROM responses WHERE url = ?", (url,),
+            ).fetchone()
         if row is None:
             return None
         try:
             return row[2], Response(json.loads(row[0]), json.loads(row[1]))
         except json.JSONDecodeError:
             # Linha corrompida (ex.: disco cheio): tratar como ausente e refazer.
-            self.connection.execute("DELETE FROM responses WHERE url = ?", (url,))
-            self.connection.commit()
+            with self._lock:
+                self.connection.execute("DELETE FROM responses WHERE url = ?", (url,))
+                self.connection.commit()
             return None
 
     def _store(self, url: str, status: int, data, headers: dict[str, str]) -> None:

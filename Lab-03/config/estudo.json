@@ -28,7 +28,9 @@
     "minimum_releases_in_window": 5,
     "minimum_valid_workflow_runs_in_default_branch": 50,
     "initial_sprint_sample": 100,
-    "final_sample_minimum": 300
+    "final_sample_minimum": 300,
+    "maximum_push_runs_in_window": 1000,
+    "maximum_releases_in_window": 500
   },
   "workflow_runs": {
     "branch": "default_branch",

@@ -57,6 +57,20 @@ def test_erro_rede_sem_segredo(monkeypatch):
     assert "secret" not in str(error.value)
 
 
+
+def test_resposta_cortada_no_meio_vira_erro_de_rede_reprocessavel(monkeypatch):
+    from http.client import IncompleteRead
+
+    from lab03.github import HttpTransport, NetworkError
+
+    def truncated(*args, **kwargs):
+        raise IncompleteRead(b"abc", 100)
+
+    monkeypatch.setattr("lab03.github.urlopen", truncated)
+    with pytest.raises(NetworkError):
+        HttpTransport("t").get("https://api.github.com/repos/o/r/releases")
+
+
 def test_resposta_http_interrompida_e_repetida_sem_cachear_corpo_parcial(monkeypatch, tmp_path):
     from http.client import IncompleteRead
     from io import BytesIO

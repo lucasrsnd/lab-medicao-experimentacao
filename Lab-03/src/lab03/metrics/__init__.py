@@ -4,6 +4,12 @@ from lab03.metrics.change_failure_rate import (
     calculate_ci_failure_rate,
 )
 from lab03.metrics.classification import classify_dora
+from lab03.metrics.corrective import (
+    CorrectiveVerdict,
+    DeliveryFailureResult,
+    calculate_delivery_failure_rate,
+    classify_release,
+)
 from lab03.metrics.deployment_frequency import (
     DeploymentFrequencyResult,
     calculate_deployment_frequency,
@@ -12,6 +18,10 @@ from lab03.metrics.lead_time import LeadTimeResult, calculate_lead_time
 from lab03.metrics.recovery import RecoveryEpisode, RecoveryResult, calculate_recovery
 
 __all__ = [
+    "CorrectiveVerdict",
+    "DeliveryFailureResult",
+    "calculate_delivery_failure_rate",
+    "classify_release",
     "CiFailureRateResult",
     "RecoveryEpisode",
     "RecoveryResult",

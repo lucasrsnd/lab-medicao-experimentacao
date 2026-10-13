@@ -49,7 +49,7 @@ class Transport(Protocol):
 
 
 class HttpTransport:
-    def __init__(self, token: str, timeout: float = 30):
+    def __init__(self, token: str, timeout: float = 120):
         self.token = token
         self.timeout = timeout
 
@@ -78,7 +78,7 @@ class HttpTransport:
                                'contributors for this repository via the API.'):
                     reason = 'contributors_too_large'
             raise ApiError(error.code, url, _response_headers(error.headers), reason=reason) from None
-        except (URLError, TimeoutError, ConnectionError, HTTPException):
+        except (URLError, TimeoutError, ConnectionError, HTTPException, OSError):
             raise NetworkError("Falha de rede ao consultar GitHub; nenhuma métrica foi gerada.") from None
 
 
