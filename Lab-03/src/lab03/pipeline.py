@@ -8,6 +8,7 @@ from lab03.domain import Window, WorkflowRun
 from lab03.github import GitHubClient
 from lab03.metrics import (
     calculate_ci_failure_rate,
+    calculate_delivery_failure_rate,
     calculate_deployment_frequency,
     calculate_lead_time,
     calculate_recovery,
@@ -21,10 +22,12 @@ def run(
     repository: str,
     window: Window,
     workflow_runs: tuple[WorkflowRun, ...] | None = None,
+    *,
+    collect_tags: bool = True,
 ) -> dict:
     """Com `workflow_runs=None` (ex.: modo amostra), CFR e recuperação ficam
     explicitamente ausentes e a classificação geral permanece incompleta."""
-    catalog = collect_releases(client, repository, window)
+    catalog = collect_releases(client, repository, window, collect_tags=collect_tags)
     changes = collect_changes(client, repository, catalog, window)
     lead_time = calculate_lead_time(changes)
     frequency = calculate_deployment_frequency(
@@ -68,9 +71,11 @@ def run(
         },
         missing_reasons=missing_reasons,
     )
+    delivery_failure = calculate_delivery_failure_rate(changes, window)
     result = repository_report(repository, window, catalog, changes, lead_time)
     result["deployment_frequency"] = asdict(frequency)
     result["ci_failure_rate"] = asdict(ci_failure_rate) if ci_failure_rate else None
+    result["delivery_failure_rate"] = asdict(delivery_failure)
     result["recovery"] = asdict(recovery) if recovery else None
     result["dora_classification"] = classification
     return result

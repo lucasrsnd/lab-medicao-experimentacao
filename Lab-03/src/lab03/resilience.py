@@ -109,7 +109,7 @@ class ResilientTransport:
         if remaining > 0:
             return
         # Cota conhecida como zerada: esperar antes de gastar uma requisição.
-        del self._quota[resource]
+        self._quota.pop(resource, None)
         if reset is not None:
             delay = reset - self._clock() + RESET_MARGIN_SECONDS
             if delay > 0:

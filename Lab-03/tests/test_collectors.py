@@ -130,3 +130,44 @@ def test_ref_com_barra_e_codificada(snapshot, client, window):
 def test_rejeita_repository_invalido(name):
     with pytest.raises(ValueError):
         repo_path(name)
+
+
+def test_collect_tags_false_nao_consulta_tags(client, window):
+    calls = []
+    original = client.pages
+    client.pages = lambda path, params=None: (calls.append(path), original(path, params))[1]
+    catalog = collect_releases(client, "demo/project", window, collect_tags=False)
+    assert catalog.tags == ()
+    assert not any(path.endswith("/tags") for path in calls)
+
+
+def test_release_pages_para_na_primeira_pagina_inteira_anterior_a_janela():
+    from urllib.parse import parse_qs, urlsplit
+
+    from lab03.collectors.releases import release_pages
+    from lab03.domain import timestamp
+    from lab03.github import GitHubClient, Response
+
+    def rel(i, date):
+        return {"id": i, "draft": False, "prerelease": False, "published_at": date}
+
+    pages = {
+        1: [rel(1, "2025-06-01T00:00:00Z"), rel(2, "2025-02-01T00:00:00Z")],
+        2: [rel(3, "2024-12-01T00:00:00Z"), rel(4, "2024-11-01T00:00:00Z")],
+        3: [rel(5, "2024-10-01T00:00:00Z")],
+    }
+    requested = []
+
+    class Transport:
+        def get(self, url):
+            page = int(parse_qs(urlsplit(url).query).get("page", ["1"])[0])
+            requested.append(page)
+            headers = {}
+            if page < 3:
+                headers["link"] = ('<https://api.github.com/repos/o/r/releases?per_page=100'
+                                   f'&page={page + 1}>; rel="next"')
+            return Response(pages[page], headers)
+
+    start = timestamp("2025-01-01T00:00:00Z")
+    result = [r["id"] for p in release_pages(GitHubClient(Transport()), "/repos/o/r", start) for r in p]
+    assert result == [1, 2, 3, 4] and requested == [1, 2]

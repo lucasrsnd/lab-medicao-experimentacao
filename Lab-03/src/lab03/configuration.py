@@ -17,6 +17,9 @@ class PipelineConfig:
     collection_allowed: bool
     stars_min_exclusive: int = 1000
     initial_sprint_sample: int = 100
+    final_sample_minimum: int = 300
+    maximum_push_runs_in_window: int | None = None
+    maximum_releases_in_window: int | None = None
     minimum_releases: int = 5
     minimum_valid_workflow_runs: int = 50
     valid_workflow_conclusions: tuple[str, ...] = (
@@ -91,6 +94,22 @@ def load_config(path: Path) -> PipelineConfig:
             or stars_min_exclusive < 0 or not isinstance(initial_sprint_sample, int)
             or isinstance(initial_sprint_sample, bool) or initial_sprint_sample < 1):
         raise ValueError("Limiar de estrelas e tamanho da amostra inicial são inválidos.")
+    final_sample_minimum = population.get("final_sample_minimum", 300)
+    if (not isinstance(final_sample_minimum, int) or isinstance(final_sample_minimum, bool)
+            or final_sample_minimum < initial_sprint_sample):
+        raise ValueError("final_sample_minimum deve ser inteiro e não menor que a amostra inicial.")
+    maximum_runs = population.get("maximum_push_runs_in_window")
+    if maximum_runs is not None and (
+        not isinstance(maximum_runs, int) or isinstance(maximum_runs, bool)
+        or maximum_runs < population["minimum_valid_workflow_runs_in_default_branch"]
+    ):
+        raise ValueError("maximum_push_runs_in_window deve ser nulo ou inteiro >= mínimo de runs.")
+    maximum_releases = population.get("maximum_releases_in_window")
+    if maximum_releases is not None and (
+        not isinstance(maximum_releases, int) or isinstance(maximum_releases, bool)
+        or maximum_releases < population["minimum_releases_in_window"]
+    ):
+        raise ValueError("maximum_releases_in_window deve ser nulo ou inteiro >= mínimo de releases.")
     runs = raw.get("workflow_runs")
     valid_conclusions = runs.get("valid_conclusions") if isinstance(runs, dict) else None
     if (not isinstance(runs, dict)
@@ -121,6 +140,9 @@ def load_config(path: Path) -> PipelineConfig:
         "study", None, window, None, allowed,
         stars_min_exclusive=stars_min_exclusive,
         initial_sprint_sample=initial_sprint_sample,
+        final_sample_minimum=final_sample_minimum,
+        maximum_push_runs_in_window=maximum_runs,
+        maximum_releases_in_window=maximum_releases,
         minimum_releases=population["minimum_releases_in_window"],
         minimum_valid_workflow_runs=population["minimum_valid_workflow_runs_in_default_branch"],
         valid_workflow_conclusions=tuple(valid_conclusions),

@@ -8,6 +8,7 @@ relevantes, para que a camada acima escolha entre esperar, repetir ou falhar.
 
 import json
 import re
+from http.client import HTTPException
 from dataclasses import dataclass
 from typing import Any, Iterator, Protocol
 from urllib.error import HTTPError, URLError
@@ -46,7 +47,7 @@ class Transport(Protocol):
 
 
 class HttpTransport:
-    def __init__(self, token: str, timeout: float = 30):
+    def __init__(self, token: str, timeout: float = 120):
         self.token = token
         self.timeout = timeout
 
@@ -66,7 +67,7 @@ class HttpTransport:
                 })
         except HTTPError as error:
             raise ApiError(error.code, url, _response_headers(error.headers)) from None
-        except (URLError, TimeoutError, ConnectionError):
+        except (URLError, TimeoutError, ConnectionError, HTTPException, OSError):
             raise NetworkError("Falha de rede ao consultar GitHub; nenhuma métrica foi gerada.") from None
 
 

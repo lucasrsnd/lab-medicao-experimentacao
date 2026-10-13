@@ -45,6 +45,7 @@ def _fetch_slice(
     piece: Window,
     runs: dict[int, dict],
     stats: dict,
+    tolerate_drift: bool = False,
 ) -> None:
     # `created` é inclusivo nas duas pontas e tem resolução de segundos; o
     # último instante de [start, end) é end - 1s. Duplicatas caem em `runs`.
@@ -66,7 +67,12 @@ def _fetch_slice(
                 or page_total < 0):
             raise DataError("Resposta de workflow runs sem total_count válido.")
         if expected_total is not None and expected_total != page_total:
-            raise DataError("Total de workflow runs mudou durante a paginação.")
+            if not tolerate_drift:
+                raise DataError("Total de workflow runs mudou durante a paginação.")
+            # Runs apagados/reexecutados durante a leitura: usar o menor total
+            # visto como alvo e registrar a ocorrência para auditoria.
+            stats["total_drift"] = stats.get("total_drift", 0) + 1
+            page_total = min(page_total, expected_total)
         expected_total = page_total
         stats["requests"] += 1
         if page_total > SEARCH_RESULT_CAP:
@@ -90,7 +96,7 @@ def _fetch_slice(
         middle = piece.start + (piece.end - piece.start) / 2
         middle = middle.replace(microsecond=0)
         for half in (Window(piece.start, middle), Window(middle, piece.end)):
-            _fetch_slice(client, root, default_branch, half, runs, stats)
+            _fetch_slice(client, root, default_branch, half, runs, stats, tolerate_drift)
         return
     if expected_total is not None and len(fetched) < expected_total:
         raise DataError("Paginação de workflow runs incompleta.")
@@ -105,6 +111,7 @@ def collect_workflow_runs(
     valid_conclusions: tuple[str, ...],
     *,
     stats: dict | None = None,
+    tolerate_drift: bool = False,
 ) -> tuple[WorkflowRun, ...]:
     root = repo_path(repository)
     raw_runs: dict[int, dict] = {}
@@ -112,7 +119,7 @@ def collect_workflow_runs(
     stats.update({"slices": 0, "bisections": 0, "requests": 0})
     for piece in month_slices(window):
         stats["slices"] += 1
-        _fetch_slice(client, root, default_branch, piece, raw_runs, stats)
+        _fetch_slice(client, root, default_branch, piece, raw_runs, stats, tolerate_drift)
 
     runs = {}
     for identifier, raw in raw_runs.items():

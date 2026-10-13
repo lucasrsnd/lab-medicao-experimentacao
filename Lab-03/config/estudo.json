@@ -2,16 +2,16 @@
   "schema_version": 1,
   "mode": "study",
   "issue": 93,
-  "status": "blocked_pending_professor_window",
-  "collection_allowed": false,
+  "status": "ready",
+  "collection_allowed": true,
   "protocol": "docs/protocolo.md",
   "window": {
     "duration_months": 12,
-    "start": null,
-    "end": null,
-    "timezone": null,
+    "start": "2025-10-06T00:00:00-03:00",
+    "end": "2026-10-07T00:00:00-03:00",
+    "timezone": "-03:00",
     "interval": "[start, end)",
-    "source": "A definir pelo professor na abertura do Lab03S01"
+    "source": "Janela proposta pelo grupo (professor não fixou datas); 12 meses exatos, fim exclusivo"
   },
   "proposed_window": {
     "start": "2025-10-06T00:00:00-03:00",
@@ -28,7 +28,9 @@
     "minimum_releases_in_window": 5,
     "minimum_valid_workflow_runs_in_default_branch": 50,
     "initial_sprint_sample": 100,
-    "final_sample_minimum": 300
+    "final_sample_minimum": 300,
+    "maximum_push_runs_in_window": 1000,
+    "maximum_releases_in_window": 500
   },
   "workflow_runs": {
     "branch": "default_branch",

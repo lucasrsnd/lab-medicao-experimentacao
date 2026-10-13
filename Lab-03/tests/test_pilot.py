@@ -163,3 +163,96 @@ def test_cli_piloto_registra_execucao_cache_e_contagens(tmp_path, monkeypatch):
     assert output["execution"]["cache"]["misses"] > 0
     assert output["execution"]["cache"]["hits"] > 0
     assert b"test-token-not-persisted" not in cache_path.read_bytes()
+
+
+def test_cli_full_usa_final_sample_minimum_e_registra_o_tipo(tmp_path, monkeypatch):
+    config_path = Path(__file__).parents[1] / "config" / "estudo.json"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["status"] = "ready"
+    config["collection_allowed"] = True
+    config["window"]["start"] = "2025-03-01T00:00:00Z"
+    config["window"]["end"] = "2026-03-01T00:00:00Z"
+    config["population"]["initial_sprint_sample"] = 3
+    config["population"]["final_sample_minimum"] = 5
+    config_path = tmp_path / "study.json"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+
+    monkeypatch.setenv("GITHUB_TOKEN", "test-token-not-persisted")
+    monkeypatch.setattr("lab03.cli.HttpTransport", lambda token: PilotTransport(repository_count=6))
+    output_path = tmp_path / "full.json"
+
+    assert main([
+        "--config", str(config_path), "--full",
+        "--output", str(output_path), "--cache", str(tmp_path / "c.sqlite3"),
+    ]) == 0
+
+    output = json.loads(output_path.read_text(encoding="utf-8"))
+    assert output["sample_kind"] == "full"
+    assert len(output["repositories"]) == 5
+    assert "--full" in output["execution"]["command"]
+    assert "delivery_failure_rate" in output["repositories"][0]["report"]
+
+
+def test_cli_nao_combina_full_com_pilot(tmp_path):
+    config_path = Path(__file__).parents[1] / "config" / "estudo.json"
+    try:
+        main(["--config", str(config_path), "--full", "--pilot", "--output", str(tmp_path / "x.json")])
+    except SystemExit as error:
+        assert error.code == 2
+    else:
+        raise AssertionError("combinação inválida deveria falhar")
+
+
+def _study_config(tmp_path, final=5):
+    config_path = Path(__file__).parents[1] / "config" / "estudo.json"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["status"] = "ready"
+    config["collection_allowed"] = True
+    config["window"]["start"] = "2025-03-01T00:00:00Z"
+    config["window"]["end"] = "2026-03-01T00:00:00Z"
+    config["population"]["initial_sprint_sample"] = 3
+    config["population"]["final_sample_minimum"] = final
+    path = tmp_path / "study.json"
+    path.write_text(json.dumps(config), encoding="utf-8")
+    return path
+
+
+def test_selecao_exportada_permite_dividir_a_coleta_e_juntar_as_partes(tmp_path, monkeypatch):
+    from lab03.merge import main as merge_main
+
+    config_path = _study_config(tmp_path)
+    monkeypatch.setenv("GITHUB_TOKEN", "test-token-not-persisted")
+    monkeypatch.setattr("lab03.cli.HttpTransport", lambda token: PilotTransport(repository_count=6))
+    full = tmp_path / "full.json"
+    assert main(["--config", str(config_path), "--full", "--output", str(full),
+                 "--cache", str(tmp_path / "a.sqlite3")]) == 0
+    whole = json.loads(full.read_text(encoding="utf-8"))
+    header = {k: v for k, v in whole.items() if k not in ("repositories", "execution", "sample_kind", "source")}
+    selection = tmp_path / "selecao.json"
+    selection.write_text(json.dumps(header), encoding="utf-8")
+
+    # Segunda pessoa: sem busca, só a coleta das fatias.
+    class NoSearch(PilotTransport):
+        def get(self, url):
+            assert "/search/repositories" not in url, "a seleção não deve ser refeita"
+            return super().get(url)
+
+    monkeypatch.setattr("lab03.cli.HttpTransport", lambda token: NoSearch(repository_count=6))
+    parts = []
+    for first, last in ((0, 3), (3, 5)):
+        out = tmp_path / f"parte_{first}.json"
+        assert main(["--config", str(config_path), "--full", "--selection", str(selection),
+                     "--slice", f"{first}:{last}", "--output", str(out),
+                     "--cache", str(tmp_path / f"c{first}.sqlite3")]) == 0
+        parts.append(out)
+        assert len(json.loads(out.read_text(encoding="utf-8"))["repositories"]) == last - first
+
+    merged = tmp_path / "merged.json"
+    assert merge_main([str(parts[0]), str(parts[1]), "--output", str(merged)]) == 0
+    result = json.loads(merged.read_text(encoding="utf-8"))
+    assert [r["metadata"]["full_name"] for r in result["repositories"]] == \
+           [r["metadata"]["full_name"] for r in whole["repositories"]]
+    assert result["execution"]["counts"]["eligible_repositories"] == 5
+    # Parte faltando é detectada.
+    assert merge_main([str(parts[0]), "--output", str(tmp_path / "x.json"),
+                       "--selection", str(selection)]) == 1
