@@ -53,9 +53,25 @@ class CandidateTransport:
         if parsed.path.endswith("/contributors"):
             return Response([{"id": 1}, {"id": 2}], {})
         if parsed.path.endswith("/releases"):
-            return Response(self.releases, {})
+            return Response([
+                {"tag_name": f"v{r['id']}", "body": "release",
+                 "html_url": f"https://github.com/demo/project/releases/{r['id']}", **r}
+                for r in self.releases
+            ], {})
         if parsed.path.endswith("/actions/runs"):
-            return Response({"total_count": len(self.runs), "workflow_runs": self.runs}, {})
+            low, high = (timestamp(v) for v in params["created"][0].split(".."))
+            runs = [
+                {"workflow_id": 1, "name": "CI", "status": "completed", "head_sha": "h",
+                 "run_started_at": r["created_at"], "updated_at": r["created_at"], **r}
+                for r in self.runs if low <= timestamp(r["created_at"]) <= high
+            ]
+            return Response({"total_count": len(runs), "workflow_runs": runs}, {})
+        if parsed.path == "/repos/demo/project":
+            return Response({"default_branch": "main"}, {})
+        if "/commits/" in parsed.path:
+            return Response({"sha": parsed.path.rsplit("/", 1)[-1]}, {})
+        if "/compare/" in parsed.path:
+            return Response({"status": "ahead"}, {})
         raise AssertionError(f"Unexpected request: {url}")
 
 
@@ -195,6 +211,7 @@ def test_cli_gera_artefato_do_funil(tmp_path, monkeypatch):
         "--config", str(config_path),
         "--select-candidates",
         "--output", str(output_path),
+        "--cache", str(tmp_path / "cache.sqlite3"),
     ]) == 0
     output = json.loads(output_path.read_text(encoding="utf-8"))
     assert output["source"] == "github"

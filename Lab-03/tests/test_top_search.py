@@ -104,7 +104,7 @@ def test_contagem_de_runs_sem_stop_at_continua_exaustiva():
     assert (count, observed) == (250, 250) and transport.requests == 3
 
 
-def test_contribuidores_403_lista_grande_demais_vira_ausencia_nao_erro():
+def test_contribuidores_403_no_modo_rapido_vira_ausencia_nao_erro():
     from lab03.collectors.candidates import _contributor_count
     from lab03.github import ApiError
 
@@ -112,7 +112,7 @@ def test_contribuidores_403_lista_grande_demais_vira_ausencia_nao_erro():
         def get(self, url):
             raise ApiError(403, url)
 
-    assert _contributor_count(GitHubClient(Forbidden()), "/repos/torvalds/linux") is None
+    assert _contributor_count(GitHubClient(Forbidden()), "/repos/torvalds/linux", True) is None
 
 
 def test_contribuidores_outros_erros_continuam_interrompendo():

@@ -6,7 +6,7 @@ from datetime import datetime
 from statistics import median
 from typing import Iterable
 
-from lab03.domain import WorkflowRun
+from lab03.domain import Window, WorkflowRun
 from lab03.metrics.change_failure_rate import FAILURE_CONCLUSIONS, SUCCESS_CONCLUSIONS
 
 
@@ -17,6 +17,7 @@ class RecoveryEpisode:
     ended_at: datetime | None
     failed_runs: int
     recovery_hours: float | None
+    censored_at: datetime | None = None
 
     @property
     def censored(self) -> bool:
@@ -37,12 +38,12 @@ class RecoveryResult:
     episodes: tuple[RecoveryEpisode, ...]
 
 
-def calculate_recovery(runs: Iterable[WorkflowRun]) -> RecoveryResult:
+def calculate_recovery(runs: Iterable[WorkflowRun], window: Window | None = None) -> RecoveryResult:
     """Cada workflow é percorrido em ordem cronológica, de forma independente.
 
     Episódio: começa na primeira falha após um sucesso e termina no próximo
     sucesso do mesmo workflow. Tempo = `updated_at` do sucesso − `run_started_at`
-    da primeira falha (ou `created_at` se aquele não existir). Falha que nunca
+    da primeira falha (sem imputar `created_at`). Falha que nunca
     é seguida de sucesso na janela é censurada. Falhas iniciais sem sucesso
     anterior na janela não abrem episódio (o enunciado exige "após um
     sucesso"); são contadas em `leading_failures_without_prior_success`.
@@ -50,6 +51,8 @@ def calculate_recovery(runs: Iterable[WorkflowRun]) -> RecoveryResult:
     """
     by_workflow: dict[int, list[WorkflowRun]] = defaultdict(list)
     for run in runs:
+        if window is not None and not window.contains(run.created_at):
+            continue
         if run.conclusion in SUCCESS_CONCLUSIONS or run.conclusion in FAILURE_CONCLUSIONS:
             by_workflow[run.workflow_id].append(run)
 
@@ -62,6 +65,10 @@ def calculate_recovery(runs: Iterable[WorkflowRun]) -> RecoveryResult:
         first_failure: WorkflowRun | None = None
         failed_runs = 0
         for run in ordered:
+            if (run.conclusion in SUCCESS_CONCLUSIONS and window is not None
+                    and run.updated_at is not None and run.updated_at >= window.end):
+                # O sucesso ainda não havia terminado no fim da observação.
+                continue
             if run.conclusion in FAILURE_CONCLUSIONS:
                 if first_failure is not None:
                     failed_runs += 1
@@ -73,9 +80,13 @@ def calculate_recovery(runs: Iterable[WorkflowRun]) -> RecoveryResult:
             seen_success = True
             if first_failure is None:
                 continue
-            started = first_failure.run_started_at or first_failure.created_at
+            started = first_failure.run_started_at
             ended = run.updated_at
-            if ended is None or ended < started:
+            if started is None or ended is None:
+                exclusions["invalid_recovery_timestamps"] += 1
+            elif window is not None and not window.contains(started):
+                exclusions["failure_started_outside_window"] += 1
+            elif ended < started:
                 exclusions["invalid_recovery_timestamps"] += 1
             else:
                 episodes.append(RecoveryEpisode(
@@ -84,10 +95,16 @@ def calculate_recovery(runs: Iterable[WorkflowRun]) -> RecoveryResult:
                 ))
             first_failure, failed_runs = None, 0
         if first_failure is not None:
-            episodes.append(RecoveryEpisode(
-                workflow_id, first_failure.run_started_at or first_failure.created_at,
-                None, failed_runs, None,
-            ))
+            started = first_failure.run_started_at
+            if started is None:
+                exclusions["invalid_recovery_timestamps"] += 1
+            elif window is not None and not window.contains(started):
+                exclusions["failure_started_outside_window"] += 1
+            else:
+                episodes.append(RecoveryEpisode(
+                    workflow_id, started, None, failed_runs, None,
+                    window.end if window else None,
+                ))
 
     recovered = [e.recovery_hours for e in episodes if not e.censored]
     censored = len(episodes) - len(recovered)

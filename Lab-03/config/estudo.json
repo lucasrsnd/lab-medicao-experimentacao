@@ -8,10 +8,10 @@
   "window": {
     "duration_months": 12,
     "start": "2025-10-06T00:00:00-03:00",
-    "end": "2026-10-07T00:00:00-03:00",
+    "end": "2026-10-06T00:00:00-03:00",
     "timezone": "-03:00",
     "interval": "[start, end)",
-    "source": "Janela proposta pelo grupo (professor não fixou datas); 12 meses exatos, fim exclusivo"
+    "source": "Definida pelo grupo por solicitacao de Gustavo em 2026-10-07; confirmacao do professor pendente."
   },
   "proposed_window": {
     "start": "2025-10-06T00:00:00-03:00",
@@ -88,5 +88,11 @@
     "invalid_or_missing_required_fields": "exclude_and_count_by_reason",
     "unresolved_release_sha": "exclude_and_count_by_reason",
     "api_or_pagination_failure": "stop_collection_with_error"
+  },
+  "window_decision": {
+    "date": "2026-10-07",
+    "authority": "group",
+    "professor_confirmed": false,
+    "note": "Adota a proposta existente corrigindo o limite final exclusivo para exatamente 12 meses. Nao representa aprovacao do professor."
   }
 }

@@ -67,7 +67,9 @@ class PilotTransport:
         if path.endswith("/contributors"):
             return Response([{"id": 1}], {})
         if path.endswith("/actions/runs"):
-            return Response({"total_count": len(self.runs), "workflow_runs": self.runs}, {})
+            low, high = (timestamp(v) for v in params["created"][0].split(".."))
+            runs = [r for r in self.runs if low <= timestamp(r["created_at"]) <= high]
+            return Response({"total_count": len(runs), "workflow_runs": runs}, {})
         if path.endswith("/releases"):
             return Response(self.releases, {})
         if path.endswith("/tags"):

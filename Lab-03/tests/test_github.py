@@ -69,3 +69,34 @@ def test_resposta_cortada_no_meio_vira_erro_de_rede_reprocessavel(monkeypatch):
     monkeypatch.setattr("lab03.github.urlopen", truncated)
     with pytest.raises(NetworkError):
         HttpTransport("t").get("https://api.github.com/repos/o/r/releases")
+
+
+def test_resposta_http_interrompida_e_repetida_sem_cachear_corpo_parcial(monkeypatch, tmp_path):
+    from http.client import IncompleteRead
+    from io import BytesIO
+    from lab03.cache import SQLiteCacheTransport
+    from lab03.resilience import ResilientTransport
+
+    class Partial(BytesIO):
+        headers = {}
+        def read(self, *args):
+            raise IncompleteRead(b'{"partial":', 10)
+
+    class Complete(BytesIO):
+        headers = {}
+
+    responses = iter([Partial(), Complete(b'{"ok": true}')])
+    calls = []
+    def fetch(request, **kwargs):
+        calls.append(request.full_url)
+        return next(responses)
+    monkeypatch.setattr('lab03.github.urlopen', fetch)
+    delays = []
+    resilient = ResilientTransport(HttpTransport('test-token'), sleep=delays.append)
+    with SQLiteCacheTransport(resilient, tmp_path / 'cache.sqlite3') as cache:
+        assert cache.get(BASE).data == {'ok': True}
+        assert cache.get(BASE).data == {'ok': True}
+        assert cache.hits == 1
+    assert len(calls) == 2
+    assert delays == [1.0]
+

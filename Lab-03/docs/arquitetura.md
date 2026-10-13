@@ -49,20 +49,31 @@ A separação aplica responsabilidade única e inversão de dependência na fron
 | `analysis.report` | Montagem da saída JSON a partir dos contratos e métricas. |
 | JSON | `schema_version=1`; datas ISO 8601, unidades nos nomes e origem explícita. |
 
-Lucas pode decorar/substituir `Transport` com cache, rate limit e retentativas (#95/#96). Davi pode chamar `pipeline.run` para os elegíveis e integrar funil (#97/#106). Runs e demais métricas devem usar os mesmos contratos de datas, exclusões e funções puras.
+As entregas de Lucas (#95/#96/#101/#102) e Davi (#94/#97/#103/#106)
+estão integradas: cache, retentativas, runs, CFR, recuperação, seleção,
+frequência e classificação usam os contratos comuns e métricas puras.
 
 `configuration.py` carrega os arquivos JSON antes de executar. A configuração
-do estudo bloqueia chamadas de rede até a janela oficial ser preenchida e
-aprovada; `config/amostra.json` executa um repositório sintético por snapshot,
+do estudo exige janela de doze meses e autorização explícita de coleta,
+atualmente habilitada por decisão do grupo registrada em `window_decision`;
+`config/amostra.json` executa um repositório sintético por snapshot,
 sem token ou fallback de rede.
 
 `pilot.run_pilot` expande o prefixo de candidatos ordenados por estrelas até
 obter o tamanho elegível configurado. Em seguida, integra o relatório por
 repositório e a coleta completa de workflow runs. A CLI envolve o transporte
-HTTP em `SQLiteCacheTransport`: cada resposta bem-sucedida e seu cabeçalho de
-paginação ficam associados à URL para permitir retomada após interrupção. O
-arquivo do cache não guarda o token e deve ser trocado ou removido para uma
-coleta nova.
+HTTP em `SQLiteCacheTransport`, sobre `ResilientTransport`: cada resposta
+persistida e seu cabeçalho de paginação ficam associados à URL e ao SHA-256
+da configuração para permitir retomada após interrupção. O cache registra
+`fetched_at`, não guarda o token e pode ser atualizado com `--refresh-cache`
+sem apagar respostas de outras configurações. Cada relatório inclui os
+valores da configuração e seu identificador.
+
+A elegibilidade reutiliza `collect_releases` sem tags e
+`collect_workflow_runs`, garantindo os mesmos critérios de ancestralidade,
+janela e paginação usados na coleta final. O comando individual real também
+coleta runs e fornece CFR e recuperação. Recuperação recebe a janela para
+censurar episódios ainda abertos no limite final, sem imputar datas ausentes.
 
 ## Decisões a ratificar no protocolo
 

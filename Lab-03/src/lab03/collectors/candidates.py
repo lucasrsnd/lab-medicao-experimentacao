@@ -4,10 +4,12 @@ import re
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timedelta, timezone
+from typing import Callable
 from urllib.parse import urlencode, urljoin
-from lab03.domain import timestamp
+from lab03.domain import Window, timestamp
 from lab03.github import API_ROOT, ApiError, DataError, GitHubClient, NetworkError
-from lab03.collectors.releases import release_pages, repo_path
+from lab03.collectors.releases import collect_releases, release_pages, repo_path
+from lab03.collectors.workflow_runs import collect_workflow_runs
 
 SEARCH_START = date(2008, 1, 1)
 SEARCH_RESULT_LIMIT = 1000
@@ -141,12 +143,43 @@ def _search_slice(
 
 
 def search_popular_repositories(
-    client: GitHubClient, stars_min_exclusive: int,
+    client: GitHubClient, stars_min_exclusive: int, *, limit: int | None = None,
 ) -> tuple[list[dict], dict]:
     """Busca repositórios públicos sem aceitar buscas truncadas pelo limite da API."""
     end = _current_search_end()
     query = _search_query(stars_min_exclusive, SEARCH_START, end)
-    records, queries = _search_slice(client, query, SEARCH_START, end, stars_min_exclusive)
+    population_count = _search_count(client, query) if limit is not None else None
+    if limit is not None and limit < SEARCH_RESULT_LIMIT and population_count > limit:
+        # A busca ordenada pode fornecer um prefixo sem enumerar toda a população.
+        # Completar o empate na fronteira preserva a ordenação por estrelas e ID.
+        records = []
+        pages = 0
+        for page in client.pages('/search/repositories', {
+            'q': query, 'sort': 'stars', 'order': 'desc', 'per_page': SEARCH_PAGE_SIZE,
+        }):
+            pages += 1
+            if (not isinstance(page, dict) or page.get('incomplete_results') is True
+                    or not isinstance(page.get('items'), list)):
+                raise DataError('Busca ordenada de candidatos incompleta.')
+            records.extend(page['items'])
+            if len(records) >= limit:
+                break
+        if len(records) < limit:
+            raise DataError('Busca ordenada retornou menos candidatos que o solicitado.')
+        if any(not isinstance(r.get('stargazers_count'), int) for r in records):
+            raise DataError('Busca ordenada retornou candidato sem estrelas válidas.')
+        records.sort(key=lambda r: (-r['stargazers_count'], r['id']))
+        boundary = records[limit - 1]['stargazers_count']
+        bounds = (boundary, boundary)
+        tie_query = _search_query(stars_min_exclusive, SEARCH_START, end, bounds)
+        ties, tie_queries = _search_slice(
+            client, tie_query, SEARCH_START, end, stars_min_exclusive, bounds,
+        )
+        records.extend(ties)
+        queries = [{'query': query, 'total_count': population_count, 'pages': pages,
+                    'sort': 'stars', 'order': 'desc', 'purpose': 'ranked_prefix'}, *tie_queries]
+    else:
+        records, queries = _search_slice(client, query, SEARCH_START, end, stars_min_exclusive)
     unique: dict[int, dict] = {}
     duplicates = 0
     for record in records:
@@ -165,6 +198,7 @@ def search_popular_repositories(
         "query_count": len(queries),
         "unique_candidates": len(unique),
         "duplicate_ids": duplicates,
+        "population_count": population_count if population_count is not None else len(unique),
     }
 
 
@@ -258,21 +292,16 @@ def _contributor_count_fast(client: GitHubClient, root: str) -> int | None:
 
 
 def _contributor_count(client: GitHubClient, root: str, fast: bool = False) -> int | None:
-    """None quando o GitHub se recusa a listar (403: lista grande demais, caso do
-    kernel do Linux, com dezenas de milhares). Ausência explícita, nunca zero."""
+    """Modo rápido (S02): None quando o GitHub se recusa a listar (403: lista grande
+    demais, caso do kernel do Linux). Ausência explícita, nunca zero. Fora dele, o
+    403 propaga e o funil decide (`contributors_too_large` exclui o repositório)."""
     if fast:
         return _contributor_count_fast(client, root)
     identifiers = set()
-    try:
-        pages = list(client.pages(f"{root}/contributors", {
-            "anon": 1,
-            "per_page": SEARCH_PAGE_SIZE,
-        }))
-    except ApiError as error:
-        if error.status == 403:
-            return None
-        raise
-    for page in pages:
+    for page in client.pages(f"{root}/contributors", {
+        "anon": 1,
+        "per_page": SEARCH_PAGE_SIZE,
+    }):
         if not isinstance(page, list):
             raise DataError("Resposta inválida ao listar contribuidores.")
         for contributor in page:
@@ -427,6 +456,16 @@ def _count_valid_runs(
     return count, observed
 
 
+def _count_collected_runs(client, root, branch, window_start, window_end, valid_conclusions):
+    """Contagem exaustiva pelo coletor completo (bissecção do teto da busca)."""
+    stats = {}
+    runs = collect_workflow_runs(
+        client, root.removeprefix("/repos/"), Window(window_start, window_end),
+        branch, valid_conclusions, stats=stats,
+    )
+    return len(runs), stats["observed"]
+
+
 def select_candidates(
     client: GitHubClient,
     window_start: datetime,
@@ -441,6 +480,9 @@ def select_candidates(
     workers: int = 1,
     maximum_runs: int | None = None,
     maximum_releases: int | None = None,
+    ranked_search: bool = False,
+    notify: Callable[[str], None] | None = None,
+    required_repositories: tuple[str, ...] = (),
 ) -> dict:
     """Executa as etapas do funil e retorna apenas candidatos elegíveis.
 
@@ -451,10 +493,15 @@ def select_candidates(
     if window_start.utcoffset() is None or window_end.utcoffset() is None or window_start >= window_end:
         raise ValueError("A janela do funil deve ser timezone-aware e crescente.")
 
+    notify = notify or (lambda message: None)
+    notify(f"Buscando os {sample_size} candidatos mais populares...")
     if top_only:
         records, search = search_top_repositories(client, stars_min_exclusive, sample_size)
     else:
-        records, search = search_popular_repositories(client, stars_min_exclusive)
+        records, search = search_popular_repositories(
+            client, stars_min_exclusive, limit=sample_size if ranked_search else None,
+        )
+    population = search.get("population_total", search.get("population_count", len(records)))
     collected_at = datetime.now(timezone.utc)
     invalid_star_records = sum(
         not isinstance(record.get("stargazers_count"), int)
@@ -467,16 +514,29 @@ def select_candidates(
         and record["stargazers_count"] > stars_min_exclusive
     ]
     records.sort(key=lambda item: (-item["stargazers_count"], item["id"]))
-    sample = records[:sample_size]
+    required = []
+    required_ids = set()
+    for name in required_repositories:
+        record = client.get(repo_path(name))
+        if (record.get("private") is not False
+                or not isinstance(record.get("stargazers_count"), int)
+                or record["stargazers_count"] <= stars_min_exclusive):
+            raise DataError(f"Repositório obrigatório fora da população: {name}")
+        if record["id"] not in required_ids:
+            required.append(record)
+            required_ids.add(record["id"])
+    if len(required) > sample_size:
+        raise ValueError("Mais repositórios obrigatórios que vagas na amostra.")
+    sample = (required + [r for r in records if r["id"] not in required_ids])[:sample_size]
     funnel = {
         "search": {
             **search,
-            "matching_candidates": search.get("population_total", len(records)),
+            "matching_candidates": population,
             "sample_size": sample_size,
             "selected": len(sample),
             "excluded": {
                 "invalid_or_below_star_threshold": invalid_star_records,
-                "outside_initial_sample": search.get("population_total", len(records)) - len(sample),
+                "outside_initial_sample": population - len(sample),
             },
         },
         "actions": {"input": len(sample), "passed": 0, "excluded": {}},
@@ -484,7 +544,12 @@ def select_candidates(
         "releases": {"input": 0, "passed": 0, "excluded": {}},
         "workflow_runs": {"input": 0, "passed": 0, "excluded": {}},
     }
+    if required:
+        funnel["search"]["required_repositories"] = [r["full_name"] for r in required]
+        funnel["search"]["selection_policy"] = "required_then_stars_desc_id_asc"
+
     def check_actions(record):
+        notify(f"Actions: {record.get('full_name')}")
         try:
             root = repo_path(record.get("full_name", ""))
         except ValueError:
@@ -503,8 +568,15 @@ def select_candidates(
 
     def fetch_metadata(item):
         record, root = item
+        notify(f"Metadados: {record.get('full_name')}")
         try:
             return _metadata(client, record, root, collected_at, top_only), root, None
+        except ApiError as error:
+            if error.reason != "contributors_too_large":
+                raise
+            return None, root, "contributors_unavailable_api_limit"
+        except DataError:
+            raise  # Falha de paginação não é ausência de metadados.
         except ValueError as error:
             return None, root, str(error)
 
@@ -522,33 +594,62 @@ def select_candidates(
 
     def measure(item):
         candidate, root = item
+        notify(f"Elegibilidade: {candidate['full_name']}")
         if top_only:
             # Seleção em lote: um repositório que o GitHub não consegue servir
             # (5xx persistente após as retentativas, ex.: releases gigantes) é
             # excluído com motivo, em vez de derrubar a coleta inteira.
             try:
-                return _measure(candidate, root)
+                return _measure_fast(candidate, root)
             except (ApiError, NetworkError) as error:
                 status = getattr(error, "status", None)
                 reason = f"api_error_{status}" if status else "network_error"
                 if isinstance(error, ApiError) and status < 500:
                     raise
                 return {"id": candidate["id"], "full_name": candidate["full_name"], "measure_error": reason}
-        return _measure(candidate, root)
+        return _measure_full(candidate, root)
 
-    def _measure(candidate, root):
+    def _measure_fast(candidate, root):
         release_count, invalid_release_dates = _count_releases(
             client, root, window_start, window_end, stop_above=maximum_releases,
         )
         run_count, observed_runs = _count_valid_runs(
             client, root, candidate["default_branch"], window_start, window_end,
-            valid_conclusions, stop_at=minimum_valid_runs if top_only else None,
+            valid_conclusions, stop_at=minimum_valid_runs,
         )
-        candidate["valid_workflow_run_count_capped"] = top_only and run_count >= minimum_valid_runs
+        candidate["valid_workflow_run_count_capped"] = run_count >= minimum_valid_runs
         candidate["release_count"] = release_count
         candidate["invalid_release_dates"] = invalid_release_dates
         candidate["valid_workflow_run_count"] = run_count
         candidate["observed_workflow_run_count"] = observed_runs
+        return _with_activity_total(candidate, root)
+
+    def _measure_full(candidate, root):
+        catalog = collect_releases(
+            client, candidate["full_name"], Window(window_start, window_end),
+            collect_tags=False,
+        )
+        # Usar o branch observado pelo coletor, não o valor possivelmente
+        # desatualizado da busca de repositórios.
+        candidate["default_branch"] = catalog.default_branch
+        candidate["default_head_sha"] = catalog.default_head
+        run_count, observed_runs = _count_collected_runs(
+            client, root, candidate["default_branch"], window_start, window_end,
+            valid_conclusions,
+        )
+        candidate["release_count"] = len(catalog.releases)
+        candidate["invalid_release_dates"] = sum(
+            item.reason == "invalid_published_at" for item in catalog.exclusions
+        )
+        candidate["release_exclusions"] = [
+            {"id": item.identifier, "reason": item.reason} for item in catalog.exclusions
+        ]
+        candidate["valid_workflow_run_count"] = run_count
+        candidate["observed_workflow_run_count"] = observed_runs
+        notify(f"  {candidate['release_count']} releases; {run_count} runs validos")
+        return _with_activity_total(candidate, root)
+
+    def _with_activity_total(candidate, root):
         if maximum_runs is not None:
             candidate["push_runs_total"] = _push_runs_total(
                 client, root, candidate["default_branch"], window_start, window_end,

@@ -1,31 +1,35 @@
 {
-  "schema_version": 1,
-  "issue": 106,
-  "title": "Lab03 S01-14 - Piloto de 100 repositórios",
-  "target_eligible_repositories": 100,
-  "command": "python -m lab03 --config config/estudo.json --pilot --output data/piloto.json",
-  "configuration": "config/estudo.json",
-  "output": "data/piloto.json",
-  "cache": "data/cache.sqlite3",
-  "required_output": [
-    "funnel",
-    "repository_metadata",
-    "releases",
-    "commits",
-    "workflow_runs",
-    "pipeline_version",
-    "execution_command",
-    "cache_statistics"
-  ],
-  "execution_status": "blocked_pending_professor_window",
-  "execution_evidence": null,
-  "synthetic_validation": {
-    "command": "python -m pytest tests/test_pilot.py",
-    "eligible_repositories": 100,
-    "metadata_records": 100,
-    "releases": 500,
-    "commits": 400,
-    "workflow_runs": 5000
-  },
-  "notes": "Não registrar dados reais até a janela oficial ser confirmada e collection_allowed ser true."
+    "schema_version":  1,
+    "issue":  106,
+    "title":  "Lab03 S01-14 - Piloto de 100 repositórios",
+    "target_eligible_repositories":  100,
+    "command":  "python -m lab03 --config config/estudo.json --pilot --include-repo cli/cli --output data/piloto.json",
+    "configuration":  "config/estudo.json",
+    "output":  "data/piloto.json",
+    "cache":  "data/cache.sqlite3",
+    "required_output":  [
+                            "funnel",
+                            "repository_metadata",
+                            "releases",
+                            "commits",
+                            "workflow_runs",
+                            "pipeline_version",
+                            "execution_command",
+                            "cache_statistics"
+                        ],
+    "execution_status":  "in_progress",
+    "execution_started_at":  "2026-10-07T23:59:58.7268603Z",
+    "progress_log":  "data/piloto.stderr.log",
+    "process_record":  "data/piloto-process.json",
+    "selection_policy":  "cli/cli obrigatorio e outros 99 elegiveis por popularidade, sem duplicatas",
+    "execution_evidence":  null,
+    "synthetic_validation":  {
+                                 "command":  "python -m pytest tests/test_pilot.py",
+                                 "eligible_repositories":  100,
+                                 "metadata_records":  100,
+                                 "releases":  500,
+                                 "commits":  400,
+                                 "workflow_runs":  5000
+                             },
+    "notes":  "Janela definida pelo grupo em 2026-10-07, pendente de confirmacao docente. Registrar evidencia somente apos execucao real completa; validacao sintetica nao substitui piloto."
 }

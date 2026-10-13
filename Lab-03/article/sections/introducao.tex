@@ -29,17 +29,24 @@ mais antigo de cada entrega, e a mediana dos tempos de todos os commits
 incluídos nas releases. A paginação da API evita que essas comparações sejam
 limitadas silenciosamente a uma fração dos commits \cite{github}.
 
+A janela adotada pelo grupo abrange 6 de outubro de 2025 a 6 de outubro de
+2026, à meia-noite no fuso UTC$-3$, com o limite final exclusivo. A confirmação
+do professor permanece pendente. A configuração versionada registra essa
+decisão; eventual revisão exigirá nova coleta. O piloto inicial prevê 100
+repositórios elegíveis e ainda não constitui resultado empírico nesta versão.
+
 A validade dos proxies será examinada por três avaliadores independentes em
 60 repositórios, com cinco releases por projeto. A concordância e a qualidade
 da heurística corretiva fornecerão evidências para interpretar as métricas.
 A comparação entre combinações de releases, pré-releases, tags e variantes
 de lead time e CFR avaliará a estabilidade das classificações.
 
-\subsection{Hipóteses informais propostas}
+\subsection{Hipóteses a priori}
 
-As hipóteses abaixo constituem uma proposta anterior à coleta deste estudo e
-devem ser aprovadas pelo trio no protocolo. Elas expressam expectativas a
-confrontar com os dados, não resultados observados.
+As hipóteses abaixo acompanham o protocolo versionado antes da coleta deste
+estudo; a revisão conjunta permanece pendente. Elas expressam expectativas
+a confrontar com os dados, não resultados observados. Revisões posteriores
+à observação dos resultados deverão ser identificadas como exploratórias.
 
 \begin{description}
 \item[H01 (RQ01).] Espera-se heterogeneidade na frequência de releases,
@@ -59,8 +66,8 @@ não encerrados durante a janela deverão permanecer registrados como censurados
 entre frequência e CFR. Spearman será calculado para ambas as variantes
 de CFR, sem interpretar associação como causalidade.
 \item[H06 (RQ06).] Espera-se diferença entre subgrupos em pelo menos uma
-métrica. Propõem-se linguagem principal, quartis de estrelas e quartis de
-contribuidores como fatores, sujeitos à aprovação antes de observar resultados.
+métrica. O protocolo fixa linguagem principal, quartis de estrelas e quartis
+de contribuidores como fatores antes de observar resultados.
 \item[H07 (RQ07).] Espera-se que parte dos repositórios mude de categoria
 DORA ao alterar as definições de entrega, lead time e CFR, especialmente
 próximo aos cortes de classificação.
@@ -71,4 +78,3 @@ análise, com testes e rastreabilidade por issues. Validação manual, sensibili
 e replicação cruzada deverão sustentar a discussão dos limites do estudo.
 Repositório: \url{https://github.com/lucasrsnd/lab-medicao-experimentacao}.
 Acompanhamento: \url{https://github.com/users/lucasrsnd/projects/2}.
-

@@ -1,6 +1,7 @@
 """Integra seleção, elegibilidade, métricas e registros de workflow runs."""
 
 from dataclasses import asdict
+from typing import Callable
 
 from lab03 import __version__
 from lab03.collectors.candidates import parallel_map, parallel_stream, select_candidates
@@ -29,6 +30,8 @@ def run_pilot(
     include_workflow_runs: bool = True,
     selection: dict | None = None,
     slice_range: tuple[int, int] | None = None,
+    notify: Callable[[str], None] | None = None,
+    required_repositories: tuple[str, ...] = (),
 ) -> dict:
     """Com `selection` (saída de uma seleção anterior, ex.: `config/selecao-amostra.json`)
     a busca e o funil não são refeitos: só a coleta, opcionalmente de uma fatia
@@ -38,6 +41,7 @@ def run_pilot(
     Com `on_result`, cada repositório coletado é entregue (e descartado) assim
     que fica pronto, `on_start(cabeçalho)` é chamado antes do primeiro, e o
     retorno não traz `repositories`: a memória não cresce com a amostra."""
+    notify = notify or (lambda message: None)
     if selection is None:
         # Seleção rápida: a elegibilidade fica em torno de 20% dos mais estrelados,
         # então começar em 6x o alvo evita várias passadas curtas pelo mesmo cache.
@@ -57,8 +61,17 @@ def run_pilot(
                 workers=workers,
                 maximum_runs=maximum_runs,
                 maximum_releases=maximum_releases,
+                ranked_search=True,
+                notify=notify,
+                required_repositories=required_repositories,
             )
             eligible = selection["eligible_repositories"]
+            eligible_names = {r["full_name"].lower() for r in eligible}
+            missing_required = [
+                r for r in required_repositories if r.lower() not in eligible_names
+            ]
+            if missing_required:
+                raise DataError(f"Repositórios obrigatórios não elegíveis: {missing_required}")
             selected_count = selection["funnel"]["search"]["selected"]
             available_count = selection["funnel"]["search"]["matching_candidates"]
             if len(eligible) >= target_size:
@@ -95,6 +108,7 @@ def run_pilot(
         selection["pilot_sample"]["slice"] = [start, end]
     def collect_repository(metadata):
         repository = metadata["full_name"]
+        notify(f"Coleta completa: {repository}")
         collection = {}
         workflow_runs = collect_workflow_runs(
             client,
@@ -111,6 +125,10 @@ def run_pilot(
                 f"({len(workflow_runs)} < {minimum_valid_runs})."
             )
         report = run(client, repository, window, workflow_runs, collect_tags=collect_tags)
+        if len(report["catalog"]["releases"]) < minimum_releases:
+            raise DataError(
+                f"{repository}: releases do default branch abaixo do mínimo após integração."
+            )
         return {
             "metadata": metadata,
             "report": report,

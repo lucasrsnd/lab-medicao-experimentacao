@@ -75,9 +75,10 @@ def compact(url: str, data):
 
 
 class SQLiteCacheTransport:
-    def __init__(self, transport: Transport, path: Path):
+    def __init__(self, transport: Transport, path: Path, *, namespace: str = ""):
         self.transport = transport
         self.path = path
+        self.namespace = namespace
         self.hits = 0
         self.misses = 0
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -99,10 +100,13 @@ class SQLiteCacheTransport:
             self.connection.execute(
                 "ALTER TABLE responses ADD COLUMN status INTEGER NOT NULL DEFAULT 200"
             )
+        if "fetched_at" not in columns:
+            self.connection.execute("ALTER TABLE responses ADD COLUMN fetched_at TEXT")
         self.connection.commit()
 
     def get(self, url: str) -> Response:
-        cached = self._lookup(url)  # a decodificação do JSON fica fora da trava
+        key = f"{self.namespace}\n{url}" if self.namespace else url
+        cached = self._lookup(key)  # a decodificação do JSON fica fora da trava
         if cached is not None:
             with self._lock:
                 self.hits += 1
@@ -118,12 +122,12 @@ class SQLiteCacheTransport:
         except ApiError as error:
             if error.status in PERMANENT_ERRORS:
                 with self._lock:
-                    self._store(url, error.status, None, error.headers)
+                    self._store(key, error.status, None, error.headers)
             raise
         headers = self._kept(response.headers)
         data = compact(url, response.data)
         with self._lock:
-            self._store(url, 200, data, headers)
+            self._store(key, 200, data, headers)
         return Response(data, headers)
 
     def __len__(self) -> int:
@@ -133,6 +137,17 @@ class SQLiteCacheTransport:
     def close(self) -> None:
         with self._lock:
             self.connection.close()
+
+    def clear(self) -> None:
+        """Invalida apenas o snapshot desta configuração; outros ficam intactos."""
+        prefix = self.namespace + "\n"
+        if self.namespace:
+            self.connection.execute(
+                "DELETE FROM responses WHERE substr(url, 1, ?) = ?", (len(prefix), prefix),
+            )
+        else:
+            self.connection.execute("DELETE FROM responses WHERE instr(url, char(10)) = 0")
+        self.connection.commit()
 
     def __enter__(self) -> "SQLiteCacheTransport":
         return self
@@ -162,7 +177,8 @@ class SQLiteCacheTransport:
 
     def _store(self, url: str, status: int, data, headers: dict[str, str]) -> None:
         self.connection.execute(
-            "INSERT OR REPLACE INTO responses (url, data, headers, status) VALUES (?, ?, ?, ?)",
+            "INSERT OR REPLACE INTO responses (url, data, headers, status, fetched_at) "
+            "VALUES (?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
             (
                 url,
                 json.dumps(data, ensure_ascii=False),
