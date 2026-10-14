@@ -1,0 +1,14 @@
+{
+  "seed": 42,
+  "repositories": 60,
+  "releases": 283,
+  "releases_per_repository": 5,
+  "source_dataset_sha256": "bbc652390d9f6938c8478c1cb4b5103b3bb2e193a26f87f44a1fd17e8ddb6fa6",
+  "source_collected_at": "2026-10-13T19:09:27.055452+00:00",
+  "source_window": {
+    "start": "2025-10-06T03:00:00+00:00",
+    "end": "2026-10-07T03:00:00+00:00",
+    "interval": "[start, end)"
+  },
+  "sampling": "random.Random(seed).sample sobre nomes ordenados; releases por random.Random(f'{seed}:{repo}')"
+}

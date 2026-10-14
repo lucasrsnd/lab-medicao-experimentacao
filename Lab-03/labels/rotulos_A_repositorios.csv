@@ -1,0 +1,61 @@
+﻿repositorio,url,tipo_projeto,releases_sao_entregas,observacoes
+AlistGo/alist,https://github.com/AlistGo/alist,aplicacao/servico,sim,binarios por plataforma nas releases
+DioxusLabs/dioxus,https://github.com/DioxusLabs/dioxus,biblioteca/framework,sim,framework; releases com CLI dx e crates
+Egonex-AI/Understand-Anything,https://github.com/Egonex-AI/Understand-Anything,outro,incerto,plugin/skill para agentes; releases quase sem artefatos
+Fincept-Corporation/FinceptTerminal,https://github.com/Fincept-Corporation/FinceptTerminal,aplicacao/servico,sim,instaladores desktop nas releases
+FuelLabs/fuel-core,https://github.com/FuelLabs/fuel-core,aplicacao/servico,sim,no completo; binarios por plataforma
+HKUDS/DeepTutor,https://github.com/HKUDS/DeepTutor,aplicacao/servico,incerto,sem assets; tags com betas
+HKUDS/RAG-Anything,https://github.com/HKUDS/RAG-Anything,biblioteca/framework,sim,pacote Python distribuido; sem assets nas releases
+Mintplex-Labs/anything-llm,https://github.com/Mintplex-Labs/anything-llm,aplicacao/servico,sim,instaladores desktop e docker
+NandhaKishorM/laya,https://github.com/NandhaKishorM/laya,biblioteca/framework,sim,wheel/sdist nas releases
+OthmanAdi/planning-with-files,https://github.com/OthmanAdi/planning-with-files,outro,incerto,skill para agentes; sem assets
+QL-Win/QuickLook,https://github.com/QL-Win/QuickLook,aplicacao/servico,sim,instaladores nas releases
+Significant-Gravitas/AutoGPT,https://github.com/Significant-Gravitas/AutoGPT,aplicacao/servico,incerto,plataforma beta; tags sem assets
+StevenBlack/hosts,https://github.com/StevenBlack/hosts,outro,incerto,listas de hosts; releases versionam dados
+TanStack/table,https://github.com/TanStack/table,biblioteca/framework,sim,pacotes npm por release
+TeamNewPipe/NewPipe,https://github.com/TeamNewPipe/NewPipe,aplicacao/servico,sim,APKs nas releases
+Wilfred/difftastic,https://github.com/Wilfred/difftastic,ferramenta CLI,sim,binarios por plataforma
+acmesh-official/acme.sh,https://github.com/acmesh-official/acme.sh,ferramenta CLI,incerto,script instalado a partir do master; tags sem assets
+anomalyco/sst,https://github.com/anomalyco/sst,ferramenta CLI,sim,CLI com binarios por plataforma
+ayangweb/BongoCat,https://github.com/ayangweb/BongoCat,aplicacao/servico,sim,instaladores desktop
+base/node,https://github.com/base/node,aplicacao/servico,sim,repositorio arquivado; releases usadas para instalar/atualizar no
+binwiederhier/ntfy,https://github.com/binwiederhier/ntfy,aplicacao/servico,sim,servidor e CLI com binarios
+chakra-ui/chakra-ui,https://github.com/chakra-ui/chakra-ui,biblioteca/framework,sim,pacotes npm
+deepspeedai/DeepSpeed,https://github.com/deepspeedai/DeepSpeed,biblioteca/framework,sim,pacote PyPI
+dragonflydb/dragonfly,https://github.com/dragonflydb/dragonfly,aplicacao/servico,sim,banco em memoria; binarios
+exelban/stats,https://github.com/exelban/stats,aplicacao/servico,sim,app macOS (.dmg)
+expressjs/express,https://github.com/expressjs/express,biblioteca/framework,sim,pacote npm
+eyaltoledano/claude-task-master,https://github.com/eyaltoledano/claude-task-master,ferramenta CLI,sim,CLI publicada no npm
+fabricjs/fabric.js,https://github.com/fabricjs/fabric.js,biblioteca/framework,sim,biblioteca npm
+farion1231/cc-switch,https://github.com/farion1231/cc-switch,aplicacao/servico,sim,app desktop com instaladores
+fastfetch-cli/fastfetch,https://github.com/fastfetch-cli/fastfetch,ferramenta CLI,sim,binarios por plataforma
+filebrowser/filebrowser,https://github.com/filebrowser/filebrowser,aplicacao/servico,sim,binarios por plataforma
+gchq/CyberChef,https://github.com/gchq/CyberChef,aplicacao/servico,sim,web app; zip por release
+harry0703/MoneyPrinterTurbo,https://github.com/harry0703/MoneyPrinterTurbo,aplicacao/servico,sim,pacote portatil Windows
+henrygd/beszel,https://github.com/henrygd/beszel,aplicacao/servico,sim,hub/agente com binarios e deb
+hugohe3/ppt-master,https://github.com/hugohe3/ppt-master,outro,incerto,skill/projeto de IA; zips de skill
+iOfficeAI/OfficeCLI,https://github.com/iOfficeAI/OfficeCLI,ferramenta CLI,sim,binarios por plataforma
+ionic-team/ionic-framework,https://github.com/ionic-team/ionic-framework,biblioteca/framework,sim,pacotes npm
+jamiepine/voicebox,https://github.com/jamiepine/voicebox,aplicacao/servico,sim,app desktop com instaladores
+lovell/sharp,https://github.com/lovell/sharp,biblioteca/framework,sim,modulo npm
+luongnv89/claude-howto,https://github.com/luongnv89/claude-howto,outro,nao,guia/tutorial; releases versionam documentacao
+markedjs/marked,https://github.com/markedjs/marked,biblioteca/framework,sim,pacote npm
+microsoft/WSL,https://github.com/microsoft/WSL,aplicacao/servico,sim,pacotes msi/msix
+microsoft/monaco-editor,https://github.com/microsoft/monaco-editor,biblioteca/framework,sim,pacote npm
+microsoft/semantic-kernel,https://github.com/microsoft/semantic-kernel,biblioteca/framework,sim,SDK .NET/Python publicado
+microsoft/terminal,https://github.com/microsoft/terminal,aplicacao/servico,sim,app Windows; nenhuma release rotulavel no sorteio
+mihonapp/mihon,https://github.com/mihonapp/mihon,aplicacao/servico,sim,APKs nas releases
+modelcontextprotocol/servers,https://github.com/modelcontextprotocol/servers,outro,incerto,servidores de referencia; sem releases rotulaveis no sorteio
+morluto/rea,https://github.com/morluto/rea,ferramenta CLI,incerto,ferramenta para agentes; sem assets
+pascalorg/editor,https://github.com/pascalorg/editor,aplicacao/servico,incerto,editor 3D; sem assets nas releases
+pixijs/pixijs,https://github.com/pixijs/pixijs,biblioteca/framework,sim,biblioteca npm
+qdrant/qdrant,https://github.com/qdrant/qdrant,aplicacao/servico,sim,banco vetorial; binarios e docker
+refined-github/refined-github,https://github.com/refined-github/refined-github,outro,sim,extensao de navegador publicada nas lojas
+rohitg00/ai-engineering-from-scratch,https://github.com/rohitg00/ai-engineering-from-scratch,outro,nao,curso/livro; releases sao volumes de conteudo
+swagger-api/swagger-ui,https://github.com/swagger-api/swagger-ui,biblioteca/framework,sim,pacotes npm
+urfave/cli,https://github.com/urfave/cli,biblioteca/framework,sim,biblioteca Go
+v2fly/v2ray-core,https://github.com/v2fly/v2ray-core,aplicacao/servico,sim,binarios por plataforma
+vercel-labs/skills,https://github.com/vercel-labs/skills,ferramenta CLI,sim,CLI npx skills
+virgiliojr94/book-to-skill,https://github.com/virgiliojr94/book-to-skill,outro,incerto,ferramenta/skill para agentes; sem assets
+webtorrent/webtorrent,https://github.com/webtorrent/webtorrent,biblioteca/framework,sim,pacote npm
+youzan/vant,https://github.com/youzan/vant,biblioteca/framework,sim,biblioteca npm
