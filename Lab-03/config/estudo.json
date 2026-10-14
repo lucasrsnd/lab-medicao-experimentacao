@@ -11,7 +11,7 @@
     "end": "2026-10-06T00:00:00-03:00",
     "timezone": "-03:00",
     "interval": "[start, end)",
-    "source": "Definida pelo grupo por solicitacao de Gustavo em 2026-10-07; confirmacao do professor pendente."
+    "source": "Definida pelo grupo por solicitacao de Gustavo em 2026-10-07; confirmacao do professor reportada em 2026-10-14, sem data exata registrada."
   },
   "proposed_window": {
     "start": "2025-10-06T00:00:00-03:00",
@@ -92,7 +92,7 @@
   "window_decision": {
     "date": "2026-10-07",
     "authority": "group",
-    "professor_confirmed": false,
-    "note": "Adota a proposta existente corrigindo o limite final exclusivo para exatamente 12 meses. Nao representa aprovacao do professor."
+    "professor_confirmed": true,
+    "note": "Adota a proposta existente corrigindo o limite final exclusivo para exatamente 12 meses. Confirmacao do professor reportada em 2026-10-14; data exata da confirmacao nao informada."
   }
 }

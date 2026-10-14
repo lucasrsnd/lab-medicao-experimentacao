@@ -28,8 +28,8 @@ token.
 
 A janela adotada pelo grupo em `config/estudo.json` vai de
 `2025-10-06T00:00:00-03:00` até `2026-10-06T00:00:00-03:00`, com fim exclusivo.
-A coleta está habilitada por decisão do grupo; a confirmação do professor
-permanece pendente e está registrada em `window_decision`. Para validar:
+A coleta está habilitada; a confirmação do professor foi reportada em
+14/10/2026, sem data exata registrada, em `window_decision`. Para validar:
 
 ```powershell
 python -m lab03 --config config/estudo.json --validate-config
