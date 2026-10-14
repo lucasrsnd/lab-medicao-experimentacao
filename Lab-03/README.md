@@ -114,9 +114,10 @@ python -m lab03.gold_sample --dataset data/amostra_completa.json --out labels
 com o mesmo cache/retomada do piloto. Cada relatório passa a incluir
 `delivery_failure_rate` (CFR b): uma release falha se outra release corretiva for
 publicada em até 7 dias; releases nos últimos 7 dias da janela são censuradas.
-A heurística (`metrics/corrective.py`, versão `v1`) marca como corretiva a
-release que muda só o *patch* semver e/ou cujos commits citam `revert`,
-`hotfix` ou `fix` no assunto. O sorteio da amostra-ouro e o protocolo cego estão
+A heurística (`metrics/corrective.py`, versão `v2`) marca como corretiva a
+release que muda só o *patch* semver e/ou em que pelo menos 50% dos commits
+citam `revert`, `hotfix` ou `fix` no assunto (a `v1` marcava com qualquer
+commit e fica só como linha de base). O sorteio da amostra-ouro e o protocolo cego estão
 em [`docs/validacao-manual.md`](docs/validacao-manual.md).
 
 ## Variantes da RQ07 (C1, C2, C3)

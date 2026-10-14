@@ -14,7 +14,8 @@ python -m lab03 --config config/estudo.json --full --output data/amostra_complet
 - Exige `collection_allowed: true` e a janela oficial em `config/estudo.json`
   (pré-condições do [protocolo](protocolo.md)). Sem isso a CLI recusa antes de
   qualquer requisição.
-- Cache em `data/cache.sqlite3`: se a coleta cair (rate limit, rede, `Ctrl+C`),
+- Cache em `data/cache.sqlite3` (padrão; use `--cache` para outro caminho, como
+  `data/cache_estudo.sqlite3`): se a coleta cair (rate limit, rede, `Ctrl+C`),
   rode o mesmo comando para retomar.
 - Cada repositório traz `delivery_failure_rate` (CFR b), com o veredito da
   heurística por release e a versão da heurística.
