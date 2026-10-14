@@ -208,6 +208,43 @@ def test_candidato_com_5xx_persistente_e_excluido_com_motivo_no_modo_rapido():
     assert output["funnel"]["measure_errors"] == {"api_error_504": 1}
 
 
+def test_candidato_removido_e_excluido_com_404_no_modo_rapido():
+    from datetime import datetime, timezone
+
+    from lab03.collectors.candidates import select_candidates
+    from lab03.github import ApiError
+
+    class RemovedRepository:
+        def get(self, url):
+            if "/search/repositories" in url:
+                if "per_page=1&" in url or url.endswith("per_page=1"):
+                    return Response({"total_count": 1}, {})
+                return Response({"items": [{
+                    "id": 5, "full_name": "o/removed", "stargazers_count": 5000, "language": "C",
+                    "created_at": "2020-01-01T00:00:00Z", "default_branch": "main"}]}, {})
+            if url.endswith("/actions/workflows?per_page=1"):
+                return Response({"total_count": 1}, {})
+            if "/contributors" in url:
+                return Response([{"id": 1}], {})
+            if "/releases" in url:
+                raise ApiError(404, url)
+            raise AssertionError(url)
+
+    output = select_candidates(
+        GitHubClient(RemovedRepository()),
+        timestamp("2025-01-01T00:00:00Z"),
+        timestamp("2026-01-01T00:00:00Z"),
+        stars_min_exclusive=1000,
+        sample_size=5,
+        minimum_releases=1,
+        minimum_valid_runs=1,
+        valid_conclusions=("success",),
+        top_only=True,
+    )
+    assert output["eligible_repositories"] == []
+    assert output["funnel"]["measure_errors"] == {"api_error_404": 1}
+
+
 def test_parallel_stream_entrega_na_ordem_sem_acumular():
     from lab03.collectors.candidates import parallel_stream
 

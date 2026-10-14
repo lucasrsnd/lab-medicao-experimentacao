@@ -53,8 +53,12 @@ def draw_releases(item: dict, k=RELEASES_PER_REPOSITORY, seed=SEED) -> list[dict
         (r for r in report["catalog"]["releases"] if r["id"] in labelable),
         key=lambda r: (r["published_at"], r["tag"]),
     )
+    if len(candidates) < k:
+        raise ValueError(
+            f"{name} tem {len(candidates)} releases comparáveis; são necessárias {k}."
+        )
     # Semente por repositório: o sorteio de um não depende dos demais.
-    chosen = random.Random(f"{seed}:{name}").sample(candidates, min(k, len(candidates)))
+    chosen = random.Random(f"{seed}:{name}").sample(candidates, k)
     return sorted(chosen, key=lambda r: (r["published_at"], r["tag"]))
 
 

@@ -10,7 +10,7 @@ No diretório `Lab-03`, instale o pacote e dependências de desenvolvimento:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,validation]"
 ```
 
 Execute a amostra pequena offline com um comando:
@@ -129,7 +129,7 @@ e C3 (tags), reaproveitando o catálogo salvo e o mesmo cache:
 ```powershell
 $env:GITHUB_TOKEN = "seu-token"
 python -m lab03.complement --config config/estudo.json --dataset data/parte2.json --output data/parte2-variantes.json
-python -m lab03.variants --dataset data/parte2.json --complement data/parte2-variantes.json --selection data/selecao-amostra-revisada.json --output-dir data/variantes
+python -m lab03.variants --dataset data/parte2.json --complement data/parte2-variantes.json --selection data/selecao-amostra-revisada.json --output-dir validation/dataset-v1
 ```
 
 Interrompido, o complemento retoma pelo cache. Com várias partes, repita
@@ -140,6 +140,9 @@ cada métrica) e `rq07_classificacoes.csv` (categoria geral por variante). Célu
 vazia significa ausência, nunca zero. O CFR (b) fica marcado como pendente até
 `--heuristic-evaluation` receber o F1 da amostra-ouro. As regras estão em
 [`docs/protocolo.md`](docs/protocolo.md#métricas-e-variantes).
+Depois de validada a saída final, `validation/dataset-v1/` é o diretório
+versionável dos CSVs e do manifesto; não publique dados incompletos como
+dataset congelado.
 
 ## Estrutura e contratos
 
@@ -192,6 +195,15 @@ O manifesto em `config/manifesto-piloto.json` distingue validação sintética
 de execução real. O piloto de 100 repositórios ainda precisa de evidência real;
 testes locais não substituem essa entrega. O protocolo detalha as decisões em
 [`docs/protocolo.md`](docs/protocolo.md).
+
+## Validação manual e dataset final
+
+As ferramentas da Sprint 02, os contratos CSV, a política de consenso e o
+dicionário dos dados estão documentados em
+[`docs/validacao-manual.md`](docs/validacao-manual.md) e
+[`docs/dicionario-dados.md`](docs/dicionario-dados.md). Elas não criam rótulos
+humanos nem escolhem consenso automaticamente. A geração da amostra requer a
+saída JSON final real, com pelo menos 300 repositórios elegíveis.
 
 Após a coleta completa, confira os contratos e registre a evidência no manifesto:
 
