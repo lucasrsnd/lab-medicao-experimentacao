@@ -604,7 +604,7 @@ def select_candidates(
             except (ApiError, NetworkError) as error:
                 status = getattr(error, "status", None)
                 reason = f"api_error_{status}" if status else "network_error"
-                if isinstance(error, ApiError) and status < 500:
+                if isinstance(error, ApiError) and status < 500 and status != 404:
                     raise
                 return {"id": candidate["id"], "full_name": candidate["full_name"], "measure_error": reason}
         return _measure_full(candidate, root)

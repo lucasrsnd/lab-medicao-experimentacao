@@ -59,6 +59,11 @@ def test_amostra_menor_que_o_necessario_falha():
         draw_gold_sample(make_dataset(count=59))
 
 
+def test_repo_sem_cinco_releases_comparaveis_nao_reduz_silenciosamente_a_amostra():
+    with pytest.raises(ValueError, match="são necessárias 5"):
+        draw_gold_sample(make_dataset(releases=5))
+
+
 def test_planilhas_sao_cegas_e_nao_sobrescrevem(tmp_path, capsys):
     dataset_path = tmp_path / "d.json"
     dataset_path.write_text(json.dumps(make_dataset()), encoding="utf-8")

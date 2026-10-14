@@ -50,13 +50,18 @@ def _ci(report: dict) -> tuple:
 def _recovery(report: dict) -> tuple:
     recovery = report.get("recovery")
     if recovery is None:
-        return None, None, "workflow_runs_not_collected"
+        return None, None, None, "workflow_runs_not_collected"
     reason = (
         "all_failure_episodes_censored" if recovery["episodes_total"]
         else "invalid_recovery_timestamps" if recovery["exclusions"]
         else "no_failure_episodes"
     )
-    return recovery["median_hours"], recovery["episodes_recovered"], reason
+    return (
+        recovery["median_hours"],
+        recovery["episodes_recovered"],
+        recovery["episodes_total"] - recovery["episodes_recovered"],
+        reason,
+    )
 
 
 def _classify(values: dict, numerators: dict, denominators: dict, units: dict,
@@ -78,7 +83,7 @@ def compute_variants(item: dict, complement: dict | None, *, cfr_b_validation: s
     weeks = frequency["window_weeks"]
     lead = report["lead_time"]
     ci_rate, ci_failures, ci_runs, ci_reason = _ci(report)
-    rec_value, rec_n, rec_reason = _recovery(report)
+    rec_value, rec_n, rec_censored, rec_reason = _recovery(report)
     result = {}
 
     def add(name, values, numerators, denominators, units, reasons, extra):
@@ -89,6 +94,7 @@ def compute_variants(item: dict, complement: dict | None, *, cfr_b_validation: s
         result[name] = {
             "definition": VARIANTS[name],
             "classification": _classify(values, numerators, denominators, units, reasons),
+            "recovery_episodes_censored": rec_censored,
             **extra,
         }
 
@@ -195,6 +201,7 @@ def _sha256(path: Path) -> str:
 
 CSV_FIELDS = (
     "repositorio", "variante", "unidade_entrega", "lead_time_variante", "cfr_variante",
+    "cfr_b_releases_censored", "recovery_episodes_censored",
     *(f"{metric}_{suffix}" for metric in METRICS
       for suffix in ("valor", "numerador", "denominador", "unidade_denominador", "categoria",
                      "motivo_ausencia")),
@@ -211,6 +218,8 @@ def csv_rows(name: str, variants: dict):
             "unidade_entrega": data["definition"]["delivery_unit"],
             "lead_time_variante": data["definition"]["lead_time"],
             "cfr_variante": data["definition"]["cfr"],
+            "cfr_b_releases_censored": data.get("cfr_b_censored_releases"),
+            "recovery_episodes_censored": data["recovery_episodes_censored"],
             "categoria_geral": classification["overall"]["category"],
             "pontos_gerais": classification["overall"]["points"],
             "status_geral": classification["overall"]["status"],

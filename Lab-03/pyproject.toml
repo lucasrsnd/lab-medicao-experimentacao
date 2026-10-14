@@ -11,6 +11,7 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10", "pytest-cov>=6,<8"]
+validation = ["statsmodels>=0.14,<1", "scikit-learn>=1.5,<2"]
 
 [project.scripts]
 lab03 = "lab03.cli:main"
@@ -25,4 +26,3 @@ addopts = "-ra --strict-markers --cov=lab03.metrics --cov-report=term-missing --
 [tool.coverage.run]
 branch = true
 source = ["lab03.metrics"]
-

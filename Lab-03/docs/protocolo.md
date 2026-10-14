@@ -1,14 +1,15 @@
 # Protocolo do estudo — Lab 03 (Issue #93)
 
 **Status:** janela definida pelo grupo em 07/10/2026, por solicitação de Gustavo.
-Coleta habilitada; confirmação do professor e revisão conjunta ainda pendentes.
+Confirmação do professor reportada em 14/10/2026, sem data exata registrada;
+revisão conjunta ainda pendente.
 **Sprint:** Lab03S01.
 **Configuração canônica:** [`config/estudo.json`](../config/estudo.json).
 
 Este protocolo fixa as decisões operacionais antes da coleta. As hipóteses são
 expectativas, não resultados. A proposta existente foi adotada com ajuste do
-limite final para exatamente doze meses. A decisão e a ausência de confirmação
-do professor estão registradas em `window_decision` na configuração. Não usar
+limite final para exatamente doze meses. A decisão e o estado da confirmação
+do professor estão registrados em `window_decision` na configuração. Não usar
 datas do `examples/demo-api.json`, que contém dados inteiramente sintéticos.
 Se o professor alterar a janela, registrar a revisão e repetir a coleta com a
 nova configuração antes de comparar resultados.
@@ -64,7 +65,8 @@ nova configuração antes de comparar resultados.
   A configuração valida a duração de doze meses de calendário.
 - A proposta original terminava em `2026-10-06T23:59:59-03:00`, excedendo
   doze meses. Ela permanece em `proposed_window` como histórico; somente
-  `window` orienta a execução. A confirmação do professor permanece pendente.
+  `window` orienta a execução. A confirmação do professor foi reportada em
+  14/10/2026; a data exata da confirmação não foi informada.
 - Todos os intervalos são **`[início, fim)`**: eventos no início entram;
   eventos exatamente no fim não entram. Releases e runs são selecionados por
   `published_at` e `created_at`, respectivamente.
@@ -258,10 +260,11 @@ como exploratória, datada e justificada.
 
 ## Execução e rastreabilidade
 
-1. A decisão do grupo habilita a coleta com a janela acima; não representa
-   confirmação do professor nem aprovação já realizada pelo trio.
-2. Registrar a revisão conjunta e eventual confirmação ou correção do
-   professor antes de interpretar os resultados finais.
+1. A janela foi adotada pelo grupo e a confirmação do professor foi reportada
+   em 14/10/2026, sem data exata registrada; a revisão conjunta do trio ainda
+   deve ser registrada antes de interpretar os resultados finais.
+2. Registrar qualquer correção posterior do professor antes de interpretar
+   os resultados finais.
 3. Cada relatório inclui a configuração e seu SHA-256. O cache é separado
    por esse identificador; usar `--refresh-cache` para renovar respostas da
    mesma configuração. O cache registra o instante de obtenção das respostas.

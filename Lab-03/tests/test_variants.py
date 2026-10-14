@@ -188,6 +188,8 @@ def test_exportacao_marca_cobertura_parcial_e_celulas_vazias(tmp_path, tag_respo
     assert missing["deployment_frequency_per_week_valor"] == ""
     assert missing["deployment_frequency_per_week_motivo_ausencia"] == NOT_COLLECTED
     assert rows[("demo/project", "C3")]["deployment_frequency_per_week_numerador"] == "2"
+    assert rows[("demo/project", "C1")]["recovery_episodes_censored"] == "0"
+    assert int(rows[("demo/project", "C2")]["cfr_b_releases_censored"]) >= 0
 
 
 def test_exportacao_rejeita_complemento_de_outro_dataset(tmp_path):
