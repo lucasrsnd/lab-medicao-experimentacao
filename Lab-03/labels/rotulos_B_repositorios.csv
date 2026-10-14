@@ -1,61 +1,61 @@
 ﻿repositorio,url,tipo_projeto,releases_sao_entregas,observacoes
-AlistGo/alist,https://github.com/AlistGo/alist,,,
-DioxusLabs/dioxus,https://github.com/DioxusLabs/dioxus,,,
-Egonex-AI/Understand-Anything,https://github.com/Egonex-AI/Understand-Anything,,,
-Fincept-Corporation/FinceptTerminal,https://github.com/Fincept-Corporation/FinceptTerminal,,,
-FuelLabs/fuel-core,https://github.com/FuelLabs/fuel-core,,,
-HKUDS/DeepTutor,https://github.com/HKUDS/DeepTutor,,,
-HKUDS/RAG-Anything,https://github.com/HKUDS/RAG-Anything,,,
-Mintplex-Labs/anything-llm,https://github.com/Mintplex-Labs/anything-llm,,,
-NandhaKishorM/laya,https://github.com/NandhaKishorM/laya,,,
-OthmanAdi/planning-with-files,https://github.com/OthmanAdi/planning-with-files,,,
-QL-Win/QuickLook,https://github.com/QL-Win/QuickLook,,,
-Significant-Gravitas/AutoGPT,https://github.com/Significant-Gravitas/AutoGPT,,,
-StevenBlack/hosts,https://github.com/StevenBlack/hosts,,,
-TanStack/table,https://github.com/TanStack/table,,,
-TeamNewPipe/NewPipe,https://github.com/TeamNewPipe/NewPipe,,,
-Wilfred/difftastic,https://github.com/Wilfred/difftastic,,,
-acmesh-official/acme.sh,https://github.com/acmesh-official/acme.sh,,,
-anomalyco/sst,https://github.com/anomalyco/sst,,,
-ayangweb/BongoCat,https://github.com/ayangweb/BongoCat,,,
-base/node,https://github.com/base/node,,,
-binwiederhier/ntfy,https://github.com/binwiederhier/ntfy,,,
-chakra-ui/chakra-ui,https://github.com/chakra-ui/chakra-ui,,,
-deepspeedai/DeepSpeed,https://github.com/deepspeedai/DeepSpeed,,,
-dragonflydb/dragonfly,https://github.com/dragonflydb/dragonfly,,,
-exelban/stats,https://github.com/exelban/stats,,,
-expressjs/express,https://github.com/expressjs/express,,,
-eyaltoledano/claude-task-master,https://github.com/eyaltoledano/claude-task-master,,,
-fabricjs/fabric.js,https://github.com/fabricjs/fabric.js,,,
-farion1231/cc-switch,https://github.com/farion1231/cc-switch,,,
-fastfetch-cli/fastfetch,https://github.com/fastfetch-cli/fastfetch,,,
-filebrowser/filebrowser,https://github.com/filebrowser/filebrowser,,,
-gchq/CyberChef,https://github.com/gchq/CyberChef,,,
-harry0703/MoneyPrinterTurbo,https://github.com/harry0703/MoneyPrinterTurbo,,,
-henrygd/beszel,https://github.com/henrygd/beszel,,,
-hugohe3/ppt-master,https://github.com/hugohe3/ppt-master,,,
-iOfficeAI/OfficeCLI,https://github.com/iOfficeAI/OfficeCLI,,,
-ionic-team/ionic-framework,https://github.com/ionic-team/ionic-framework,,,
-jamiepine/voicebox,https://github.com/jamiepine/voicebox,,,
-lovell/sharp,https://github.com/lovell/sharp,,,
-luongnv89/claude-howto,https://github.com/luongnv89/claude-howto,,,
-markedjs/marked,https://github.com/markedjs/marked,,,
-microsoft/WSL,https://github.com/microsoft/WSL,,,
-microsoft/monaco-editor,https://github.com/microsoft/monaco-editor,,,
-microsoft/semantic-kernel,https://github.com/microsoft/semantic-kernel,,,
-microsoft/terminal,https://github.com/microsoft/terminal,,,
-mihonapp/mihon,https://github.com/mihonapp/mihon,,,
-modelcontextprotocol/servers,https://github.com/modelcontextprotocol/servers,,,
-morluto/rea,https://github.com/morluto/rea,,,
-pascalorg/editor,https://github.com/pascalorg/editor,,,
-pixijs/pixijs,https://github.com/pixijs/pixijs,,,
-qdrant/qdrant,https://github.com/qdrant/qdrant,,,
-refined-github/refined-github,https://github.com/refined-github/refined-github,,,
-rohitg00/ai-engineering-from-scratch,https://github.com/rohitg00/ai-engineering-from-scratch,,,
-swagger-api/swagger-ui,https://github.com/swagger-api/swagger-ui,,,
-urfave/cli,https://github.com/urfave/cli,,,
-v2fly/v2ray-core,https://github.com/v2fly/v2ray-core,,,
-vercel-labs/skills,https://github.com/vercel-labs/skills,,,
-virgiliojr94/book-to-skill,https://github.com/virgiliojr94/book-to-skill,,,
-webtorrent/webtorrent,https://github.com/webtorrent/webtorrent,,,
-youzan/vant,https://github.com/youzan/vant,,,
+AlistGo/alist,https://github.com/AlistGo/alist,aplicacao/servico,sim,
+DioxusLabs/dioxus,https://github.com/DioxusLabs/dioxus,biblioteca/framework,sim,CLI dx auxiliar não altera o tipo principal do framework.
+Egonex-AI/Understand-Anything,https://github.com/Egonex-AI/Understand-Anything,aplicacao/servico,sim,Plugin com aplicação visual de grafos; não classificado apenas pelos scripts auxiliares.
+Fincept-Corporation/FinceptTerminal,https://github.com/Fincept-Corporation/FinceptTerminal,aplicacao/servico,sim,
+FuelLabs/fuel-core,https://github.com/FuelLabs/fuel-core,aplicacao/servico,sim,Bibliotecas internas e comando de inicialização são auxiliares ao nó servidor.
+HKUDS/DeepTutor,https://github.com/HKUDS/DeepTutor,aplicacao/servico,sim,Betas são entregas utilizáveis; não se exige estabilidade geral.
+HKUDS/RAG-Anything,https://github.com/HKUDS/RAG-Anything,biblioteca/framework,sim,
+Mintplex-Labs/anything-llm,https://github.com/Mintplex-Labs/anything-llm,aplicacao/servico,sim,
+NandhaKishorM/laya,https://github.com/NandhaKishorM/laya,biblioteca/framework,sim,
+OthmanAdi/planning-with-files,https://github.com/OthmanAdi/planning-with-files,outro,sim,Skills e templates de planejamento com hooks auxiliares; artefato principal não é aplicação autônoma nem biblioteca de API.
+QL-Win/QuickLook,https://github.com/QL-Win/QuickLook,aplicacao/servico,sim,
+Significant-Gravitas/AutoGPT,https://github.com/Significant-Gravitas/AutoGPT,aplicacao/servico,sim,
+StevenBlack/hosts,https://github.com/StevenBlack/hosts,outro,sim,Artefato principal é conjunto de dados hosts; o gerador é ferramenta auxiliar.
+TanStack/table,https://github.com/TanStack/table,biblioteca/framework,sim,Monorepo: entregas avaliadas por pacote; comparações entre adapters não são changelog do pacote.
+TeamNewPipe/NewPipe,https://github.com/TeamNewPipe/NewPipe,aplicacao/servico,sim,
+Wilfred/difftastic,https://github.com/Wilfred/difftastic,ferramenta CLI,sim,
+acmesh-official/acme.sh,https://github.com/acmesh-official/acme.sh,ferramenta CLI,sim,
+anomalyco/sst,https://github.com/anomalyco/sst,ferramenta CLI,sim,"Há componentes reutilizáveis, mas o produto instalado e operado é a CLI de implantação."
+ayangweb/BongoCat,https://github.com/ayangweb/BongoCat,aplicacao/servico,sim,
+base/node,https://github.com/base/node,aplicacao/servico,sim,"Repositório arquivado atualmente; avaliado produto histórico de nó, não apenas os arquivos de configuração."
+binwiederhier/ntfy,https://github.com/binwiederhier/ntfy,aplicacao/servico,sim,CLI auxiliar não muda o propósito de serviço.
+chakra-ui/chakra-ui,https://github.com/chakra-ui/chakra-ui,biblioteca/framework,sim,O codemod é auxiliar; o produto principal do repositório continua sendo biblioteca UI.
+deepspeedai/DeepSpeed,https://github.com/deepspeedai/DeepSpeed,biblioteca/framework,sim,
+dragonflydb/dragonfly,https://github.com/dragonflydb/dragonfly,aplicacao/servico,sim,
+exelban/stats,https://github.com/exelban/stats,aplicacao/servico,sim,
+expressjs/express,https://github.com/expressjs/express,biblioteca/framework,sim,
+eyaltoledano/claude-task-master,https://github.com/eyaltoledano/claude-task-master,ferramenta CLI,sim,Interface MCP complementa a ferramenta de tarefas em terminal.
+fabricjs/fabric.js,https://github.com/fabricjs/fabric.js,biblioteca/framework,sim,
+farion1231/cc-switch,https://github.com/farion1231/cc-switch,aplicacao/servico,sim,"Gerencia CLIs externas, mas é aplicação desktop."
+fastfetch-cli/fastfetch,https://github.com/fastfetch-cli/fastfetch,ferramenta CLI,sim,
+filebrowser/filebrowser,https://github.com/filebrowser/filebrowser,aplicacao/servico,sim,Arquivamento posterior não desfaz entregas históricas.
+gchq/CyberChef,https://github.com/gchq/CyberChef,aplicacao/servico,sim,"Também oferece API, mas a interface web é o produto principal."
+harry0703/MoneyPrinterTurbo,https://github.com/harry0703/MoneyPrinterTurbo,aplicacao/servico,sim,
+henrygd/beszel,https://github.com/henrygd/beszel,aplicacao/servico,sim,
+hugohe3/ppt-master,https://github.com/hugohe3/ppt-master,outro,sim,Predomina workflow/skill pack e templates; scripts Python e prévias são componentes auxiliares.
+iOfficeAI/OfficeCLI,https://github.com/iOfficeAI/OfficeCLI,ferramenta CLI,sim,
+ionic-team/ionic-framework,https://github.com/ionic-team/ionic-framework,biblioteca/framework,sim,A aplicação final é criada pelos consumidores do toolkit.
+jamiepine/voicebox,https://github.com/jamiepine/voicebox,aplicacao/servico,sim,
+lovell/sharp,https://github.com/lovell/sharp,biblioteca/framework,sim,
+luongnv89/claude-howto,https://github.com/luongnv89/claude-howto,outro,sim,Conteúdo educacional; não é o aplicativo Claude Code descrito nos guias.
+markedjs/marked,https://github.com/markedjs/marked,biblioteca/framework,sim,CLI disponível é complementar à biblioteca parser.
+microsoft/WSL,https://github.com/microsoft/WSL,aplicacao/servico,sim,"Serviço/subsistema instalado; wsl.exe administra o ambiente, não representa sozinho o produto."
+microsoft/monaco-editor,https://github.com/microsoft/monaco-editor,biblioteca/framework,sim,
+microsoft/semantic-kernel,https://github.com/microsoft/semantic-kernel,biblioteca/framework,sim,Famílias Python e .NET delimitadas individualmente na auditoria.
+microsoft/terminal,https://github.com/microsoft/terminal,aplicacao/servico,sim,"Sem releases listadas na fonte; publicação adicional usada somente para entregas, sem criar blocos novos."
+mihonapp/mihon,https://github.com/mihonapp/mihon,aplicacao/servico,sim,
+modelcontextprotocol/servers,https://github.com/modelcontextprotocol/servers,aplicacao/servico,sim,"Servidores de referência executáveis, não o SDK; fonte não contém releases para rotular."
+morluto/rea,https://github.com/morluto/rea,aplicacao/servico,sim,Uso por terminal também disponível; o README apresenta MCP como interface principal.
+pascalorg/editor,https://github.com/pascalorg/editor,aplicacao/servico,sim,"Monorepo inclui bibliotecas e CLI, mas o produto principal é editor visual."
+pixijs/pixijs,https://github.com/pixijs/pixijs,biblioteca/framework,sim,
+qdrant/qdrant,https://github.com/qdrant/qdrant,aplicacao/servico,sim,
+refined-github/refined-github,https://github.com/refined-github/refined-github,aplicacao/servico,sim,ZIPs marcados para teste local são entregas consumíveis a testers; não se presume aprovação em loja de cada tag.
+rohitg00/ai-engineering-from-scratch,https://github.com/rohitg00/ai-engineering-from-scratch,outro,sim,Material educacional; exemplos executáveis e site não mudam o artefato principal.
+swagger-api/swagger-ui,https://github.com/swagger-api/swagger-ui,biblioteca/framework,sim,"Interface utilizável isoladamente, mas distribuição principal oferece componente reutilizável e bundles para integração."
+urfave/cli,https://github.com/urfave/cli,biblioteca/framework,sim,"É biblioteca para desenvolver CLIs, não uma CLI de usuário final."
+v2fly/v2ray-core,https://github.com/v2fly/v2ray-core,aplicacao/servico,sim,Comandos administram o serviço de rede; finalidade principal é operação de proxy.
+vercel-labs/skills,https://github.com/vercel-labs/skills,ferramenta CLI,sim,
+virgiliojr94/book-to-skill,https://github.com/virgiliojr94/book-to-skill,outro,sim,"Artefato principal é skill/workflow para agentes; pacote/CLI Python é auxiliar. Consulta PyPI book-to-skill retornou 404, sem impedir instalação por Git."
+webtorrent/webtorrent,https://github.com/webtorrent/webtorrent,biblioteca/framework,sim,webtorrent-cli e aplicação desktop são produtos separados citados pelo README.
+youzan/vant,https://github.com/youzan/vant,biblioteca/framework,sim,
