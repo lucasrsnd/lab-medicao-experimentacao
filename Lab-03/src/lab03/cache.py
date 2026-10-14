@@ -62,6 +62,22 @@ def compact(url: str, data):
             for commit in data["commits"]
         ]
         return slim
+    if path.endswith("/tags") and isinstance(data, list):
+        return [
+            {"name": tag.get("name"), "commit": {"sha": (tag.get("commit") or {}).get("sha")}}
+            for tag in data if isinstance(tag, dict)
+        ]
+    if path.endswith("/commits") and isinstance(data, list):
+        return [
+            {
+                "sha": commit.get("sha"),
+                "commit": {
+                    key: _pick((commit.get("commit") or {}).get(key) or {}, ("date",))
+                    for key in ("author", "committer")
+                },
+            }
+            for commit in data if isinstance(commit, dict)
+        ]
     if "/commits/" in path and isinstance(data, dict) and "sha" in data and "files" in data:
         commit = data.get("commit") or {}
         return {

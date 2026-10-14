@@ -119,6 +119,27 @@ release que muda só o *patch* semver e/ou cujos commits citam `revert`,
 `hotfix` ou `fix` no assunto. O sorteio da amostra-ouro e o protocolo cego estão
 em [`docs/validacao-manual.md`](docs/validacao-manual.md).
 
+## Variantes da RQ07 (C1, C2, C3)
+
+A coleta `--full` não lista tags e só compara a cadeia de releases publicadas.
+A coleta complementar busca o que falta para C2 (comparações com pré-releases)
+e C3 (tags), reaproveitando o catálogo salvo e o mesmo cache:
+
+```powershell
+$env:GITHUB_TOKEN = "seu-token"
+python -m lab03.complement --config config/estudo.json --dataset data/parte2.json --output data/parte2-variantes.json
+python -m lab03.variants --dataset data/parte2.json --complement data/parte2-variantes.json --selection data/selecao-amostra-revisada.json --output-dir data/variantes
+```
+
+Interrompido, o complemento retoma pelo cache. Com várias partes, repita
+`--dataset` e `--complement`. A exportação grava `variantes.json` (metadados,
+cobertura e resultados), `variantes_metricas.csv` (uma linha por repositório e
+variante, com valor, numerador, denominador, categoria e motivo de ausência de
+cada métrica) e `rq07_classificacoes.csv` (categoria geral por variante). Célula
+vazia significa ausência, nunca zero. O CFR (b) fica marcado como pendente até
+`--heuristic-evaluation` receber o F1 da amostra-ouro. As regras estão em
+[`docs/protocolo.md`](docs/protocolo.md#métricas-e-variantes).
+
 ## Estrutura e contratos
 
 - `src/lab03/domain.py`: contratos imutáveis de repositório, release, commit,

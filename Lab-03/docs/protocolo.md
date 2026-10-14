@@ -144,6 +144,39 @@ excluídos. Para C3, usar a data do commit apontado pela tag; tags sem commit
 resolvido não podem receber data presumida. Em C3, o CFR (a) continua baseado
 nos workflow runs, sem reinterpretar tags como falhas de CI.
 
+Operacionalização (`lab03.complement` e `lab03.variants`):
+
+- **C1** sai inteiramente da coleta `--full`, e o recálculo reproduz a
+  classificação gravada no dataset.
+- **C2** compara a cadeia de releases publicadas e pré-releases ordenada por
+  `published_at`. A antecessora de cada release pode ser uma pré-release. A
+  frequência conta releases e pré-releases da janela que têm SHA resolvido. O
+  lead time é o (b), e o CFR é o (b) com a mesma heurística e o mesmo
+  acompanhamento de 7 dias, incluindo a censura no fim da janela.
+- **C3** usa como entrega cada commit do default branch apontado por uma ou
+  mais tags. Várias tags no mesmo commit contam uma única vez, porque o código
+  entregue é o mesmo. A data é o `commit.author.date` desse commit. A
+  pertença ao default branch e a data saem da listagem
+  `commits?sha=<head>&since=<início>`, sem resolver as tags uma a uma. A
+  antecessora fora da janela é o primeiro commit marcado em
+  `commits?sha=<head>&until=<início>`, com no máximo 50 páginas. Sem
+  antecessora encontrada, a primeira entrega fica fora do lead time
+  (`no_previous_release`). Comparações entre tags não lineares são excluídas
+  (`non_linear_history`), como nas releases. Tags fora do default branch ou
+  anteriores à janela são contadas em conjunto (`tags_unmatched`).
+- **Recuperação** vem dos workflow runs e é a mesma nas três combinações.
+
+Disponibilidade e validação: cada métrica traz valor, numerador, denominador
+e, quando não há valor, `missing_reason`. A ausência do complemento aparece
+como `variant_complement_not_collected`, e a de um repositório da seleção sem
+dataset aparece em `coverage.repositories_missing_dataset`. Nenhuma das duas
+vira zero. Zero só aparece quando foi observado, por exemplo uma frequência
+sem nenhuma tag na janela. O CFR (b) de C2 é publicado com
+`pending_validations = corrective_release_heuristic_gold_sample` até a
+avaliação da heurística na amostra-ouro ser informada (`--heuristic-evaluation`,
+com `heuristic_version` e `f1`; considera-se validada com F1 ≥ 0,70). Os
+resultados de C2 são, portanto, provisórios, não definitivos.
+
 ## Dados ausentes, falhas e censura
 
 - Não imputar ausências com zero, não inferir datas e não substituir campos
