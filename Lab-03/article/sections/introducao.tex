@@ -5,7 +5,9 @@ estabilidade do software. O trabalho de Forsgren, Humble e Kim
 \cite{accelerate} e as métricas de desempenho de entrega do DORA \cite{dora}
 motivam o estudo dessa relação. Neste laboratório, o interesse recai sobre
 frequência de entrega, tempo entre a escrita e a entrega de mudanças,
-proporção de entregas com falha e tempo de recuperação.
+proporção de entregas com falha e tempo de recuperação. Adotam-se as quatro
+dimensões e os cortes de classificação fixados pelo enunciado, preservando
+definições comuns entre os grupos da disciplina.
 
 Repositórios públicos oferecem releases, commits e registros de integração
 contínua, mas esses registros não demonstram, por si só, quando uma mudança
@@ -23,17 +25,27 @@ entre frequência e falha (RQ05), diferenças entre características dos projeto
 (RQ06) e sensibilidade da classificação às definições operacionais (RQ07).
 
 O protocolo da disciplina prevê uma janela de doze meses, uma amostra final
-de pelo menos 300 repositórios elegíveis e definições comuns. Para lead time,
+de pelo menos 300 repositórios elegíveis e definições comuns. São elegíveis
+projetos públicos com mais de 1.000 estrelas, pelo menos cinco releases
+publicadas e 50 execuções válidas de GitHub Actions no branch padrão durante
+a janela. Para lead time,
 serão comparadas a mediana dos tempos por release, considerando o commit
 mais antigo de cada entrega, e a mediana dos tempos de todos os commits
 incluídos nas releases. A paginação da API evita que essas comparações sejam
 limitadas silenciosamente a uma fração dos commits \cite{github}.
 
-A janela adotada pelo grupo abrange 6 de outubro de 2025 a 6 de outubro de
-2026, à meia-noite no fuso UTC$-3$, com o limite final exclusivo. A confirmação
-do professor permanece pendente. A configuração versionada registra essa
-decisão; eventual revisão exigirá nova coleta. O piloto inicial prevê 100
-repositórios elegíveis e ainda não constitui resultado empírico nesta versão.
+A janela adotada para a S02 abrange 6 de outubro de 2025 a 7 de outubro de
+2026, à meia-noite no fuso UTC$-3$, com o limite final exclusivo. São 366 dias,
+um dia além dos doze meses previstos. A exceção foi autorizada por Gustavo em
+13 de outubro de 2026, após a coleta parcial, para compatibilidade com os
+183 repositórios informados pelo outro integrante. A confirmação docente
+registrada na main em 14 de outubro refere-se à janela original de doze
+meses; a aprovação da extensão de um dia não está registrada. A configuração
+versionada distingue essas decisões; eventual revisão exigirá revalidar os
+dados e repetir a coleta quando necessário. O piloto inicial previa 100
+repositórios elegíveis, mas seu manifesto registra execução interrompida.
+Esta versão apresenta a motivação e as hipóteses, sem relatar resultados da
+amostra.
 
 A validade dos proxies será examinada por três avaliadores independentes em
 60 repositórios, com cinco releases por projeto. A concordância e a qualidade

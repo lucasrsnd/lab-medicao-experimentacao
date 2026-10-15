@@ -247,7 +247,11 @@ def test_selecao_exportada_permite_dividir_a_coleta_e_juntar_as_partes(tmp_path,
                      "--slice", f"{first}:{last}", "--output", str(out),
                      "--cache", str(tmp_path / f"c{first}.sqlite3")]) == 0
         parts.append(out)
-        assert len(json.loads(out.read_text(encoding="utf-8"))["repositories"]) == last - first
+        part = json.loads(out.read_text(encoding="utf-8"))
+        assert len(part["repositories"]) == last - first
+        assert f"--slice {first}:{last}" in part["execution"]["command"]
+        assert f"--selection {selection}" in part["execution"]["command"]
+        assert part["configuration"]["values"] == json.loads(config_path.read_text(encoding="utf-8"))
 
     merged = tmp_path / "merged.json"
     assert merge_main([str(parts[0]), str(parts[1]), "--output", str(merged)]) == 0

@@ -3,7 +3,7 @@
 import json
 import re
 import calendar
-from datetime import datetime
+from datetime import datetime, timedelta
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -142,7 +142,23 @@ def load_config(path: Path) -> PipelineConfig:
         last_day = calendar.monthrange(start.year + 1, start.month)[1]
         anniversary = start.replace(year=start.year + 1, day=min(start.day, last_day))
         if window.end != anniversary:
-            raise ValueError("A janela do estudo deve corresponder a exatamente 12 meses.")
+            exception = raw_window.get("compatibility_exception")
+            # Exceção explícita e vinculada aos limites autorizados; não libera
+            # janelas arbitrárias nem herda aprovação ao mudar as datas.
+            compatible = (
+                isinstance(exception, dict)
+                and exception.get("approved") is True
+                and exception.get("start") == raw_window["start"]
+                and exception.get("end") == raw_window["end"]
+                and isinstance(exception.get("reason"), str)
+                and bool(exception["reason"].strip())
+                and window.end == anniversary + timedelta(days=1)
+            )
+            if not compatible:
+                raise ValueError(
+                    "A janela do estudo deve corresponder a exatamente 12 meses; "
+                    "um dia adicional exige compatibility_exception explícita para estes limites."
+                )
     if allowed and (status != "ready" or window is None):
         raise ValueError("A coleta só pode ser liberada com status ready e janela oficial completa.")
     return PipelineConfig(

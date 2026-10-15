@@ -4,7 +4,7 @@ from dataclasses import asdict
 
 from lab03.collectors.releases import collect_releases
 from lab03.collectors.commits import collect_changes
-from lab03.domain import Window, WorkflowRun
+from lab03.domain import ReleaseCatalog, Window, WorkflowRun
 from lab03.github import GitHubClient
 from lab03.metrics import (
     calculate_ci_failure_rate,
@@ -24,10 +24,12 @@ def run(
     workflow_runs: tuple[WorkflowRun, ...] | None = None,
     *,
     collect_tags: bool = True,
+    catalog: ReleaseCatalog | None = None,
 ) -> dict:
     """Com `workflow_runs=None` (ex.: modo amostra), CFR e recuperação ficam
     explicitamente ausentes e a classificação geral permanece incompleta."""
-    catalog = collect_releases(client, repository, window, collect_tags=collect_tags)
+    if catalog is None:
+        catalog = collect_releases(client, repository, window, collect_tags=collect_tags)
     changes = collect_changes(client, repository, catalog, window)
     lead_time = calculate_lead_time(changes)
     frequency = calculate_deployment_frequency(
