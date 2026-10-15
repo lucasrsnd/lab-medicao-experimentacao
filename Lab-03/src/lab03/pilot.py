@@ -43,9 +43,9 @@ def run_pilot(
     retorno não traz `repositories`: a memória não cresce com a amostra."""
     notify = notify or (lambda message: None)
     if selection is None:
-        # Seleção rápida: a elegibilidade fica em torno de 20% dos mais estrelados,
-        # então começar em 6x o alvo evita várias passadas curtas pelo mesmo cache.
-        candidate_limit = target_size * 6 if top_only else target_size
+        # A integração detalhada pode descartar elegíveis que mudaram desde a triagem.
+        # A reserva permite substituí-los sem deixar a amostra completa incompleta.
+        candidate_limit = target_size * 8 if top_only else target_size
         selection = None
         while True:
             selection = select_candidates(
@@ -95,6 +95,7 @@ def run_pilot(
             )
 
     selected = eligible[:target_size]
+    refill_candidates = top_only and on_result is not None and slice_range is None
     selection["pilot_sample"] = {
         "target": target_size,
         "selected": len(selected),
@@ -106,6 +107,8 @@ def run_pilot(
             raise DataError(f"Fatia {start}:{end} fora da seleção de {len(selected)} repositórios.")
         selected = selected[start:end]
         selection["pilot_sample"]["slice"] = [start, end]
+    collection_candidates = eligible if refill_candidates else selected
+
     def collect_repository(metadata):
         repository = metadata["full_name"]
         notify(f"Coleta completa: {repository}")
@@ -120,12 +123,28 @@ def run_pilot(
             tolerate_drift=top_only,
         )
         if len(workflow_runs) < minimum_valid_runs:
+            if top_only:
+                return {
+                    "collection_exclusion": {
+                        "repository": repository,
+                        "reason": "minimum_valid_workflow_runs_not_met_after_collection",
+                    },
+                    "metadata": metadata,
+                }
             raise DataError(
                 f"{repository}: contagem de workflow runs mudou após a elegibilidade "
                 f"({len(workflow_runs)} < {minimum_valid_runs})."
             )
         report = run(client, repository, window, workflow_runs, collect_tags=collect_tags)
         if len(report["catalog"]["releases"]) < minimum_releases:
+            if top_only:
+                return {
+                    "collection_exclusion": {
+                        "repository": repository,
+                        "reason": "minimum_releases_not_met_after_collection",
+                    },
+                    "metadata": metadata,
+                }
             raise DataError(
                 f"{repository}: releases do default branch abaixo do mínimo após integração."
             )
@@ -157,5 +176,39 @@ def run_pilot(
         return header
     if on_start is not None:
         on_start(header)
-    parallel_stream(collect_repository, selected, on_result, workers)
+    if not refill_candidates:
+        parallel_stream(collect_repository, selected, on_result, workers)
+    else:
+        exclusions = []
+        replacements = []
+        initial_names = {item["full_name"] for item in selected}
+        collected = 0
+
+        def consume(item):
+            nonlocal collected
+            exclusion = item.get("collection_exclusion")
+            if exclusion is not None:
+                exclusions.append(exclusion)
+                return
+            if collected >= target_size:
+                return
+            on_result(item)
+            collected += 1
+            repository = item["metadata"]["full_name"]
+            if repository not in initial_names:
+                replacements.append(repository)
+
+        batch_size = max(1, workers * 2)
+        for start in range(0, len(collection_candidates), batch_size):
+            batch = collection_candidates[start:start + batch_size]
+            parallel_stream(collect_repository, batch, consume, workers)
+            if collected >= target_size:
+                break
+        if collected < target_size:
+            raise DataError(
+                f"Coleta incompleta: {collected} de {target_size} repositórios "
+                f"atenderam aos critérios após integração."
+            )
+        header["collection_exclusions"] = exclusions
+        header["collection_replacements"] = replacements
     return header

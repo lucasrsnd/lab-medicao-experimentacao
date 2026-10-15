@@ -261,6 +261,11 @@ def main(argv=None) -> int:
                     "sample_kind": output["sample_kind"],
                     "execution": output["execution"],
                     "source": source,
+                    **{
+                        field: output[field]
+                        for field in ("collection_exclusions", "collection_replacements")
+                        if field in output
+                    },
                 })
                 print(f"Resultado: {args.output}")
                 return 0

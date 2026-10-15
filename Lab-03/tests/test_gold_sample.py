@@ -60,8 +60,25 @@ def test_amostra_menor_que_o_necessario_falha():
 
 
 def test_repo_sem_cinco_releases_comparaveis_nao_reduz_silenciosamente_a_amostra():
-    with pytest.raises(ValueError, match="são necessárias 5"):
+    with pytest.raises(ValueError, match="5 releases comparáveis"):
         draw_gold_sample(make_dataset(releases=5))
+
+
+def test_repo_sem_cinco_releases_comparaveis_nao_e_sorteado():
+    dataset = make_dataset()
+    invalid = dataset["repositories"][0]
+    invalid["report"]["changes"] = invalid["report"]["changes"][:5]
+    sample = draw_gold_sample(dataset, seed=42)
+
+    assert len(sample["repositories"]) == 60
+    assert len(sample["releases"]) == 300
+    assert invalid["metadata"]["full_name"] not in {
+        row["repositorio"] for row in sample["repositories"]
+    }
+    assert sample["repository_sampling"] == {
+        "eligible_repository_count": 69,
+        "excluded_insufficient_comparable_releases": 1,
+    }
 
 
 def test_planilhas_sao_cegas_e_nao_sobrescrevem(tmp_path, capsys):
@@ -80,6 +97,10 @@ def test_planilhas_sao_cegas_e_nao_sobrescrevem(tmp_path, capsys):
     manifest = json.loads((out / "amostra_ouro_sorteio.json").read_text(encoding="utf-8"))
     assert manifest["seed"] == 42
     assert manifest["source_dataset_sha256"] == hashlib.sha256(dataset_path.read_bytes()).hexdigest()
+    assert manifest["repository_sampling"] == {
+        "eligible_repository_count": 70,
+        "excluded_insufficient_comparable_releases": 0,
+    }
     # Nova execução não destrói rótulos já preenchidos.
     (out / "rotulos_A_releases.csv").write_text("preenchido", encoding="utf-8")
     assert main(["--dataset", str(dataset_path), "--out", str(out)]) == 1

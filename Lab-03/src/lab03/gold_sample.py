@@ -41,9 +41,7 @@ def draw_repositories(full_names, n=GOLD_REPOSITORIES, seed=SEED) -> list[str]:
     return sorted(random.Random(seed).sample(names, n))
 
 
-def draw_releases(item: dict, k=RELEASES_PER_REPOSITORY, seed=SEED) -> list[dict]:
-    """Sorteia até k releases com lista de commits disponível (rotulável)."""
-    name = item["metadata"]["full_name"]
+def _comparable_releases(item: dict) -> list[dict]:
     report = item["report"]
     labelable = {
         change["release"]["id"]
@@ -53,6 +51,13 @@ def draw_releases(item: dict, k=RELEASES_PER_REPOSITORY, seed=SEED) -> list[dict
         (r for r in report["catalog"]["releases"] if r["id"] in labelable),
         key=lambda r: (r["published_at"], r["tag"]),
     )
+    return candidates
+
+
+def draw_releases(item: dict, k=RELEASES_PER_REPOSITORY, seed=SEED) -> list[dict]:
+    """Sorteia k releases com lista de commits disponível (rotulável)."""
+    name = item["metadata"]["full_name"]
+    candidates = _comparable_releases(item)
     if len(candidates) < k:
         raise ValueError(
             f"{name} tem {len(candidates)} releases comparáveis; são necessárias {k}."
@@ -72,8 +77,17 @@ def previous_tags(item: dict) -> dict[int, str | None]:
 def draw_gold_sample(dataset: dict, *, n=GOLD_REPOSITORIES,
                      releases_per_repository=RELEASES_PER_REPOSITORY, seed=SEED) -> dict:
     by_name = {item["metadata"]["full_name"]: item for item in dataset["repositories"]}
+    labelable_names = [
+        name for name, item in by_name.items()
+        if len(_comparable_releases(item)) >= releases_per_repository
+    ]
+    if len(labelable_names) < n:
+        raise ValueError(
+            f"Amostra tem {len(labelable_names)} repositórios com "
+            f"{releases_per_repository} releases comparáveis; são necessários {n}."
+        )
     repositories, releases = [], []
-    for name in draw_repositories(by_name, n, seed):
+    for name in draw_repositories(labelable_names, n, seed):
         item = by_name[name]
         previous = previous_tags(item)
         repositories.append({"repositorio": name, "url": f"https://github.com/{name}"})
@@ -90,7 +104,14 @@ def draw_gold_sample(dataset: dict, *, n=GOLD_REPOSITORIES,
                     if before else ""
                 ),
             })
-    return {"repositories": repositories, "releases": releases}
+    return {
+        "repositories": repositories,
+        "releases": releases,
+        "repository_sampling": {
+            "eligible_repository_count": len(labelable_names),
+            "excluded_insufficient_comparable_releases": len(by_name) - len(labelable_names),
+        },
+    }
 
 
 def _write_csv(path: Path, fields, rows) -> None:
@@ -123,7 +144,11 @@ def write_outputs(sample: dict, out: Path, *, seed: int, dataset_sha256: str,
         "source_dataset_sha256": dataset_sha256,
         "source_collected_at": dataset.get("collected_at"),
         "source_window": dataset.get("window"),
-        "sampling": "random.Random(seed).sample sobre nomes ordenados; releases por random.Random(f'{seed}:{repo}')",
+        "repository_sampling": sample["repository_sampling"],
+        "sampling": (
+            "random.Random(seed).sample sobre nomes ordenados com releases "
+            "comparáveis suficientes; releases por random.Random(f'{seed}:{repo}')"
+        ),
     }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     _write_csv(release_draw, SORTEIO_FIELDS, sample["releases"])
     for rater in raters:
