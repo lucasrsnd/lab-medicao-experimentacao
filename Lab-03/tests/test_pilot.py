@@ -131,6 +131,120 @@ def test_piloto_integrado_coleta_100_elegiveis_com_metadados_releases_commits_ru
     assert len(first["workflow_runs"]) == 50
 
 
+def test_coleta_completa_substitui_candidato_que_perde_releases(monkeypatch):
+    import lab03.pilot as pilot_module
+
+    window = Window(
+        timestamp("2025-03-01T00:00:00Z"),
+        timestamp("2026-03-01T00:00:00Z"),
+    )
+    candidates = [
+        {"full_name": f"pilot/project-{number:03d}", "default_branch": "main"}
+        for number in range(1, 5)
+    ]
+    selection = {
+        "collected_at": "2026-03-01T00:00:00+00:00",
+        "window": {"start": window.start.isoformat(), "end": window.end.isoformat()},
+        "criteria": {},
+        "funnel": {},
+        "eligible_repositories": candidates,
+    }
+
+    monkeypatch.setattr(
+        pilot_module,
+        "collect_workflow_runs",
+        lambda *args, **kwargs: [object()] * 50,
+    )
+
+    def collect_report(client, repository, window, workflow_runs, *, collect_tags):
+        release_count = 4 if repository.endswith("001") else 5
+        return {"catalog": {"releases": [{}] * release_count}}
+
+    monkeypatch.setattr(pilot_module, "run", collect_report)
+    collected = []
+    output = run_pilot(
+        GitHubClient(PilotTransport(repository_count=4)),
+        window=window,
+        target_size=2,
+        stars_min_exclusive=1000,
+        minimum_releases=5,
+        minimum_valid_runs=50,
+        valid_conclusions=("success",),
+        top_only=True,
+        workers=1,
+        include_workflow_runs=False,
+        selection=selection,
+        on_result=collected.append,
+    )
+
+    assert [item["metadata"]["full_name"] for item in collected] == [
+        "pilot/project-002",
+        "pilot/project-003",
+    ]
+    assert output["pilot_sample"] == {
+        "target": 2,
+        "selected": 2,
+        "eligible_not_selected": 2,
+    }
+    assert output["collection_exclusions"] == [{
+        "repository": "pilot/project-001",
+        "reason": "minimum_releases_not_met_after_collection",
+    }]
+    assert output["collection_replacements"] == ["pilot/project-003"]
+
+
+def test_coleta_completa_reserva_mais_candidatos_para_deriva(monkeypatch):
+    import lab03.pilot as pilot_module
+
+    window = Window(
+        timestamp("2025-03-01T00:00:00Z"),
+        timestamp("2026-03-01T00:00:00Z"),
+    )
+    candidates = [
+        {"full_name": f"pilot/project-{number:03d}", "default_branch": "main"}
+        for number in range(16)
+    ]
+
+    def select_candidates(*args, **kwargs):
+        assert kwargs["sample_size"] == 16
+        return {
+            "collected_at": "2026-03-01T00:00:00+00:00",
+            "window": {"start": window.start.isoformat(), "end": window.end.isoformat()},
+            "criteria": {},
+            "funnel": {"search": {"selected": 16, "matching_candidates": 20}},
+            "eligible_repositories": candidates,
+        }
+
+    monkeypatch.setattr(pilot_module, "select_candidates", select_candidates)
+    monkeypatch.setattr(
+        pilot_module,
+        "collect_workflow_runs",
+        lambda *args, **kwargs: [object()] * 50,
+    )
+    monkeypatch.setattr(
+        pilot_module,
+        "run",
+        lambda *args, **kwargs: {"catalog": {"releases": [{}] * 5}},
+    )
+    collected = []
+
+    run_pilot(
+        GitHubClient(PilotTransport(repository_count=16)),
+        window=window,
+        target_size=2,
+        stars_min_exclusive=1000,
+        minimum_releases=5,
+        minimum_valid_runs=50,
+        valid_conclusions=("success",),
+        top_only=True,
+        workers=1,
+        include_workflow_runs=False,
+        on_result=collected.append,
+    )
+
+    assert len(collected) == 2
+
+
 def test_cli_piloto_registra_execucao_cache_e_contagens(tmp_path, monkeypatch):
     config_path = Path(__file__).parents[1] / "config" / "estudo.json"
     config = json.loads(config_path.read_text(encoding="utf-8"))

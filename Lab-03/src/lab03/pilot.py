@@ -58,9 +58,9 @@ def run_pilot(
     if continue_on_ineligible and selection is None:
         raise ValueError("continue_on_ineligible exige seleção explícita.")
     if selection is None:
-        # Seleção rápida: a elegibilidade fica em torno de 20% dos mais estrelados,
-        # então começar em 6x o alvo evita várias passadas curtas pelo mesmo cache.
-        candidate_limit = target_size * 6 if top_only else target_size
+        # A integração detalhada pode descartar elegíveis que mudaram desde a triagem.
+        # A reserva permite substituí-los sem deixar a amostra completa incompleta.
+        candidate_limit = target_size * 8 if top_only else target_size
         selection = None
         while True:
             selection = select_candidates(
@@ -110,6 +110,8 @@ def run_pilot(
             )
 
     selected = eligible[:target_size]
+    refill_candidates = top_only and on_result is not None and slice_range is None
+    refill_candidates = top_only and on_result is not None and slice_range is None
     selection["pilot_sample"] = {
         "target": target_size,
         "selected": len(selected),
@@ -121,6 +123,10 @@ def run_pilot(
             raise DataError(f"Fatia {start}:{end} fora da seleção de {len(selected)} repositórios.")
         selected = selected[start:end]
         selection["pilot_sample"]["slice"] = [start, end]
+    collection_candidates = eligible if refill_candidates else selected
+
+    collection_candidates = eligible if refill_candidates else selected
+
     def collect_repository(metadata):
         repository = metadata["full_name"]
         notify(f"Iniciando coleta: {repository}")
@@ -145,7 +151,20 @@ def run_pilot(
                 repository, "minimum_valid_workflow_runs_not_met",
                 len(workflow_runs), minimum_valid_runs,
             )
-        report = run(client, repository, window, workflow_runs, collect_tags=collect_tags, catalog=catalog)
+        try:
+            report = run(
+                client, repository, window, workflow_runs,
+                collect_tags=collect_tags, catalog=catalog,
+            )
+        except TypeError as error:
+            if "catalog" not in str(error):
+                raise
+            report = run(client, repository, window, workflow_runs, collect_tags=collect_tags)
+        if len(report["catalog"]["releases"]) < minimum_releases:
+            raise RepositoryIneligible(
+                repository, "minimum_releases_not_met_after_collection",
+                len(report["catalog"]["releases"]), minimum_releases,
+            )
         return {
             "metadata": metadata,
             "report": report,
@@ -201,6 +220,49 @@ def run_pilot(
         return header
     if on_start is not None:
         on_start(header)
-    parallel_stream(attempt, selected, consume, workers)
+    if not refill_candidates:
+        parallel_stream(attempt, selected, consume, workers)
+    else:
+        exclusions = []
+        replacements = []
+        initial_names = {item["full_name"] for item in selected}
+        collected = 0
+
+        def attempt_refill(metadata):
+            try:
+                return collect_repository(metadata)
+            except RepositoryIneligible as error:
+                return error
+
+        def consume_refill(result):
+            nonlocal collected
+            if isinstance(result, RepositoryIneligible):
+                exclusions.append({
+                    "repository": result.record["repository"],
+                    "reason": result.record["reason"],
+                })
+                return
+            if collected >= target_size:
+                return
+            on_result(result)
+            validation["accepted"] += 1
+            collected += 1
+            repository = result["metadata"]["full_name"]
+            if repository not in initial_names:
+                replacements.append(repository)
+
+        batch_size = max(1, workers * 2)
+        for start in range(0, len(collection_candidates), batch_size):
+            batch = collection_candidates[start:start + batch_size]
+            parallel_stream(attempt_refill, batch, consume_refill, workers)
+            if collected >= target_size:
+                break
+        if collected < target_size:
+            raise DataError(
+                f"Coleta incompleta: {collected} de {target_size} repositórios "
+                f"atenderam aos critérios após integração."
+            )
+        header["collection_exclusions"] = exclusions
+        header["collection_replacements"] = replacements
     header["collection_validation"] = validation
     return header

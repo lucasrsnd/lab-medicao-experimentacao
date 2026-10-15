@@ -1,0 +1,18 @@
+{
+  "seed": 42,
+  "repositories": 60,
+  "releases": 300,
+  "releases_per_repository": 5,
+  "source_dataset_sha256": "87656c1c9637fd1e938f1d4e2775be55e29df701a94fa2268096f71ec623fa52",
+  "source_collected_at": "2026-10-15T12:41:13.846050+00:00",
+  "source_window": {
+    "start": "2025-10-06T03:00:00+00:00",
+    "end": "2026-10-06T03:00:00+00:00",
+    "interval": "[start, end)"
+  },
+  "repository_sampling": {
+    "eligible_repository_count": 293,
+    "excluded_insufficient_comparable_releases": 7
+  },
+  "sampling": "random.Random(seed).sample sobre nomes ordenados com releases comparáveis suficientes; releases por random.Random(f'{seed}:{repo}')"
+}

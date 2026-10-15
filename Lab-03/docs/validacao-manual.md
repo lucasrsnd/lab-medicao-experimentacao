@@ -23,23 +23,27 @@ python -m lab03 --config config/estudo.json --full --output data/amostra_complet
 ## 2. Sorteio
 
 ```powershell
-python -m lab03.gold_sample --dataset data/amostra_completa.json --out labels
+python -m lab03.gold_sample --dataset data/amostra_completa.json --out labels/reamostragem-v2
 ```
 
-- 60 repositórios: `random.Random(42).sample` sobre os nomes ordenados
-  (equivalente reproduzível a `df.sample(n=60, random_state=42)`; a ordem do
-  arquivo não influencia).
+- 60 repositórios, sorteados com `random.Random(42).sample` sobre os nomes
+  ordenados que têm ao menos cinco releases comparáveis. A ordem do arquivo
+  não influencia. Repositórios sem cinco releases rotuláveis são excluídos do
+  sorteio para manter exatamente 300 releases.
 - 5 releases por repositório: `random.Random(f"42:{repo}")`, entre as releases
   da janela que têm lista de commits (a primeira release histórica não tem
   comparação e não é rotulável).
-- `labels/amostra_ouro_sorteio.json` registra semente, hash SHA-256 do dataset e
-  janela. `labels/amostra_ouro_releases.csv` é a lista sorteada (sem rótulos).
+- `labels/reamostragem-v2/amostra_ouro_sorteio.json` registra semente, hash
+  SHA-256 do dataset e janela, além das contagens de repositórios elegíveis e
+  excluídos. `labels/reamostragem-v2/amostra_ouro_releases.csv` é a lista
+  sorteada (sem rótulos).
 - O comando recusa sobrescrever arquivos existentes (`--force` refaz o sorteio e
   **apaga o trabalho de rotulagem**; só usar antes de alguém começar).
 
 ## 3. Regras do protocolo cego
 
-1. Cada avaliador (A, B, C) preenche **só** a sua planilha em `labels/`:
+1. Cada avaliador (A, B, C) preenche **só** a sua planilha em
+   `labels/reamostragem-v2/`:
    `rotulos_<X>_repositorios.csv` e `rotulos_<X>_releases.csv`.
 2. Não consultar os outros avaliadores nem os rótulos deles, não abrir os
    arquivos dos outros enquanto não houver consenso.
@@ -111,15 +115,15 @@ Somente depois de A, B e C finalizarem as planilhas, execute no diretório
 
 ```powershell
 python -m lab03.manual_validation agreement `
-  --sample-manifest labels/amostra_ouro_sorteio.json `
-  --sample-repositories labels/rotulos_A_repositorios.csv `
-  --sample-releases labels/amostra_ouro_releases.csv `
-  --a-repositories labels/rotulos_A_repositorios.csv `
-  --a-releases labels/rotulos_A_releases.csv `
-  --b-repositories labels/rotulos_B_repositorios.csv `
-  --b-releases labels/rotulos_B_releases.csv `
-  --c-repositories labels/rotulos_C_repositorios.csv `
-  --c-releases labels/rotulos_C_releases.csv `
+  --sample-manifest labels/reamostragem-v2/amostra_ouro_sorteio.json `
+  --sample-repositories labels/reamostragem-v2/rotulos_A_repositorios.csv `
+  --sample-releases labels/reamostragem-v2/amostra_ouro_releases.csv `
+  --a-repositories labels/reamostragem-v2/rotulos_A_repositorios.csv `
+  --a-releases labels/reamostragem-v2/rotulos_A_releases.csv `
+  --b-repositories labels/reamostragem-v2/rotulos_B_repositorios.csv `
+  --b-releases labels/reamostragem-v2/rotulos_B_releases.csv `
+  --c-repositories labels/reamostragem-v2/rotulos_C_repositorios.csv `
+  --c-releases labels/reamostragem-v2/rotulos_C_releases.csv `
   --output-dir labels/consenso-v1
 ```
 
@@ -138,7 +142,7 @@ que gerou o dataset e avalie-as:
 ```powershell
 python -m lab03.manual_validation predictions `
   --dataset data/amostra_completa.json `
-  --sample-releases labels/amostra_ouro_releases.csv `
+  --sample-releases labels/reamostragem-v2/amostra_ouro_releases.csv `
   --output labels/consenso-v1/previsoes-v2.csv
 
 python -m lab03.manual_validation evaluate `
@@ -155,9 +159,7 @@ variantes por `--heuristic-evaluation`. Para cada refinamento, gere um novo
 arquivo de avaliação; não altere rótulos para elevar F1 e registre o viés de
 ajuste à mesma amostra. Se F1 < 0,70, o relatório marca refinamento necessário.
 
-O sorteio atual em `labels/amostra_ouro_sorteio.json` registra 283 releases,
-não as 300 exigidas (cinco por 60 repositórios). A geração agora falha quando
-um repositório sorteado não tem cinco releases comparáveis, em vez de produzir
-silenciosamente uma amostra incompleta. Não use `--force` nem substitua
-planilhas já preenchidas sem decisão explícita do grupo: mudar a amostra
-invalida os rótulos independentes existentes.
+O sorteio anterior em `labels/amostra_ouro_sorteio.json` registra 283 releases,
+não as 300 exigidas. Preserve esse artefato e suas planilhas. A nova amostra
+deve ficar em `labels/reamostragem-v2/`; todos os três avaliadores precisam
+rotulá-la de forma independente antes do cálculo de concordância e do consenso.
