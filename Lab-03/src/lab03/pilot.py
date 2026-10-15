@@ -4,11 +4,23 @@ from dataclasses import asdict
 from typing import Callable
 
 from lab03 import __version__
-from lab03.collectors.candidates import parallel_map, parallel_stream, select_candidates
+from lab03.collectors.releases import collect_releases
+from lab03.collectors.candidates import parallel_stream, select_candidates
 from lab03.collectors.workflow_runs import collect_workflow_runs
 from lab03.domain import Window
 from lab03.github import DataError, GitHubClient
 from lab03.pipeline import run
+
+
+class RepositoryIneligible(DataError):
+    """Repositório medido com sucesso, mas que não satisfaz os mínimos."""
+
+    def __init__(self, repository, reason, observed, minimum):
+        self.record = {
+            "repository": repository, "reason": reason,
+            "observed": observed, "minimum": minimum,
+        }
+        super().__init__(f"{repository}: {reason} ({observed} < {minimum}).")
 
 
 def run_pilot(
@@ -32,6 +44,7 @@ def run_pilot(
     slice_range: tuple[int, int] | None = None,
     notify: Callable[[str], None] | None = None,
     required_repositories: tuple[str, ...] = (),
+    continue_on_ineligible: bool = False,
 ) -> dict:
     """Com `selection` (saída de uma seleção anterior, ex.: `config/selecao-amostra.json`)
     a busca e o funil não são refeitos: só a coleta, opcionalmente de uma fatia
@@ -42,6 +55,8 @@ def run_pilot(
     que fica pronto, `on_start(cabeçalho)` é chamado antes do primeiro, e o
     retorno não traz `repositories`: a memória não cresce com a amostra."""
     notify = notify or (lambda message: None)
+    if continue_on_ineligible and selection is None:
+        raise ValueError("continue_on_ineligible exige seleção explícita.")
     if selection is None:
         # A integração detalhada pode descartar elegíveis que mudaram desde a triagem.
         # A reserva permite substituí-los sem deixar a amostra completa incompleta.
@@ -111,43 +126,29 @@ def run_pilot(
 
     def collect_repository(metadata):
         repository = metadata["full_name"]
-        notify(f"Coleta completa: {repository}")
+        notify(f"Iniciando coleta: {repository}")
+        catalog = collect_releases(client, repository, window, collect_tags=collect_tags)
+        if len(catalog.releases) < minimum_releases:
+            raise RepositoryIneligible(
+                repository, "minimum_default_branch_releases_not_met",
+                len(catalog.releases), minimum_releases,
+            )
         collection = {}
         workflow_runs = collect_workflow_runs(
             client,
             repository,
             window,
-            metadata["default_branch"],
+            catalog.default_branch,
             valid_conclusions,
             stats=collection,
             tolerate_drift=top_only,
         )
         if len(workflow_runs) < minimum_valid_runs:
-            if top_only:
-                return {
-                    "collection_exclusion": {
-                        "repository": repository,
-                        "reason": "minimum_valid_workflow_runs_not_met_after_collection",
-                    },
-                    "metadata": metadata,
-                }
-            raise DataError(
-                f"{repository}: contagem de workflow runs mudou após a elegibilidade "
-                f"({len(workflow_runs)} < {minimum_valid_runs})."
+            raise RepositoryIneligible(
+                repository, "minimum_valid_workflow_runs_not_met",
+                len(workflow_runs), minimum_valid_runs,
             )
-        report = run(client, repository, window, workflow_runs, collect_tags=collect_tags)
-        if len(report["catalog"]["releases"]) < minimum_releases:
-            if top_only:
-                return {
-                    "collection_exclusion": {
-                        "repository": repository,
-                        "reason": "minimum_releases_not_met_after_collection",
-                    },
-                    "metadata": metadata,
-                }
-            raise DataError(
-                f"{repository}: releases do default branch abaixo do mínimo após integração."
-            )
+        report = run(client, repository, window, workflow_runs, collect_tags=collect_tags, catalog=catalog)
         return {
             "metadata": metadata,
             "report": report,
@@ -171,44 +172,38 @@ def run_pilot(
         "tags_collected": collect_tags,
         "eligible_repositories": selected,
     }
+    validation = {"status": "complete", "requested": len(selected), "accepted": 0, "excluded": []}
+
+    def attempt(metadata):
+        try:
+            return collect_repository(metadata)
+        except RepositoryIneligible as error:
+            if not continue_on_ineligible:
+                raise
+            return error
+
+    accepted = []
+
+    def consume(result):
+        if isinstance(result, RepositoryIneligible):
+            validation["status"] = "partial"
+            validation["excluded"].append(result.record)
+            notify(f"Excluído: {result}")
+            return
+        if on_result is None:
+            accepted.append(result)
+        else:
+            on_result(result)
+        validation["accepted"] += 1
+        notify(f"Gravado {validation['accepted']}/{len(selected)}: {result['metadata']['full_name']}")
+
     if on_result is None:
-        header["repositories"] = parallel_map(collect_repository, selected, workers)
+        parallel_stream(attempt, selected, consume, workers)
+        header["repositories"] = accepted
+        header["collection_validation"] = validation
         return header
     if on_start is not None:
         on_start(header)
-    if not refill_candidates:
-        parallel_stream(collect_repository, selected, on_result, workers)
-    else:
-        exclusions = []
-        replacements = []
-        initial_names = {item["full_name"] for item in selected}
-        collected = 0
-
-        def consume(item):
-            nonlocal collected
-            exclusion = item.get("collection_exclusion")
-            if exclusion is not None:
-                exclusions.append(exclusion)
-                return
-            if collected >= target_size:
-                return
-            on_result(item)
-            collected += 1
-            repository = item["metadata"]["full_name"]
-            if repository not in initial_names:
-                replacements.append(repository)
-
-        batch_size = max(1, workers * 2)
-        for start in range(0, len(collection_candidates), batch_size):
-            batch = collection_candidates[start:start + batch_size]
-            parallel_stream(collect_repository, batch, consume, workers)
-            if collected >= target_size:
-                break
-        if collected < target_size:
-            raise DataError(
-                f"Coleta incompleta: {collected} de {target_size} repositórios "
-                f"atenderam aos critérios após integração."
-            )
-        header["collection_exclusions"] = exclusions
-        header["collection_replacements"] = replacements
+    parallel_stream(attempt, selected, consume, workers)
+    header["collection_validation"] = validation
     return header

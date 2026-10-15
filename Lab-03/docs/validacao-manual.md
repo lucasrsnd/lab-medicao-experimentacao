@@ -75,6 +75,32 @@ Planilha de releases (uma linha por release sorteada; abrir `url_release` e
 `url_comparacao` vazia significa que não há release anterior comparável (não
 deveria ocorrer no sorteio).
 
+O sorteio atual tem 60 repositórios e 283 releases, e não 300. Os
+repositórios com menos de 5 releases rotuláveis entram com as que têm.
+`microsoft/terminal` e `modelcontextprotocol/servers` não têm nenhuma release
+rotulável e são avaliados só na planilha de repositórios.
+
+### Validação do formato
+
+Antes de commitar, cada avaliador valida **a própria** planilha:
+
+```powershell
+python -m lab03.label_validation --rater B --complete-ids --allow-blank   # durante a rotulagem: progresso
+python -m lab03.label_validation --rater B                                 # ao final: exige tudo preenchido
+```
+
+O validador lê só o sorteio e as planilhas do avaliador informado. Não abre
+rótulos dos outros nem a saída da heurística. Ele confere:
+
+- a cobertura exata do sorteio, sem linhas repetidas;
+- o vocabulário das três dimensões (`tipo_projeto`, `releases_sao_entregas` e
+  `e_corretiva`);
+- a justificativa em `observacoes` quando o valor for `outro` ou `incerto`.
+
+`--complete-ids` preenche `release_id` a partir do sorteio, sem alterar
+rótulos. Os rótulos só são publicados depois que os três avaliadores
+encerrarem a avaliação independente.
+
 ## 5. Consenso e métricas (Issues do Davi)
 
 Cálculo do kappa de Fleiss, consenso (maioria simples; casos 1-1-1 decididos em

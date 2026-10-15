@@ -105,7 +105,11 @@ def main(argv=None) -> int:
     parser.add_argument("--output", type=Path, help="Arquivo JSON de saída")
     parser.add_argument("--validate-config", action="store_true", help="Validar configuração sem coletar")
     parser.add_argument("--refresh-cache", action="store_true", help="Invalidar respostas desta configuração antes da coleta")
+    parser.add_argument("--continue-on-ineligible", action="store_true",
+                        help="Com --full --selection, registra inelegíveis e continua; saída pode ser parcial")
     args = parser.parse_args(argv)
+    if args.continue_on_ineligible and not (args.full and args.selection):
+        parser.error("--continue-on-ineligible exige --full e --selection.")
     if args.include_repo and not args.pilot:
         parser.error("--include-repo exige --pilot.")
     cache = None
@@ -215,6 +219,7 @@ def main(argv=None) -> int:
                 slice_range=slice_range,
                 notify=lambda message: print(message, file=sys.stderr, flush=True),
                 required_repositories=tuple(args.include_repo),
+                continue_on_ineligible=args.continue_on_ineligible,
             )
             output["sample_kind"] = "full" if args.full else "pilot"
             output["execution"] = {
@@ -222,6 +227,10 @@ def main(argv=None) -> int:
                     f"python -m lab03 --config {args.config} {flag} "
                     f"--output {args.output} --cache {args.cache}"
                     + "".join(f" --include-repo {name}" for name in args.include_repo)
+                    + (f" --selection {args.selection}" if args.selection else "")
+                    + (f" --slice {args.slice_range}" if args.slice_range else "")
+                    + (f" --workers {args.workers}" if args.workers else "")
+                    + (" --continue-on-ineligible" if args.continue_on_ineligible else "")
                 ),
                 "config": str(args.config),
                 "pipeline_version": __version__,
@@ -261,13 +270,12 @@ def main(argv=None) -> int:
                     "sample_kind": output["sample_kind"],
                     "execution": output["execution"],
                     "source": source,
-                    **{
-                        field: output[field]
-                        for field in ("collection_exclusions", "collection_replacements")
-                        if field in output
-                    },
+                    "configuration": {"sha256": config_hash, "values": config_snapshot},
+                    "collection_validation": output["collection_validation"],
                 })
                 print(f"Resultado: {args.output}")
+                if output["collection_validation"]["status"] == "partial":
+                    print("Coleta parcial: há repositórios excluídos; consultar collection_validation.", file=sys.stderr)
                 return 0
         elif args.select_candidates:
             output = select_candidates(

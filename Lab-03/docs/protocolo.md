@@ -1,15 +1,17 @@
 # Protocolo do estudo — Lab 03 (Issue #93)
 
-**Status:** janela definida pelo grupo em 07/10/2026, por solicitação de Gustavo.
-Confirmação do professor reportada em 14/10/2026, sem data exata registrada;
-revisão conjunta ainda pendente.
-**Sprint:** Lab03S01.
+**Status:** janela revista por autorização de Gustavo em 13/10/2026 para compatibilidade com a coleta S02 existente.
+Coleta habilitada; confirmação do professor e revisão conjunta ainda pendentes.
+**Sprint:** Lab03S02.
 **Configuração canônica:** [`config/estudo.json`](../config/estudo.json).
 
-Este protocolo fixa as decisões operacionais antes da coleta. As hipóteses são
-expectativas, não resultados. A proposta existente foi adotada com ajuste do
-limite final para exatamente doze meses. A decisão e o estado da confirmação
-do professor estão registrados em `window_decision` na configuração. Não usar
+Este protocolo registra as decisões operacionais e suas revisões. As hipóteses são
+expectativas, não resultados. A decisão de 07/10/2026 adotava exatamente doze
+meses. Em 13/10/2026, após a coleta parcial, Gustavo autorizou um dia adicional
+para compatibilidade com os 183 repositórios informados pelo colega e com a
+seleção versionada de 300. Esse desvio não foi uma decisão anterior à coleta e
+deve ser relatado na metodologia e nas ameaças à validade. A decisão e a ausência de confirmação
+do professor estão registradas em `window_decision` na configuração. Não usar
 datas do `examples/demo-api.json`, que contém dados inteiramente sintéticos.
 Se o professor alterar a janela, registrar a revisão e repetir a coleta com a
 nova configuração antes de comparar resultados.
@@ -60,13 +62,40 @@ nova configuração antes de comparar resultados.
 
 ## Janela, limites e unidades
 
-- Janela adotada pelo grupo: início `2025-10-06T00:00:00-03:00`,
-  fim exclusivo `2026-10-06T00:00:00-03:00`, fuso fixo `-03:00`.
-  A configuração valida a duração de doze meses de calendário.
+- Janela adotada para compatibilidade da S02: início `2025-10-06T00:00:00-03:00`,
+  fim exclusivo `2026-10-07T00:00:00-03:00`, fuso fixo `-03:00`.
+  Duração efetiva: **366 dias (12 meses e 1 dia)**. `duration_months=12` mantém
+  o requisito nominal; `compatibility_exception` registra a exceção autorizada
+  e seus limites exatos. Sem essa exceção, a validação exige doze meses.
+  Não apresentar esta janela como cumprimento exato do requisito de 12 meses.
+- Preservar a seleção existente e coletar a fatia `183:300` (117 repositórios),
+  sem refazer a busca. Os tetos de elegibilidade continuam em 1.000 runs e
+  500 releases. Revalidar a compatibilidade das partes antes da junção;
+  resultados antigos da S01 com término em 06/10/2026 não devem ser misturados.
+- **Correção da seleção rápida (13/10/2026):** a coleta identificou que
+  `ankitects/anki` tinha oito releases contadas na seleção, mas somente uma
+  elegível após verificar ancestralidade no branch padrão. A continuação com
+  `--continue-on-ineligible` registra exclusões de mínimos em
+  `collection_validation` e produz uma parte explicitamente parcial. Erros de
+  API/paginação não são convertidos em inelegibilidade; continuam interrompendo
+  a execução após as retentativas cabíveis.
+- Para concluir a fatia, `python -m lab03.replacements` busca somente vagas
+  rejeitadas: candidatos públicos fora dos 300 originais, por popularidade
+  decrescente a partir da menor quantidade de estrelas da seleção original.
+  O limite por execução é de 1.000 candidatos adicionais; se não bastarem,
+  registrar falha sem inventar completude. Cada substituto passa pelos tetos
+  de releases/runs e pela integração completa, incluindo os mínimos no branch
+  padrão. A seleção original é preservada; uma cópia revisada registra os
+  índices, substitutos, exclusões e tentativas. Os primeiros 183 índices não
+  são alterados. Essa reposição posterior deve constar na metodologia.
+- Quando houver reposição, entregar `parte2.json` junto de
+  `selecao-amostra-revisada.json`. Na junção, usar essa seleção revisada:
+  `python -m lab03.merge data/parte1.json data/parte2.json --selection data/selecao-amostra-revisada.json --output data/amostra_completa.json`.
+  A existência de uma parte não comprova a validade dos 183 fornecidos por
+  outro integrante; verificar cobertura e critérios de ambas na entrega.
 - A proposta original terminava em `2026-10-06T23:59:59-03:00`, excedendo
   doze meses. Ela permanece em `proposed_window` como histórico; somente
-  `window` orienta a execução. A confirmação do professor foi reportada em
-  14/10/2026; a data exata da confirmação não foi informada.
+  `window` orienta a execução. A confirmação do professor permanece pendente.
 - Todos os intervalos são **`[início, fim)`**: eventos no início entram;
   eventos exatamente no fim não entram. Releases e runs são selecionados por
   `published_at` e `created_at`, respectivamente.
@@ -260,11 +289,10 @@ como exploratória, datada e justificada.
 
 ## Execução e rastreabilidade
 
-1. A janela foi adotada pelo grupo e a confirmação do professor foi reportada
-   em 14/10/2026, sem data exata registrada; a revisão conjunta do trio ainda
-   deve ser registrada antes de interpretar os resultados finais.
-2. Registrar qualquer correção posterior do professor antes de interpretar
-   os resultados finais.
+1. A decisão do grupo habilita a coleta com a janela acima; não representa
+   confirmação do professor nem aprovação já realizada pelo trio.
+2. Registrar a revisão conjunta e eventual confirmação ou correção do
+   professor antes de interpretar os resultados finais.
 3. Cada relatório inclui a configuração e seu SHA-256. O cache é separado
    por esse identificador; usar `--refresh-cache` para renovar respostas da
    mesma configuração. O cache registra o instante de obtenção das respostas.
