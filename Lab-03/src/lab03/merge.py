@@ -15,6 +15,8 @@ from pathlib import Path
 def merge_parts(parts: list[dict], selection: dict | None = None) -> dict:
     if not parts:
         raise ValueError("Nenhuma parte informada.")
+    if any(part.get("collection_validation", {}).get("status") == "partial" for part in parts):
+        raise ValueError("Parte com exclusões de elegibilidade: resolver reposição antes da junção.")
     first = parts[0]
     for part in parts[1:]:
         if part["window"] != first["window"] or part["criteria"] != first["criteria"]:
