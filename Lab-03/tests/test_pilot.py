@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from urllib.parse import parse_qs, urlsplit
 
 from lab03.domain import Window, timestamp
@@ -156,11 +157,12 @@ def test_coleta_completa_substitui_candidato_que_perde_releases(monkeypatch):
         lambda *args, **kwargs: [object()] * 50,
     )
 
-    def collect_report(client, repository, window, workflow_runs, *, collect_tags):
+    def collect_catalog(client, repository, window, *, collect_tags):
         release_count = 4 if repository.endswith("001") else 5
-        return {"catalog": {"releases": [{}] * release_count}}
+        return SimpleNamespace(releases=[object()] * release_count, default_branch="main")
 
-    monkeypatch.setattr(pilot_module, "run", collect_report)
+    monkeypatch.setattr(pilot_module, "collect_releases", collect_catalog)
+    monkeypatch.setattr(pilot_module, "run", lambda *args, **kwargs: {"catalog": {"releases": []}})
     collected = []
     output = run_pilot(
         GitHubClient(PilotTransport(repository_count=4)),
@@ -188,7 +190,9 @@ def test_coleta_completa_substitui_candidato_que_perde_releases(monkeypatch):
     }
     assert output["collection_exclusions"] == [{
         "repository": "pilot/project-001",
-        "reason": "minimum_releases_not_met_after_collection",
+        "reason": "minimum_default_branch_releases_not_met",
+        "observed": 4,
+        "minimum": 5,
     }]
     assert output["collection_replacements"] == ["pilot/project-003"]
 

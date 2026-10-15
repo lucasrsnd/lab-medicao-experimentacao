@@ -111,7 +111,6 @@ def run_pilot(
 
     selected = eligible[:target_size]
     refill_candidates = top_only and on_result is not None and slice_range is None
-    refill_candidates = top_only and on_result is not None and slice_range is None
     selection["pilot_sample"] = {
         "target": target_size,
         "selected": len(selected),
@@ -123,8 +122,6 @@ def run_pilot(
             raise DataError(f"Fatia {start}:{end} fora da seleção de {len(selected)} repositórios.")
         selected = selected[start:end]
         selection["pilot_sample"]["slice"] = [start, end]
-    collection_candidates = eligible if refill_candidates else selected
-
     collection_candidates = eligible if refill_candidates else selected
 
     def collect_repository(metadata):
@@ -151,20 +148,7 @@ def run_pilot(
                 repository, "minimum_valid_workflow_runs_not_met",
                 len(workflow_runs), minimum_valid_runs,
             )
-        try:
-            report = run(
-                client, repository, window, workflow_runs,
-                collect_tags=collect_tags, catalog=catalog,
-            )
-        except TypeError as error:
-            if "catalog" not in str(error):
-                raise
-            report = run(client, repository, window, workflow_runs, collect_tags=collect_tags)
-        if len(report["catalog"]["releases"]) < minimum_releases:
-            raise RepositoryIneligible(
-                repository, "minimum_releases_not_met_after_collection",
-                len(report["catalog"]["releases"]), minimum_releases,
-            )
+        report = run(client, repository, window, workflow_runs, collect_tags=collect_tags, catalog=catalog)
         return {
             "metadata": metadata,
             "report": report,
@@ -220,49 +204,47 @@ def run_pilot(
         return header
     if on_start is not None:
         on_start(header)
-    if not refill_candidates:
+    if not refill_candidates or continue_on_ineligible:
         parallel_stream(attempt, selected, consume, workers)
-    else:
-        exclusions = []
-        replacements = []
-        initial_names = {item["full_name"] for item in selected}
-        collected = 0
+        header["collection_validation"] = validation
+        return header
 
-        def attempt_refill(metadata):
-            try:
-                return collect_repository(metadata)
-            except RepositoryIneligible as error:
-                return error
+    # Seleção rápida sem fatia: elegíveis que perdem os mínimos na coleta completa
+    # são registrados e substituídos pelos próximos da reserva, em ordem.
+    exclusions = []
+    replacements = []
+    initial_names = {item["full_name"] for item in selected}
 
-        def consume_refill(result):
-            nonlocal collected
-            if isinstance(result, RepositoryIneligible):
-                exclusions.append({
-                    "repository": result.record["repository"],
-                    "reason": result.record["reason"],
-                })
-                return
-            if collected >= target_size:
-                return
-            on_result(result)
-            validation["accepted"] += 1
-            collected += 1
-            repository = result["metadata"]["full_name"]
-            if repository not in initial_names:
-                replacements.append(repository)
+    def refill_attempt(metadata):
+        try:
+            return collect_repository(metadata)
+        except RepositoryIneligible as error:
+            return error
 
-        batch_size = max(1, workers * 2)
-        for start in range(0, len(collection_candidates), batch_size):
-            batch = collection_candidates[start:start + batch_size]
-            parallel_stream(attempt_refill, batch, consume_refill, workers)
-            if collected >= target_size:
-                break
-        if collected < target_size:
-            raise DataError(
-                f"Coleta incompleta: {collected} de {target_size} repositórios "
-                f"atenderam aos critérios após integração."
-            )
-        header["collection_exclusions"] = exclusions
-        header["collection_replacements"] = replacements
+    def refill_consume(result):
+        if isinstance(result, RepositoryIneligible):
+            exclusions.append(result.record)
+            notify(f"Excluído e substituído: {result}")
+            return
+        if validation["accepted"] >= target_size:
+            return
+        consume(result)
+        repository = result["metadata"]["full_name"]
+        if repository not in initial_names:
+            replacements.append(repository)
+
+    batch_size = max(1, workers * 2)
+    for start in range(0, len(collection_candidates), batch_size):
+        batch = collection_candidates[start:start + batch_size]
+        parallel_stream(refill_attempt, batch, refill_consume, workers)
+        if validation["accepted"] >= target_size:
+            break
+    if validation["accepted"] < target_size:
+        raise DataError(
+            f"Coleta incompleta: {validation['accepted']} de {target_size} repositórios "
+            f"atenderam aos critérios após integração."
+        )
+    header["collection_exclusions"] = exclusions
+    header["collection_replacements"] = replacements
     header["collection_validation"] = validation
     return header
