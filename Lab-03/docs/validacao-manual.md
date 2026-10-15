@@ -75,10 +75,10 @@ Planilha de releases (uma linha por release sorteada; abrir `url_release` e
 `url_comparacao` vazia significa que não há release anterior comparável (não
 deveria ocorrer no sorteio).
 
-O sorteio atual tem 60 repositórios e 283 releases, e não 300. Os
-repositórios com menos de 5 releases rotuláveis entram com as que têm.
-`microsoft/terminal` e `modelcontextprotocol/servers` não têm nenhuma release
-rotulável e são avaliados só na planilha de repositórios.
+O sorteio anterior, em `labels/`, tem 60 repositórios e 283 releases, e não
+300: repositórios com menos de 5 releases rotuláveis entraram com as que
+tinham. A reamostragem em `labels/reamostragem-v2/` sorteia somente entre
+repositórios com ao menos 5 releases comparáveis e tem exatamente 300 releases.
 
 ### Validação do formato
 

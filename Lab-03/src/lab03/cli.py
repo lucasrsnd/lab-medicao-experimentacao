@@ -272,6 +272,11 @@ def main(argv=None) -> int:
                     "source": source,
                     "configuration": {"sha256": config_hash, "values": config_snapshot},
                     "collection_validation": output["collection_validation"],
+                    **{
+                        field: output[field]
+                        for field in ("collection_exclusions", "collection_replacements")
+                        if field in output
+                    },
                 })
                 print(f"Resultado: {args.output}")
                 if output["collection_validation"]["status"] == "partial":
