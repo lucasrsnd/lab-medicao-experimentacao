@@ -13,9 +13,13 @@ dist/
 !.env.example
 *.token
 tokens/
-data/
 .cache/
 article/*.aux
 article/*.log
 article/*.out
 article/*.toc
+
+# data/: sobe só o dataset compactado e a seleção (arquivos >100MB não cabem no GitHub)
+data/*
+!data/amostra_completa.json.gz
+!data/selecao-amostra-revisada.json
