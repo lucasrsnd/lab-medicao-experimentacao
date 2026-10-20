@@ -16,12 +16,99 @@ elegíveis na seleção) com a metodologia e o funil.}
 
 \subsection{RQ01 a RQ04: métricas DORA}
 
-\pendente{mediana e IQR de frequência (RQ01), lead time (a) e (b) (RQ02), CFR
-(a) e (b) (RQ03) e recuperação, com proporção de episódios censurados (RQ04).
-Depende das issues S03-01 (\#120) e S03-02 (\#121).}
+A Tabela~\ref{tab:rq01-rq04} resume as quatro métricas por repositório. O $n$
+válido varia porque 11 repositórios não têm release avaliável para lead time e
+CFR (b), e 25 não têm episódio de recuperação encerrado.
 
-\pendente{distribuição da classificação DORA de referência C1 por métrica e
-geral. Depende da S03-03 (\#122).}
+\begin{table}[ht]
+\centering
+\caption{RQ01--RQ04: distribuição por repositório. Fontes:
+\texttt{analysis/rq01\_rq02/} e \texttt{analysis/rq03\_rq04/}
+(\texttt{lab03.analysis.rq01\_rq02}, \texttt{lab03.analysis.rq03\_rq04}).}
+\label{tab:rq01-rq04}
+\small
+\begin{tabular}{lrrr}
+\hline
+Métrica & $n$ & Mediana & [Q1--Q3] \\
+\hline
+Frequência (releases/semana) & 183 & 0,249 & [0,134--0,555] \\
+Lead time (a), por release (h) & 172 & 250,5 & [91,8--776,1] \\
+Lead time (b), por commit (h) & 172 & 172,4 & [71,8--579,3] \\
+CFR (a), runs de CI com falha & 183 & 0,047 & [0,013--0,128] \\
+CFR (b), release corretiva em 7 dias & 172 & 0,275 & [0,109--0,500] \\
+Recuperação (h) & 158 & 3,49 & [0,86--17,77] \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{RQ01.} A mediana é de uma release a cada quatro semanas, e 164 dos 183
+repositórios (90\%) publicam menos de uma por semana, o que sustenta a H01.
+Nove repositórios não publicaram release na janela.
+
+\textbf{RQ02.} O lead time por release supera o por commit nas medianas (250,5
+h contra 172,4 h) e em 123 dos 172 repositórios (72\%), como previa a H02. A
+variante (a) dá peso a cada release e cresce quando uma entrega inclui um
+commit antigo, enquanto a (b) dilui esse commit entre os demais
+(Figura~\ref{fig:rq01-rq02}).
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{rq01_rq02/rq01_rq02_distribuicoes.png}
+\caption{RQ01--RQ02: distribuições de frequência e lead time (a) e (b), em
+escala \textit{symlog}, com todos os outliers preservados.}
+\label{fig:rq01-rq02}
+\end{figure}
+
+\textbf{RQ03.} As duas variantes de CFR divergem, como previa a H03. Nos 172
+repositórios com ambas, a mediana da diferença CFR (b) $-$ CFR (a) é 0,182 (IQR
+0,401), com o CFR (b) quase seis vezes maior nas medianas
+(Figura~\ref{fig:rq03}). Parte dessa distância vem da própria heurística: a
+validação parcial (Seção~\ref{sec:validacao-cfrb}) indica que o CFR (b)
+superestima as releases corretivas. Nenhuma das duas variantes observa falha em
+produção.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.7\textwidth]{rq03_rq04/rq03_cfr_comparacao.png}
+\caption{RQ03: comparação entre CFR (a) e CFR (b) por repositório.}
+\label{fig:rq03}
+\end{figure}
+
+\textbf{RQ04.} A recuperação é assimétrica, como previa a H04: mediana de 3,5 h,
+com terceiro quartil de 17,8 h. Dos 2.695 episódios, 46 (1,7\%) não foram
+encerrados na janela. Eles foram mantidos como censurados, sem tempo imputado.
+No CFR (b), 149 das 4.762 releases (3,1\%) são censuradas por não terem os sete
+dias seguintes inteiros na janela.
+
+A Tabela~\ref{tab:c1} mostra a classificação DORA de referência (C1), com os
+cortes do enunciado. A categoria geral é a mediana das quatro pontuações,
+arredondada para baixo, e só é emitida quando as quatro métricas são
+observadas. Por isso 33 repositórios ficam sem categoria geral.
+
+\begin{table}[ht]
+\centering
+\caption{Classificação DORA C1 por métrica e geral (183 repositórios). Fonte:
+\texttt{analysis/c1\_reference/c1\_resultados.json}
+(\texttt{lab03.analysis.c1\_reference}).}
+\label{tab:c1}
+\small
+\begin{tabular}{lrrrrr}
+\hline
+Métrica & Elite & High & Medium & Low & Não classif. \\
+\hline
+Frequência & 0 & 19 & 73 & 91 & 0 \\
+Lead time (a) & 20 & 44 & 61 & 47 & 11 \\
+CFR (a) & 148 & 23 & 6 & 6 & 0 \\
+Recuperação & 47 & 80 & 25 & 6 & 25 \\
+Geral & 12 & 54 & 68 & 16 & 33 \\
+\hline
+\end{tabular}
+\end{table}
+
+Os proxies colocam os projetos em pontos opostos da escala: nenhum é Elite em
+frequência, e metade é Low, enquanto 81\% são Elite em CFR (a). A categoria
+geral concentra-se em Medium e High. Como a C1 usa o CFR (a), o efeito de
+trocar pela variante (b), que é bem maior, é tema da RQ07.
 
 \subsection{RQ05: frequência de deploy e taxa de falha}
 
