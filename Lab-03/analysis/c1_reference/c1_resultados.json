@@ -1,0 +1,184 @@
+{
+  "repositories": 183,
+  "input_csv_sha256": "cbfde52fa148c45acdbbd5425a1aa8fd7f7eaf22d7964c28b3c6bded8d41ee55",
+  "classification_source": "lab03.metrics.classification.classify_dora",
+  "overall_requires_all_four_metrics": true,
+  "overall_median_rounding": "floor",
+  "category_distribution": [
+    {
+      "metrica": "deployment_frequency_per_week",
+      "rotulo": "Frequência",
+      "categoria": "Elite",
+      "n": 0,
+      "proporcao": 0.0
+    },
+    {
+      "metrica": "deployment_frequency_per_week",
+      "rotulo": "Frequência",
+      "categoria": "High",
+      "n": 19,
+      "proporcao": 0.10382513661202186
+    },
+    {
+      "metrica": "deployment_frequency_per_week",
+      "rotulo": "Frequência",
+      "categoria": "Medium",
+      "n": 73,
+      "proporcao": 0.3989071038251366
+    },
+    {
+      "metrica": "deployment_frequency_per_week",
+      "rotulo": "Frequência",
+      "categoria": "Low",
+      "n": 91,
+      "proporcao": 0.4972677595628415
+    },
+    {
+      "metrica": "deployment_frequency_per_week",
+      "rotulo": "Frequência",
+      "categoria": "Não classificável",
+      "n": 0,
+      "proporcao": 0.0
+    },
+    {
+      "metrica": "lead_time_hours",
+      "rotulo": "Lead time (a)",
+      "categoria": "Elite",
+      "n": 20,
+      "proporcao": 0.1092896174863388
+    },
+    {
+      "metrica": "lead_time_hours",
+      "rotulo": "Lead time (a)",
+      "categoria": "High",
+      "n": 44,
+      "proporcao": 0.24043715846994534
+    },
+    {
+      "metrica": "lead_time_hours",
+      "rotulo": "Lead time (a)",
+      "categoria": "Medium",
+      "n": 61,
+      "proporcao": 0.3333333333333333
+    },
+    {
+      "metrica": "lead_time_hours",
+      "rotulo": "Lead time (a)",
+      "categoria": "Low",
+      "n": 47,
+      "proporcao": 0.2568306010928962
+    },
+    {
+      "metrica": "lead_time_hours",
+      "rotulo": "Lead time (a)",
+      "categoria": "Não classificável",
+      "n": 11,
+      "proporcao": 0.060109289617486336
+    },
+    {
+      "metrica": "change_failure_rate",
+      "rotulo": "CFR (a)",
+      "categoria": "Elite",
+      "n": 148,
+      "proporcao": 0.8087431693989071
+    },
+    {
+      "metrica": "change_failure_rate",
+      "rotulo": "CFR (a)",
+      "categoria": "High",
+      "n": 23,
+      "proporcao": 0.12568306010928962
+    },
+    {
+      "metrica": "change_failure_rate",
+      "rotulo": "CFR (a)",
+      "categoria": "Medium",
+      "n": 6,
+      "proporcao": 0.03278688524590164
+    },
+    {
+      "metrica": "change_failure_rate",
+      "rotulo": "CFR (a)",
+      "categoria": "Low",
+      "n": 6,
+      "proporcao": 0.03278688524590164
+    },
+    {
+      "metrica": "change_failure_rate",
+      "rotulo": "CFR (a)",
+      "categoria": "Não classificável",
+      "n": 0,
+      "proporcao": 0.0
+    },
+    {
+      "metrica": "recovery_time_hours",
+      "rotulo": "Recuperação",
+      "categoria": "Elite",
+      "n": 47,
+      "proporcao": 0.2568306010928962
+    },
+    {
+      "metrica": "recovery_time_hours",
+      "rotulo": "Recuperação",
+      "categoria": "High",
+      "n": 80,
+      "proporcao": 0.4371584699453552
+    },
+    {
+      "metrica": "recovery_time_hours",
+      "rotulo": "Recuperação",
+      "categoria": "Medium",
+      "n": 25,
+      "proporcao": 0.1366120218579235
+    },
+    {
+      "metrica": "recovery_time_hours",
+      "rotulo": "Recuperação",
+      "categoria": "Low",
+      "n": 6,
+      "proporcao": 0.03278688524590164
+    },
+    {
+      "metrica": "recovery_time_hours",
+      "rotulo": "Recuperação",
+      "categoria": "Não classificável",
+      "n": 25,
+      "proporcao": 0.1366120218579235
+    },
+    {
+      "metrica": "overall",
+      "rotulo": "Geral",
+      "categoria": "Elite",
+      "n": 12,
+      "proporcao": 0.06557377049180328
+    },
+    {
+      "metrica": "overall",
+      "rotulo": "Geral",
+      "categoria": "High",
+      "n": 54,
+      "proporcao": 0.29508196721311475
+    },
+    {
+      "metrica": "overall",
+      "rotulo": "Geral",
+      "categoria": "Medium",
+      "n": 68,
+      "proporcao": 0.37158469945355194
+    },
+    {
+      "metrica": "overall",
+      "rotulo": "Geral",
+      "categoria": "Low",
+      "n": 16,
+      "proporcao": 0.08743169398907104
+    },
+    {
+      "metrica": "overall",
+      "rotulo": "Geral",
+      "categoria": "Não classificável",
+      "n": 33,
+      "proporcao": 0.18032786885245902
+    }
+  ]
+}
