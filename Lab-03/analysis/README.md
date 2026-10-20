@@ -7,6 +7,7 @@ que por sua vez é derivado do dataset congelado da coleta completa.
 python -m pip install -e ".[dev,analysis]"
 python -m lab03.analysis.base      # data/amostra_completa.json.gz -> analysis/base_repositorios.csv
 python -m lab03.analysis.rq05      # analysis/rq05/
+python -m lab03.analysis.rq06      # analysis/rq06/
 ```
 
 ## `base_repositorios.csv`
@@ -56,3 +57,34 @@ associação entre postos: não há base para afirmar que publicar mais *causa*
 mais falhas. Projetos maiores ou mais ativos podem ter as duas coisas, por
 exemplo. Os 33 repositórios com CFR (b) = 0 e os 20 com CFR (a) = 0 entram com
 postos médios (empates).
+
+## RQ06 — subgrupos (`rq06/`)
+
+Fatores pré-registrados no protocolo: linguagem principal, quartis de estrelas
+e quartis de contribuidores. Métricas de referência C1: frequência, lead time
+(a), CFR (a) e recuperação. São 3 × 4 = 12 testes Kruskal-Wallis (todos os fatores
+têm 3+ grupos) com ε² = H/(n−1), corrigidos juntos por Holm. Para fatores com
+dois grupos, o script usa Mann-Whitney e Cliff δ. Cada teste usa só os
+repositórios com a métrica observada, por isso n varia: 183 em frequência e
+CFR, 172 em lead time e 158 em recuperação.
+
+Decisões:
+
+- Linguagens com menos de 10 repositórios são agrupadas em "Outras" (40
+  repositórios, 13 linguagens). Isso evita grupos com n de 1 a 9, em que
+  Kruskal-Wallis fica instável. O preço é um grupo heterogêneo, e isso conta
+  como ameaça à validade.
+- Os quartis vêm dos cortes amostrais, com empate no corte indo para o quartil
+  inferior. Os cortes e tamanhos (45 ou 46 por grupo) estão em `rq06_resultados.md`.
+- Tipo de projeto **não** é fator. Não foi escolhido no protocolo, e o rótulo
+  só existe para os 60 repositórios da amostra-ouro, então não é extrapolado.
+- Empates (por exemplo CFR = 0) usam a correção de empates do `scipy.stats.kruskal`.
+
+Resultado: nenhum dos 12 testes é significativo após Holm. O mais próximo é
+contribuidores × lead time (a), com H = 13,03, p = 0,005 e p (Holm) = 0,055,
+ε² = 0,076 (pequeno): o lead time mediano cresce de 131 h (Q1) para 443 h (Q3)
+e 289 h (Q4). Os demais efeitos são desprezíveis ou pequenos (ε² ≤ 0,061).
+Nesta amostra de repositórios populares, linguagem, popularidade e tamanho da
+comunidade explicam pouco da variação das métricas DORA. A ausência de
+significância não prova ausência de efeito, porque os grupos têm de 13 a 46
+repositórios.

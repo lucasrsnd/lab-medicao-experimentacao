@@ -15,11 +15,11 @@ Saídas: `rq05_resultados.json`, `rq05_resultados.md` e `rq05_dispersao.png`.
 
 import argparse
 import json
-import statistics
 import sys
 from pathlib import Path
 
 from lab03.analysis.base import read_csv
+from lab03.analysis.stats import fmt as _fmt, fmt_p as _fmt_p, holm, median_iqr
 
 FREQUENCY = "deployment_frequency_per_week"
 CFR_VARIANTS = {
@@ -30,16 +30,6 @@ ALPHA = 0.05
 # Frequência tem zeros (sem release na janela) e cauda longa: symlog mantém os
 # zeros visíveis e comprime a cauda. O limiar linear é ~1 release a cada 10 semanas.
 SYMLOG_THRESHOLD = 0.1
-
-
-def median_iqr(values: list[float]) -> dict:
-    if not values:
-        return {"median": None, "q1": None, "q3": None, "iqr": None}
-    if len(values) == 1:
-        q1 = q3 = values[0]
-    else:
-        q1, _, q3 = statistics.quantiles(values, n=4, method="inclusive")
-    return {"median": statistics.median(values), "q1": q1, "q3": q3, "iqr": q3 - q1}
 
 
 def strength(rho: float) -> str:
@@ -69,17 +59,6 @@ def spearman(rows: list[dict], x: str, y: str) -> dict:
     return result
 
 
-def holm(p_values: list[float | None]) -> list[float | None]:
-    """Holm-Bonferroni sobre os p-valores definidos; indefinidos ficam None."""
-    defined = sorted((p, i) for i, p in enumerate(p_values) if p is not None)
-    adjusted: list[float | None] = [None] * len(p_values)
-    running, m = 0.0, len(defined)
-    for rank, (p, index) in enumerate(defined):
-        running = max(running, min(1.0, (m - rank) * p))
-        adjusted[index] = running
-    return adjusted
-
-
 def analyze(rows: list[dict]) -> dict:
     results = [dict(spearman(rows, FREQUENCY, cfr), label=label)
                for cfr, label in CFR_VARIANTS.items()]
@@ -91,14 +70,6 @@ def analyze(rows: list[dict]) -> dict:
             result["significant_holm"] = adjusted < ALPHA
     return {"repositories": len(rows), "alpha": ALPHA, "method": "spearman",
             "correction": "holm", "results": results}
-
-
-def _fmt(value, digits=3):
-    return "—" if value is None else f"{value:.{digits}f}"
-
-
-def _fmt_p(value):
-    return "—" if value is None else f"{value:.2e}" if value < 0.001 else f"{value:.4f}"
 
 
 def markdown(analysis: dict) -> str:
