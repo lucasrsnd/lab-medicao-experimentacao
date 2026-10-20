@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "heuristic_version": "v2",
+  "protocol_deviation": "Avaliador humano único (B); sem consenso. Rótulos de A são rascunhos de IA e entram só como referência auxiliar declarada.",
+  "sample": {
+    "gold_releases": 283,
+    "gold_repositories": 58,
+    "evaluated_releases": 178,
+    "evaluated_repositories": 37,
+    "excluded": {
+      "repositorio_fora_do_snapshot": 105
+    },
+    "positives_b": 28,
+    "a_rows_marked_ai_draft": 178
+  },
+  "heuristic_vs_b": {
+    "schema_version": 1,
+    "heuristic_version": "v2",
+    "positive_label": "sim",
+    "confusion_matrix": {
+      "labels": [
+        "nao",
+        "sim"
+      ],
+      "rows_are_consensus": false,
+      "columns_are_heuristic": true,
+      "values": [
+        [
+          65,
+          85
+        ],
+        [
+          2,
+          26
+        ]
+      ],
+      "rows_are_reference": "rotulo_b"
+    },
+    "metrics": {
+      "precision": 0.23423423423423423,
+      "recall": 0.9285714285714286,
+      "f1": 0.37410071942446044
+    },
+    "precision": 0.23423423423423423,
+    "recall": 0.9285714285714286,
+    "f1": 0.37410071942446044,
+    "expected_releases": 178,
+    "releases_with_prediction": 178,
+    "evaluated_releases": 178,
+    "excluded_missing_or_uncertain_consensus": 0,
+    "excluded_missing_prediction": 0,
+    "predictions_without_consensus": 0,
+    "refinement_required_if_f1_below_0_70": true,
+    "limitations": [
+      "A amostra usada para refinar e avaliar é a mesma; há viés de ajuste.",
+      "Rótulos incertos ou ausentes não entram nas métricas binárias e são contados."
+    ],
+    "precision_ci95": [
+      0.16515665147744646,
+      0.32109160236859097
+    ],
+    "recall_ci95": [
+      0.7735463743160095,
+      0.9801879358846942
+    ],
+    "accuracy": 0.5112359550561798
+  },
+  "auxiliary_llm": {
+    "kappa_b_vs_llm": 0.5061043285238623,
+    "agreement_b_vs_llm": 0.8595505617977528,
+    "heuristic_vs_llm": {
+      "schema_version": 1,
+      "heuristic_version": "v2",
+      "positive_label": "sim",
+      "confusion_matrix": {
+        "labels": [
+          "nao",
+          "sim"
+        ],
+        "rows_are_consensus": false,
+        "columns_are_heuristic": true,
+        "values": [
+          [
+            67,
+            78
+          ],
+          [
+            0,
+            33
+          ]
+        ],
+        "rows_are_reference": "rotulo_a_llm"
+      },
+      "metrics": {
+        "precision": 0.2972972972972973,
+        "recall": 1.0,
+        "f1": 0.4583333333333333
+      },
+      "precision": 0.2972972972972973,
+      "recall": 1.0,
+      "f1": 0.4583333333333333,
+      "expected_releases": 178,
+      "releases_with_prediction": 178,
+      "evaluated_releases": 178,
+      "excluded_missing_or_uncertain_consensus": 0,
+      "excluded_missing_prediction": 0,
+      "predictions_without_consensus": 0,
+      "refinement_required_if_f1_below_0_70": true,
+      "limitations": [
+        "A amostra usada para refinar e avaliar é a mesma; há viés de ajuste.",
+        "Rótulos incertos ou ausentes não entram nas métricas binárias e são contados."
+      ],
+      "precision_ci95": [
+        0.22020824463768182,
+        0.38794720321099085
+      ],
+      "recall_ci95": [
+        0.895730002457548,
+        1.0
+      ],
+      "accuracy": 0.5617977528089888
+    }
+  },
+  "limitations": [
+    "Um único avaliador humano: sem medida de confiabilidade entre avaliadores.",
+    "Releases sorteadas de uma população maior que o snapshot; só os repositórios presentes no snapshot são avaliados.",
+    "Releases do mesmo repositório não são independentes; os intervalos de Wilson ignoram esse agrupamento e tendem a ser estreitos demais."
+  ],
+  "input_sha256": {
+    "dataset": "315e063b498498a55594afae43ea7173a2595284a8b8672340c4eb008dd2187c",
+    "sample": "0de4a5d3543a096c012b3d3f2002e30f5f5262506b19066198531c7c476da10d",
+    "rater_b": "4bb95881679c337cf9a5848bb90c7d179a2a1d776bb5cd1782cf9fcea7e463fd",
+    "rater_a_llm": "884bffa07724c17b51e2651b1857e92dcce6bb25a96594a53bbbfdd690a79ae5"
+  }
+}

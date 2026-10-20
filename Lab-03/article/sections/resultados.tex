@@ -64,7 +64,9 @@ provável que uma release \textit{patch} ocorra nos sete dias seguintes e seja
 marcada como corretiva. O CFR (a), que mede falha de pipeline e independe do
 ritmo de releases, mostra associação fraca. Em ambos os casos trata-se de
 associação monotônica, sem implicação causal: tamanho e atividade do projeto,
-por exemplo, podem elevar as duas métricas.
+por exemplo, podem elevar as duas métricas. A validação parcial da heurística
+(Seção~\ref{sec:validacao-cfrb}) indica ainda que o CFR (b) superestima as
+releases corretivas, o que reforça a cautela com essa associação.
 
 \subsection{RQ06: características dos repositórios}
 
@@ -106,6 +108,56 @@ DORA. Como os grupos têm entre 13 e 46 repositórios, a ausência de
 significância não demonstra ausência de efeito. Medianas e IQR por grupo estão
 em \texttt{analysis/rq06/rq06\_grupos.csv}. O tipo de projeto não foi usado
 como fator, porque só está rotulado para os 60 repositórios da amostra-ouro.
+
+\subsection{Validação do CFR (b): avaliador único}
+\label{sec:validacao-cfrb}
+
+O protocolo previa três avaliadores independentes e consenso sobre 300
+releases. Isso não foi cumprido: por decisão do grupo, a segunda rodada
+(\texttt{labels/reamostragem-v2/}) não foi rotulada, e na primeira rodada só um
+integrante (avaliador B) rotulou as releases. Os rótulos do avaliador A são
+rascunhos gerados por IA, marcados como tal em todas as linhas. Por isso não
+há consenso nem medida de confiabilidade entre avaliadores. O resultado a
+seguir é uma \emph{validação de avaliador único} e não o F1 contra consenso
+previsto no protocolo.
+
+A primeira rodada foi sorteada da mesma coleta do snapshot (13 de outubro de
+2026, mesma janela), mas sobre um conjunto maior de repositórios. Foram
+avaliadas apenas as releases cujo repositório consta do snapshot e cujo
+identificador e veredito da heurística conferem: 178 das 283 releases
+sorteadas, em 37 repositórios. As 105 restantes pertencem a 21 repositórios
+que não estão entre os 183 analisados. A Tabela~\ref{tab:validacao-cfrb} compara
+a heurística v2 com os rótulos de B.
+
+\begin{table}[ht]
+\centering
+\caption{CFR (b): heurística v2 × avaliador B (178 releases, 37 repositórios).
+IC 95\% de Wilson. Fonte: \texttt{analysis/validacao\_cfr\_b/resultados.json}
+(\texttt{lab03.analysis.cfr\_b\_validation}).}
+\label{tab:validacao-cfrb}
+\small
+\begin{tabular}{lrr|lr}
+\hline
+B $\backslash$ heurística & não & sim & Métrica & Valor [IC 95\%] \\
+\hline
+não & 65 & 85 & Precisão & 0,234 [0,165--0,321] \\
+sim & 2 & 26 & Recall & 0,929 [0,774--0,980] \\
+ & & & F1 & 0,374 \\
+\hline
+\end{tabular}
+\end{table}
+
+A heurística quase não deixa escapar releases corretivas (2 de 28), mas só 26
+das 111 releases que ela marca como corretivas foram confirmadas por B. O F1
+fica bem abaixo do limiar de 0,70 do protocolo. O CFR (b) deve, portanto, ser
+lido como tendendo a superestimar a taxa de falha. Uma explicação plausível,
+ainda não verificada caso a caso, são as releases \textit{patch} publicadas em
+até sete dias sem corrigir a entrega anterior.
+Como referência auxiliar, e não como segundo avaliador, os rascunhos de IA
+concordam com B em 86\% das releases ($\kappa$ de Cohen $= 0{,}506$). Os
+intervalos tratam as releases como independentes, embora venham agrupadas em
+cinco por repositório, e por isso são otimistas. Com um único avaliador, erros
+ou critérios pessoais de B não podem ser separados do erro da heurística.
 
 \subsection{RQ07: sensibilidade da classificação}
 
