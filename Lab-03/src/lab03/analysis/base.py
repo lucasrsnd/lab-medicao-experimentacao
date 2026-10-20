@@ -7,9 +7,8 @@ metadados usados como fatores (estrelas, linguagem, contribuidores, idade) e as
 métricas DORA já calculadas pelo pipeline em suas variantes: lead time (a) por
 release e (b) por commit, CFR (a) por runs de CI e (b) por release corretiva.
 
-As análises (`lab03.analysis.rq05`, `lab03.analysis.rq06`) leem só este CSV, o
-que as torna reexecutáveis sem o JSON bruto. Célula vazia é ausência; `0` é
-valor observado. Nada é imputado.
+As análises leem só este CSV, o que as torna reexecutáveis sem o JSON bruto.
+Célula vazia é ausência; `0` é valor observado. Nada é imputado.
 """
 
 import argparse
@@ -23,8 +22,11 @@ from pathlib import Path
 METRIC_SOURCES = {
     "deployment_frequency_per_week": ("deployment_frequency", "releases_per_week"),
     "releases_in_window": ("deployment_frequency", "releases_in_window"),
+    "deployment_frequency_weeks": ("deployment_frequency", "window_weeks"),
     "lead_time_a_hours": ("lead_time", "by_release_hours"),
     "lead_time_b_hours": ("lead_time", "by_commit_hours"),
+    "lead_time_a_releases": ("lead_time", "releases_used"),
+    "lead_time_b_commits": ("lead_time", "commits_used"),
     "cfr_a": ("ci_failure_rate", "rate"),
     "cfr_a_runs": ("ci_failure_rate", "runs_evaluated"),
     "cfr_b": ("delivery_failure_rate", "rate"),
@@ -32,6 +34,7 @@ METRIC_SOURCES = {
     "cfr_b_censored": ("delivery_failure_rate", "censored"),
     "recovery_hours": ("recovery", "median_hours"),
     "recovery_episodes": ("recovery", "episodes_recovered"),
+    "recovery_episodes_censored": ("recovery", "censored_episodes"),
 }
 FIELDS = (
     "repositorio", "estrelas", "linguagem", "contribuidores", "idade_dias",

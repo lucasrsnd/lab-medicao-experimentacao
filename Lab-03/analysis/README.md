@@ -6,6 +6,9 @@ que por sua vez é derivado do dataset congelado da coleta completa.
 ```powershell
 python -m pip install -e ".[dev,analysis]"
 python -m lab03.analysis.base      # data/amostra_completa.json.gz -> analysis/base_repositorios.csv
+python -m lab03.analysis.rq01_rq02 # analysis/rq01_rq02/
+python -m lab03.analysis.rq03_rq04 # analysis/rq03_rq04/
+python -m lab03.analysis.c1_reference # analysis/c1_reference/
 python -m lab03.analysis.rq05      # analysis/rq05/
 python -m lab03.analysis.rq06      # analysis/rq06/
 python -m lab03.analysis.cfr_b_validation  # dataset + labels/ -> analysis/validacao_cfr_b/
@@ -19,16 +22,31 @@ Uma linha por repositório (chave `repositorio`). Célula vazia é ausência; `0
 | Coluna | Unidade | Origem no relatório |
 |---|---|---|
 | `estrelas`, `linguagem`, `contribuidores`, `idade_dias` | contagem / texto / dias | `metadata` |
-| `deployment_frequency_per_week`, `releases_in_window` | releases/semana, contagem | `deployment_frequency` |
-| `lead_time_a_hours`, `lead_time_b_hours` | horas | `lead_time.by_release_hours`, `by_commit_hours` |
+| `deployment_frequency_per_week`, `releases_in_window`, `deployment_frequency_weeks` | releases/semana, contagem, semanas | `deployment_frequency` |
+| `lead_time_a_hours`, `lead_time_b_hours`, `lead_time_a_releases`, `lead_time_b_commits` | horas, releases, commits | `lead_time` |
 | `cfr_a`, `cfr_a_runs` | proporção [0,1], runs | `ci_failure_rate` |
 | `cfr_b`, `cfr_b_evaluated`, `cfr_b_censored` | proporção [0,1], releases | `delivery_failure_rate` (heurística v2) |
-| `recovery_hours`, `recovery_episodes` | horas, episódios recuperados | `recovery` |
+| `recovery_hours`, `recovery_episodes`, `recovery_episodes_censored` | horas, episódios recuperados e censurados | `recovery` |
 | `categoria_geral_c1` | Elite/High/Medium/Low ou vazio | `dora_classification.overall` |
 
 O CFR (b) vem do relatório de cada repositório (releases publicadas, C1), e não
 da linha C2 de `variantes_metricas.csv`, que depende do complemento de
 pré-releases ainda não coletado.
+
+## RQ01–04 e classificação C1
+
+`rq01_rq02` reproduz frequência e lead time (a/b), com mediana, IQR, n válido,
+ausentes e gráfico que preserva todos os outliers. `rq03_rq04` compara CFR (a/b)
+e recuperação, inclui n válido e proporções agrupadas e por repositório para as
+censuras. A seção identifica CFR (a) como proxy de falha de CI e CFR (b) como
+proxy de release corretiva; nenhum deles é tratado como observação de falha em
+produção. A validação humana só é considerada evidência para esta base quando
+o hash de origem da amostra-ouro coincide com o dataset congelado.
+
+`c1_reference` aplica o classificador já testado às quatro métricas C1, exporta
+categoria e status por repositório, distribuição de categorias e contagem de
+não classificáveis. Também verifica que a classificação geral reproduz a
+categoria previamente armazenada na base.
 
 ## RQ05 — frequência × CFR (`rq05/`)
 
