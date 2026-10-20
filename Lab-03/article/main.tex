@@ -19,8 +19,13 @@ Pontifícia Universidade Católica de Minas Gerais (PUC Minas)}
 \begin{abstract}
 This study proposes mining software delivery proxies from public GitHub
 repositories using GitHub Actions. Releases, commit timestamps and workflow
-runs support alternative operational definitions of DORA metrics. In 183
-repositories, deployment frequency is positively correlated with both change
+runs support alternative operational definitions of DORA metrics. In the 183
+most popular of 300 selected repositories, the median project publishes one
+release every four weeks, and lead time per release exceeds lead time per
+commit (250 h versus 172 h). The two change failure rate proxies diverge
+(medians 0.047 for CI failures and 0.275 for corrective releases), as do the
+DORA categories: no project is Elite in frequency, while 81\% are Elite in CI
+failure rate. Deployment frequency is positively correlated with both change
 failure rate variants (Spearman $\rho = 0.151$ for CI failures and $0.547$ for
 corrective releases), contrary to the DORA claim that speed and stability do
 not compete. Language, popularity and community size show no significant
@@ -33,7 +38,12 @@ F1 0.374, indicating that this proxy overestimates delivery failures.
 Este estudo propõe minerar proxies de entrega de software em repositórios
 públicos do GitHub que utilizam GitHub Actions. Releases, datas de commits e
 execuções de workflows sustentam definições operacionais alternativas das
-métricas DORA. Em 183 repositórios, a frequência de deploy correlaciona-se
+métricas DORA. Nos 183 mais populares dos 300 repositórios selecionados, o
+projeto mediano publica uma release a cada quatro semanas, e o lead time por
+release supera o por commit (250 h contra 172 h). As duas variantes de taxa de
+falha divergem (medianas de 0,047 para falhas de CI e 0,275 para releases
+corretivas), assim como as categorias DORA: nenhum projeto é Elite em
+frequência, enquanto 81\% são Elite em falha de CI. A frequência de deploy correlaciona-se
 positivamente com as duas variantes de taxa de falha (Spearman $\rho = 0{,}151$
 para falhas de CI e $0{,}547$ para releases corretivas), contrariando a
 afirmação do DORA de que velocidade e estabilidade não competem. Linguagem,
@@ -44,6 +54,7 @@ F1 0,374, o que indica que esse proxy superestima as falhas de entrega.
 \end{resumo}
 
 \input{sections/introducao}
+\input{sections/metodologia}
 \input{sections/resultados}
 \begin{thebibliography}{9}
 \bibitem[Forsgren et al. 2018]{accelerate}
