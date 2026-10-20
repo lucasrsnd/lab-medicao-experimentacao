@@ -12,6 +12,7 @@ dependencies = []
 [project.optional-dependencies]
 dev = ["pytest>=8,<10", "pytest-cov>=6,<8"]
 validation = ["statsmodels>=0.14,<1", "scikit-learn>=1.5,<2"]
+analysis = ["scipy>=1.11,<2", "statsmodels>=0.14,<1", "matplotlib>=3.8,<4"]
 
 [project.scripts]
 lab03 = "lab03.cli:main"

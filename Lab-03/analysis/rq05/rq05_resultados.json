@@ -1,0 +1,64 @@
+{
+  "repositories": 183,
+  "alpha": 0.05,
+  "method": "spearman",
+  "correction": "holm",
+  "results": [
+    {
+      "x": "deployment_frequency_per_week",
+      "y": "cfr_a",
+      "n": 183,
+      "excluded_missing": 0,
+      "rho": 0.15090811845999474,
+      "p_value": 0.041434879167547116,
+      "undefined_reason": null,
+      "x_zeros": 9,
+      "y_zeros": 20,
+      "x_summary": {
+        "median": 0.24863387978142076,
+        "q1": 0.13387978142076504,
+        "q3": 0.5546448087431695,
+        "iqr": 0.4207650273224044
+      },
+      "y_summary": {
+        "median": 0.046610169491525424,
+        "q1": 0.012744455931625412,
+        "q3": 0.12755950236901167,
+        "iqr": 0.11481504643738626
+      },
+      "label": "CFR (a) — runs de CI com falha",
+      "p_holm": 0.041434879167547116,
+      "strength": "fraca",
+      "direction": "positiva",
+      "significant_holm": true
+    },
+    {
+      "x": "deployment_frequency_per_week",
+      "y": "cfr_b",
+      "n": 172,
+      "excluded_missing": 11,
+      "rho": 0.5465639452295653,
+      "p_value": 8.76658123241825e-15,
+      "undefined_reason": null,
+      "x_zeros": 0,
+      "y_zeros": 33,
+      "x_summary": {
+        "median": 0.27732240437158473,
+        "q1": 0.15300546448087432,
+        "q3": 0.578551912568306,
+        "iqr": 0.42554644808743164
+      },
+      "y_summary": {
+        "median": 0.27525252525252525,
+        "q1": 0.10919540229885057,
+        "q3": 0.5,
+        "iqr": 0.39080459770114945
+      },
+      "label": "CFR (b) — release seguida de corretiva em 7 dias",
+      "p_holm": 1.75331624648365e-14,
+      "strength": "forte",
+      "direction": "positiva",
+      "significant_holm": true
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "_comentario": "Exemplo para lab03.replication.compare usando o formato de analysis/base_repositorios.csv nos dois lados. Para o grupo sorteado, copie este arquivo e troque as colunas de 'original' pelas do CSV publicado por ele. Os nomes lógicos (chaves de metrics/categories) precisam ser iguais nos dois lados; uma categoria com o mesmo nome de uma métrica aparece na coluna 'Mesma categoria' da tabela LaTeX.",
+  "original": {
+    "key": "repositorio",
+    "metrics": {
+      "frequencia": "deployment_frequency_per_week",
+      "lead_time": "lead_time_a_hours",
+      "cfr": "cfr_a",
+      "recuperacao": "recovery_hours"
+    },
+    "categories": {
+      "geral": "categoria_geral_c1"
+    }
+  },
+  "replicated": {
+    "key": "repositorio",
+    "metrics": {
+      "frequencia": "deployment_frequency_per_week",
+      "lead_time": "lead_time_a_hours",
+      "cfr": "cfr_a",
+      "recuperacao": "recovery_hours"
+    },
+    "categories": {
+      "geral": "categoria_geral_c1"
+    }
+  }
+}
