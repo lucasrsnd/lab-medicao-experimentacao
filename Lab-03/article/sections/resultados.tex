@@ -1,0 +1,116 @@
+% Resultados por RQ (S03-08, #127). Valores gerados por `python -m lab03.analysis.*`
+% a partir de analysis/base_repositorios.csv; ver Lab-03/analysis/README.md.
+\providecommand{\pendente}[1]{\textbf{[Pendente: #1]}}
+
+\section{Resultados}
+
+Os resultados abaixo usam os 183 repositórios do dataset congelado
+(\texttt{data/amostra\_completa.json.gz}), achatados em uma linha por
+repositório (\texttt{analysis/base\_repositorios.csv}). Seguindo o protocolo,
+reportam-se mediana e IQR. Métricas ausentes não são imputadas, e por isso o
+$n$ varia por análise. Toda correção para comparações múltiplas usa Holm, com
+$\alpha = 0{,}05$.
+
+\pendente{reconciliar o tamanho da amostra (183 repositórios no dataset × 300
+elegíveis na seleção) com a metodologia e o funil.}
+
+\subsection{RQ01 a RQ04: métricas DORA}
+
+\pendente{mediana e IQR de frequência (RQ01), lead time (a) e (b) (RQ02), CFR
+(a) e (b) (RQ03) e recuperação, com proporção de episódios censurados (RQ04).
+Depende das issues S03-01 (\#120) e S03-02 (\#121).}
+
+\pendente{distribuição da classificação DORA de referência C1 por métrica e
+geral. Depende da S03-03 (\#122).}
+
+\subsection{RQ05: frequência de deploy e taxa de falha}
+
+A Tabela~\ref{tab:rq05} apresenta a correlação de Spearman entre a frequência
+de deploy e cada variante de CFR, com $n$ pareado (repositórios com as duas
+métricas). As duas associações são positivas: repositórios que publicam mais
+releases têm, em postos, CFR \emph{maior}. A associação com o CFR (a), de CI, é
+fraca e fica no limite da significância ($\rho = 0{,}151$; $p_{Holm} =
+0{,}041$). Com o CFR (b), de release corretiva, ela é forte ($\rho = 0{,}547$;
+$p_{Holm} < 0{,}001$). A Figura~\ref{fig:rq05} mostra as dispersões.
+
+\begin{table}[ht]
+\centering
+\caption{RQ05: Spearman entre frequência (releases/semana) e CFR. Fonte:
+\texttt{analysis/rq05/rq05\_resultados.json} (\texttt{lab03.analysis.rq05}).}
+\label{tab:rq05}
+\small
+\begin{tabular}{lrrrrc}
+\hline
+Variante de CFR & $n$ & CFR mediano [IQR] & $\rho$ & $p_{Holm}$ & CFR $= 0$ \\
+\hline
+(a) runs de CI com falha & 183 & 0,047 [0,013--0,128] & 0,151 & 0,041 & 20 \\
+(b) release corretiva em 7 dias & 172 & 0,275 [0,109--0,500] & 0,547 & $1{,}8\times10^{-14}$ & 33 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{rq05/rq05_dispersao.png}
+\caption{RQ05: frequência de deploy (eixo X em escala \textit{symlog}, que
+mantém os 9 repositórios sem release na janela) versus CFR (a) e CFR (b).}
+\label{fig:rq05}
+\end{figure}
+
+Nenhuma das variantes sustenta a afirmação do DORA de que velocidade e
+estabilidade não competem, o que exigiria $\rho$ negativo. A magnitude no CFR
+(b) é em parte induzida pela definição: com mais releases por semana, é mais
+provável que uma release \textit{patch} ocorra nos sete dias seguintes e seja
+marcada como corretiva. O CFR (a), que mede falha de pipeline e independe do
+ritmo de releases, mostra associação fraca. Em ambos os casos trata-se de
+associação monotônica, sem implicação causal: tamanho e atividade do projeto,
+por exemplo, podem elevar as duas métricas.
+
+\subsection{RQ06: características dos repositórios}
+
+Os fatores pré-registrados são linguagem principal (TypeScript 43, Python 41,
+Go 21, JavaScript 19, Rust 19 e ``Outras'' 40, que reúne as 13 linguagens com
+menos de 10 repositórios), quartis de estrelas e quartis de contribuidores, com
+45 ou 46 repositórios por quartil. As métricas são as da configuração de
+referência C1. A Tabela~\ref{tab:rq06} resume os 12 testes de Kruskal-Wallis,
+com tamanho de efeito $\varepsilon^2 = H/(n-1)$.
+
+\begin{table}[ht]
+\centering
+\caption{RQ06: Kruskal-Wallis por fator e métrica (C1). Células: $\varepsilon^2$
+($p_{Holm}$). Fonte: \texttt{analysis/rq06/rq06\_resultados.json}
+(\texttt{lab03.analysis.rq06}).}
+\label{tab:rq06}
+\small
+\begin{tabular}{lcccc}
+\hline
+Fator & Frequência & Lead time (a) & CFR (a) & Recuperação \\
+ & $n = 183$ & $n = 172$ & $n = 183$ & $n = 158$ \\
+\hline
+Linguagem ($k = 6$) & 0,037 (1,00) & 0,061 (0,70) & 0,030 (1,00) & 0,037 (1,00) \\
+Estrelas ($k = 4$) & 0,006 (1,00) & 0,013 (1,00) & 0,001 (1,00) & 0,040 (0,97) \\
+Contribuidores ($k = 4$) & 0,015 (1,00) & 0,076 (0,055) & 0,014 (1,00) & 0,025 (1,00) \\
+\hline
+\end{tabular}
+\end{table}
+
+Nenhuma comparação é significativa após a correção de Holm. O maior efeito
+aparece entre quartis de contribuidores e lead time (a) ($H = 13{,}03$;
+$p = 0{,}005$ antes da correção; $p_{Holm} = 0{,}055$; $\varepsilon^2 =
+0{,}076$, pequeno). O lead time mediano sobe de 131~h no primeiro quartil para
+443~h no terceiro e 289~h no quarto, o que sugere entregas mais espaçadas em
+projetos com mais colaboradores. Os demais efeitos são desprezíveis ou pequenos
+($\varepsilon^2 \le 0{,}061$). Nesta amostra de projetos populares, linguagem,
+popularidade e tamanho da comunidade explicam pouco da variação das métricas
+DORA. Como os grupos têm entre 13 e 46 repositórios, a ausência de
+significância não demonstra ausência de efeito. Medianas e IQR por grupo estão
+em \texttt{analysis/rq06/rq06\_grupos.csv}. O tipo de projeto não foi usado
+como fator, porque só está rotulado para os 60 repositórios da amostra-ouro.
+
+\subsection{RQ07: sensibilidade da classificação}
+
+\pendente{percentual de repositórios que mudam de categoria e kappa de Cohen
+ponderado (linear) para C1$\times$C2, C1$\times$C3 e C2$\times$C3. Depende da
+S03-06 (\#125) e do complemento de pré-releases e tags para C2 e C3.}
+
+\pendente{revisar os valores desta seção com A e C após a S03-07 (\#126).}
