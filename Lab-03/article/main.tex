@@ -19,19 +19,28 @@ Pontifícia Universidade Católica de Minas Gerais (PUC Minas)}
 \begin{abstract}
 This study proposes mining software delivery proxies from public GitHub
 repositories using GitHub Actions. Releases, commit timestamps and workflow
-runs support alternative operational definitions of DORA metrics. Manual
-annotation and sensitivity analysis will assess how these definitions affect
-the interpretation of delivery performance. This preliminary version presents
-the research motivation and hypotheses; no empirical findings are reported.
+runs support alternative operational definitions of DORA metrics. In 183
+repositories, deployment frequency is positively correlated with both change
+failure rate variants (Spearman $\rho = 0.151$ for CI failures and $0.547$ for
+corrective releases), contrary to the DORA claim that speed and stability do
+not compete. Language, popularity and community size show no significant
+differences after Holm correction. A single-rater validation of the corrective
+release heuristic on 178 releases yields precision 0.234, recall 0.929 and
+F1 0.374, indicating that this proxy overestimates delivery failures.
 \end{abstract}
 
 \begin{resumo}
 Este estudo propõe minerar proxies de entrega de software em repositórios
 públicos do GitHub que utilizam GitHub Actions. Releases, datas de commits e
 execuções de workflows sustentam definições operacionais alternativas das
-métricas DORA. A validação manual e a análise de sensibilidade avaliarão como
-essas definições afetam a interpretação do desempenho de entrega. Esta versão
-preliminar apresenta motivação e hipóteses, sem relatar resultados empíricos.
+métricas DORA. Em 183 repositórios, a frequência de deploy correlaciona-se
+positivamente com as duas variantes de taxa de falha (Spearman $\rho = 0{,}151$
+para falhas de CI e $0{,}547$ para releases corretivas), contrariando a
+afirmação do DORA de que velocidade e estabilidade não competem. Linguagem,
+popularidade e tamanho da comunidade não mostram diferenças significativas
+após a correção de Holm. Uma validação com avaliador único da heurística de
+release corretiva, em 178 releases, resulta em precisão 0,234, recall 0,929 e
+F1 0,374, o que indica que esse proxy superestima as falhas de entrega.
 \end{resumo}
 
 \input{sections/introducao}
