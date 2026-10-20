@@ -30,7 +30,7 @@ jobs:
           cache: pip
           cache-dependency-path: Lab-03/pyproject.toml
       - name: Instalar projeto e ferramentas
-        run: python -m pip install -e ".[dev]"
+        run: python -m pip install -e ".[dev,analysis]"
       - name: Testar (cobertura de métricas >=80%)
         run: python -m pytest
       - uses: actions/upload-artifact@v4
