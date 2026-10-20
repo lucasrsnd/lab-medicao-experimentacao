@@ -13,11 +13,18 @@ def item(name, freq, cfr_a, cfr_b, *, stars=100, language="Python"):
         "metadata": {"full_name": name, "stars": stars, "primary_language": language,
                      "contributor_count": 10, "age_days_at_collection": 1000.0},
         "report": {
-            "deployment_frequency": {"releases_per_week": freq, "releases_in_window": 10},
-            "lead_time": {"by_release_hours": 48.0, "by_commit_hours": 24.0},
+            "deployment_frequency": {
+                "releases_per_week": freq, "releases_in_window": 10, "window_weeks": 52.0,
+            },
+            "lead_time": {
+                "by_release_hours": 48.0, "by_commit_hours": 24.0,
+                "releases_used": 9, "commits_used": 20,
+            },
             "ci_failure_rate": None if cfr_a is None else {"rate": cfr_a, "runs_evaluated": 50},
             "delivery_failure_rate": {"rate": cfr_b, "evaluated": 8, "censored": 1},
-            "recovery": {"median_hours": 2.0, "episodes_recovered": 3},
+            "recovery": {
+                "median_hours": 2.0, "episodes_recovered": 3, "censored_episodes": 1,
+            },
             "dora_classification": {"overall": {"category": "High"}},
         },
     }
@@ -37,6 +44,9 @@ def test_base_preserva_ausencia_e_zero(tmp_path):
     read = base.read_csv(path)
     assert read[0]["cfr_b"] is None and read[1]["cfr_a"] is None
     assert read[1]["deployment_frequency_per_week"] == 0.0 and read[1]["cfr_b"] == 0.0
+    assert read[0]["deployment_frequency_weeks"] == 52.0
+    assert read[0]["lead_time_a_releases"] == 9.0
+    assert read[0]["recovery_episodes_censored"] == 1.0
     assert read[0]["categoria_geral_c1"] == "High"
 
 

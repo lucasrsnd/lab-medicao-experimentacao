@@ -1,0 +1,38 @@
+{
+  "repositories": 183,
+  "outliers": "preservados; nenhum corte ou winsorização aplicado",
+  "results": [
+    {
+      "metric": "deployment_frequency_per_week",
+      "label": "Frequência (releases/semana)",
+      "n_valid": 183,
+      "n_missing": 0,
+      "median": 0.24863387978142076,
+      "q1": 0.13387978142076504,
+      "q3": 0.5546448087431695,
+      "iqr": 0.4207650273224044
+    },
+    {
+      "metric": "lead_time_a_hours",
+      "label": "Lead time (a), por release (horas)",
+      "n_valid": 172,
+      "n_missing": 11,
+      "median": 250.54513888888889,
+      "q1": 91.77524305555556,
+      "q3": 776.0987847222223,
+      "iqr": 684.3235416666666
+    },
+    {
+      "metric": "lead_time_b_hours",
+      "label": "Lead time (b), por commit (horas)",
+      "n_valid": 172,
+      "n_missing": 11,
+      "median": 172.36138888888888,
+      "q1": 71.80600694444445,
+      "q3": 579.3121874999999,
+      "iqr": 507.5061805555555
+    }
+  ],
+  "lead_time_variant_median_difference_hours": 78.18375,
+  "input_csv_sha256": "cbfde52fa148c45acdbbd5425a1aa8fd7f7eaf22d7964c28b3c6bded8d41ee55"
+}
