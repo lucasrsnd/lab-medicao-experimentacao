@@ -30,8 +30,6 @@ PERSONAL_PATH = re.compile(
 )
 SKIPPED_DIRS = {"data", ".git", ".venv", "__pycache__", ".pytest_cache", "htmlcov", "build", "dist"}
 BINARY_SUFFIXES = {".gz", ".sqlite3", ".png", ".pdf", ".pyc", ".xml"}
-# Caminhos de exemplo em arquivos que explicam o que NÃO versionar.
-ALLOWED_PERSONAL_PATH = {"docs/integracao-parte2.md"}
 
 
 def text_files(root: Path):
@@ -53,7 +51,7 @@ def scan(root: Path) -> list[str]:
             continue
         if SECRET.search(text):
             problems.append(f"possível token em {relative.as_posix()}")
-        if relative.as_posix() not in ALLOWED_PERSONAL_PATH and PERSONAL_PATH.search(text):
+        if PERSONAL_PATH.search(text):
             problems.append(f"caminho pessoal em {relative.as_posix()}")
     return problems
 

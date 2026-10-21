@@ -28,3 +28,7 @@ data/*
 /data/parte*.json
 /data/parte*.zip
 /data/amostra_completa.json
+
+# Lixo local: dumps do Git Bash e pacotes exportados do artigo
+*.stackdump
+*.zip
