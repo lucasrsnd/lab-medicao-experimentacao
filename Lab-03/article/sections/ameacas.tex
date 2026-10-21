@@ -1,0 +1,72 @@
+\section{Ameaças à validade}
+\label{sec:ameacas}
+
+\subsection{Validade de construto}
+\label{sec:ameacas-construto}
+
+As métricas observadas são proxies, não medidas diretas de entrega em
+produção. Uma release publicada não demonstra que a mudança foi implantada ou
+adotada por usuários; uma falha de CI pode bloquear uma mudança antes da
+produção e não equivale a uma falha em produção. Assim, os CFRs (a) e (b)
+representam eventos operacionais distintos, e nenhum deles mede incidentes
+reais.
+
+Essa limitação é especialmente importante para o CFR (b). Na validação de 283
+releases em 58 repositórios, com um único avaliador, a heurística obteve
+precisão de 0,238 (IC 95\% de Wilson [0,180; 0,308]), recall de 0,870 e
+$F_1 = 0,374$, abaixo do limiar de 0,70
+(Seção~\ref{sec:validacao-cfrb};
+\texttt{analysis/validacao\_cfr\_b/resultados.md}). Das 168 releases marcadas
+como corretivas, apenas 40 foram confirmadas; entre as 46 corretivas segundo o
+avaliador, seis não foram identificadas. O viés observado é, portanto, de
+superestimação do CFR (b), sem que a avaliação de um único julgador permita
+separar o erro da heurística de critérios individuais.
+
+A sensibilidade da categoria geral reforça que a escolha operacional afeta a
+interpretação: mudaram de categoria 44,4\% dos 259 repositórios comparáveis
+entre C1 e C2 ($\kappa = 0,311$), 28,5\% dos 260 entre C1 e C3
+($\kappa = 0,625$) e 41,0\% dos 261 entre C2 e C3 ($\kappa = 0,428$)
+(\texttt{analysis/rq07/rq07\_resultados.md}). Como C2 usa o CFR (b), essas
+mudanças não isolam o efeito da definição de entrega do possível erro de sua
+heurística. Não se deve interpretar essas proporções como mudanças de
+desempenho em produção.
+
+\subsection{Validade interna}
+\label{sec:ameacas-interna}
+
+As associações e diferenças entre grupos são observacionais e não controlam
+todos os fatores que podem influenciar as métricas. Idade e atividade dos
+repositórios, por exemplo, podem afetar simultaneamente volume de releases,
+commits e execuções de CI. A RQ06 compara linguagem, quartis de estrelas e
+quartis de contribuidores, mas não ajusta por idade ou atividade; seus dois
+resultados significativos entre 12 testes dizem respeito ao lead time e não
+estabelecem efeitos causais (\texttt{analysis/rq06/rq06\_resultados.md}).
+
+O CFR (b) também depende de uma heurística: uma alteração apenas de \textit{patch}
+ou mensagens contendo termos como \texttt{fix}, \texttt{hotfix} ou
+\texttt{revert} podem classificar uma release como corretiva sem evidência de
+que a entrega anterior falhou. A validação de avaliador único e seu
+$F_1 = 0,374$ limitam a força das conclusões que usam essa variável. Uma
+mitigação é rotular releases de forma independente por múltiplos avaliadores,
+resolver divergências por consenso e reavaliar a heurística em uma amostra
+separada antes de interpretar o CFR (b).
+
+O lead time usa \texttt{commit.author.date}, que pode não representar o momento
+em que o commit entrou no branch padrão: rebase e \textit{squash merge} podem
+preservar ou alterar datas de autoria e modificar a relação temporal entre
+commits e releases. Essa fonte de incerteza deve ser considerada junto à
+variabilidade das datas de publicação. Como mitigação, futuras análises podem
+comparar a definição baseada na data de autoria com a data de integração no
+branch padrão, documentando a regra e reportando a sensibilidade dos
+resultados; a análise atual não estima esse efeito separadamente.
+
+Há ainda censura à direita na janela de observação. No CFR (b), 251 das 8.518
+releases (2,9\%) não dispõem dos sete dias seguintes completos; na recuperação,
+75 dos 4.119 episódios (1,8\%) permanecem sem encerramento
+(\texttt{analysis/rq03\_rq04/rq03\_rq04\_resultados.md}, seção
+\textit{Censura}). Esses eventos foram mantidos como censurados, sem imputar
+tempos ou resultados. Ainda assim, a janela pode subcontar correções e
+recuperações tardias. Uma mitigação é estender a observação por ao menos sete
+dias após a janela principal para o CFR (b), reportar separadamente os
+episódios censurados e repetir a análise com uma janela de acompanhamento
+adicional.
