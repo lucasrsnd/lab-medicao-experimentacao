@@ -11,6 +11,7 @@ python -m lab03.analysis.rq03_rq04 # analysis/rq03_rq04/
 python -m lab03.analysis.c1_reference # analysis/c1_reference/
 python -m lab03.analysis.rq05      # analysis/rq05/
 python -m lab03.analysis.rq06      # analysis/rq06/
+python -m lab03.analysis.cfr_b_validation  # dataset + labels/ -> analysis/validacao_cfr_b/
 ```
 
 ## `base_repositorios.csv`
@@ -41,6 +42,10 @@ censuras. A seção identifica CFR (a) como proxy de falha de CI e CFR (b) como
 proxy de release corretiva; nenhum deles é tratado como observação de falha em
 produção. A validação humana só é considerada evidência para esta base quando
 o hash de origem da amostra-ouro coincide com o dataset congelado.
+Esse estado (`not_linked_to_frozen_dataset`) diz respeito à validação do
+protocolo, com consenso sobre a `reamostragem-v2`, que não foi feita. A
+validação parcial, com um avaliador sobre a 1ª rodada, está em
+`validacao_cfr_b/` e é descrita abaixo.
 
 `c1_reference` aplica o classificador já testado às quatro métricas C1, exporta
 categoria e status por repositório, distribuição de categorias e contagem de
@@ -106,3 +111,25 @@ Nesta amostra de repositórios populares, linguagem, popularidade e tamanho da
 comunidade explicam pouco da variação das métricas DORA. A ausência de
 significância não prova ausência de efeito, porque os grupos têm de 13 a 46
 repositórios.
+
+## Validação do CFR (b) — avaliador único (`validacao_cfr_b/`)
+
+Desvio do protocolo, por decisão do grupo: a `labels/reamostragem-v2/` não foi
+rotulada, e na 1ª rodada (`labels/amostra_ouro_*`) só o avaliador B rotulou.
+Os rótulos de A são rascunhos de IA (todas as linhas trazem `[rascunho IA]`).
+Por isso não existe consenso. A referência é B, e A entra só como referência
+auxiliar declarada (LLM), nunca como segundo avaliador.
+
+A 1ª rodada saiu da mesma coleta do snapshot (13/10/2026, mesma janela), mas
+sorteada sobre mais repositórios. Só entram releases cujo repositório está no
+snapshot e cujo `release_id` e veredito conferem: 178 de 283 releases, em 37
+dos 58 repositórios com releases sorteadas. As 105 restantes são de 21
+repositórios fora dos 183.
+
+Resultado (heurística v2 × B, `resultados.md`): precisão 0,234 (IC 95% de
+Wilson 0,165–0,321), recall 0,929 (0,774–0,980), F1 0,374. Entre as 111
+releases marcadas como corretivas pela heurística, B confirmou 26. Das 28
+corretivas segundo B, a heurística perdeu 2. O F1 fica abaixo do limiar de
+0,70 do protocolo, e o viés é de **superestimação** do CFR (b). Auxiliar: κ de
+Cohen B × LLM = 0,506. Os intervalos ignoram o agrupamento de releases por
+repositório e por isso são otimistas.

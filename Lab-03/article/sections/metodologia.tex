@@ -1,0 +1,85 @@
+% Metodologia. Fonte das decisões: Lab-03/docs/protocolo.md e config/estudo.json.
+\section{Metodologia}
+\label{sec:metodologia}
+
+\subsection{População, seleção e amostra analisada}
+\label{sec:amostra}
+
+A população-alvo são repositórios públicos do GitHub com mais de 1.000
+estrelas que usam GitHub Actions. A busca \texttt{stars:>1000}, ordenada por
+estrelas, informou 65.512 repositórios. Os 1.800 mais populares formaram a
+lista de candidatos. Destes, 1.563 usam Actions. São elegíveis os que têm, na
+janela, pelo menos cinco releases publicadas no histórico do branch padrão e
+pelo menos 50 workflow runs válidos disparados por \texttt{push} nesse branch.
+Para limitar o custo da coleta, também ficaram de fora repositórios com mais de
+500 releases ou mais de 1.000 runs de \texttt{push} na janela. Restaram 311
+elegíveis, e os 300 mais populares formaram a seleção. A amostra é intencional
+(por popularidade), não aleatória.
+
+A coleta foi dividida em duas partes, pelos índices da seleção (0 a 182 e 183
+a 299). Na segunda, 17 repositórios deixaram de cumprir o mínimo de releases ao
+se verificar a ancestralidade no branch padrão. Eles foram substituídos pelos
+próximos candidatos elegíveis em ordem de estrelas, abaixo do menor valor da
+seleção original. As substituições estão registradas em
+\texttt{data/selecao-amostra-revisada.json}.
+
+\textbf{Amostra analisada.} O dataset congelado no repositório
+(\texttt{data/amostra\_completa.json.gz}, coleta de 13 de outubro de 2026)
+contém apenas a primeira parte, com os índices 0 a 182: \textbf{183 dos 300
+repositórios selecionados}. A segunda parte, com 117 repositórios, não foi
+integrada ao dataset versionado. Todos os resultados deste artigo se referem,
+portanto, aos 183 repositórios mais populares da seleção, abaixo do mínimo de
+300 previsto no protocolo. Como a divisão segue a ordem de estrelas, a amostra
+analisada pende para os projetos mais populares: os 183 têm de cerca de 32 mil
+a 289 mil estrelas, e os 117 não analisados, de cerca de 24 mil a 32 mil. Os
+117 restantes poderiam mudar as distribuições, sobretudo nas RQ06 e RQ07.
+
+\subsection{Janela e unidades}
+
+A janela vai de 6 de outubro de 2025 a 7 de outubro de 2026 (UTC$-3$), com fim
+exclusivo, e tem 366 dias. O dia além dos doze meses é uma exceção de
+compatibilidade, discutida na introdução. Releases e runs entram pela data de
+publicação e de criação, respectivamente. Commits incluídos em releases da
+janela podem ser anteriores a ela.
+
+\subsection{Métricas}
+
+\textbf{Frequência (RQ01):} releases publicadas na janela divididas pela sua
+duração em semanas. \textbf{Lead time (RQ02):} cada release é comparada com a
+anterior. A variante (a) é a mediana, por repositório, do intervalo entre a
+publicação e o commit mais antigo da release. A variante (b) é a mediana sobre
+todos os commits incluídos. \textbf{CFR (RQ03):} a variante (a) é a proporção de
+runs de CI com falha entre os runs com sucesso ou falha. A variante (b) é a
+proporção de releases seguidas, em até sete dias, por uma release corretiva.
+Releases dos últimos sete dias da janela são censuradas. A heurística v2
+considera corretiva a release que só altera o \textit{patch} semver, ou em que
+pelo menos metade dos commits cita \texttt{revert}, \texttt{hotfix} ou
+\texttt{fix}. \textbf{Recuperação (RQ04):} horas entre o início da primeira
+falha e o próximo sucesso no mesmo workflow. Episódios abertos no fim da
+janela são censurados.
+
+A classificação DORA usa os cortes do enunciado. A categoria geral é a mediana
+das quatro notas (Elite~4 a Low~1), arredondada para baixo, e só é emitida
+quando as quatro métricas são observadas. A configuração de referência C1 usa
+releases publicadas, lead time (a) e CFR (a). As configurações C2 (com
+pré-releases, lead time (b) e CFR (b)) e C3 (tags) servem à RQ07. Ausências
+nunca são imputadas como zero, e cada uma tem o motivo registrado.
+
+\subsection{Validação manual}
+
+Foram sorteados 60 repositórios, com cinco releases cada, a partir da coleta de
+13 de outubro (semente 42). O protocolo previa rotulagem cega por três
+avaliadores e o cálculo do F1 da heurística contra o consenso. Na prática, só
+um avaliador humano concluiu a rotulagem. O desvio e a validação resultante
+estão na Seção~\ref{sec:validacao-cfrb}.
+
+\subsection{Análise estatística}
+
+As métricas são descritas por mediana e IQR. A RQ05 usa a correlação de
+Spearman entre a frequência e cada CFR. A RQ06 usa Kruskal-Wallis, com
+$\varepsilon^2$ como tamanho de efeito, para linguagem principal e quartis de
+estrelas e de contribuidores, fatores fixados antes da coleta. Comparações
+múltiplas são corrigidas por Holm ($\alpha = 0{,}05$). A RQ07 compara as
+classificações por percentual de mudança de categoria e kappa de Cohen
+ponderado linear. Todas as análises são reexecutáveis a partir do dataset
+congelado (\texttt{python -m lab03.analysis.*}).

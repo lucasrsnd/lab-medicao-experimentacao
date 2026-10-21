@@ -27,9 +27,10 @@ token.
 ## Coleta real
 
 A janela adotada pelo grupo em `config/estudo.json` vai de
-`2025-10-06T00:00:00-03:00` até `2026-10-06T00:00:00-03:00`, com fim exclusivo.
-A coleta está habilitada; a confirmação do professor foi reportada em
-14/10/2026, sem data exata registrada, em `window_decision`. Para validar:
+`2025-10-06T00:00:00-03:00` até `2026-10-07T00:00:00-03:00`, com fim exclusivo
+(366 dias). O dia a mais é uma exceção de compatibilidade decidida em
+13/10/2026 e registrada em `window_decision`. A confirmação do professor
+reportada em 14/10/2026 refere-se à janela original de doze meses. Para validar:
 
 ```powershell
 python -m lab03 --config config/estudo.json --validate-config
@@ -144,6 +145,57 @@ Depois de validada a saída final, `validation/dataset-v1/` é o diretório
 versionável dos CSVs e do manifesto; não publique dados incompletos como
 dataset congelado.
 
+## Sprint 03: análises e artigo
+
+Todas as análises partem do dataset congelado `data/amostra_completa.json.gz`
+(coleta de 13/10/2026) e são reexecutáveis.
+
+**Cobertura: 183 de 300.** O funil aprovou 311 elegíveis, e a seleção
+(`data/selecao-amostra-revisada.json`) tem 300, já com as 17 substituições da
+2ª parte. O dataset versionado contém só a 1ª parte da coleta
+(`pilot_sample.slice = [0, 183]`): os 183 mais populares, de cerca de 32 mil a
+289 mil estrelas. A 2ª parte, índices 183 a 299 (117 repositórios, de cerca de
+24 mil a 32 mil estrelas), não está no GitHub em nenhuma branch ou PR. A
+`labels/reamostragem-v2/` foi sorteada de um dataset com 300 repositórios
+(SHA-256 `87656c1c…`, coletado em 15/10), o que indica que ele existe
+localmente com algum integrante. Para integrá-lo, siga
+[`docs/integracao-parte2.md`](docs/integracao-parte2.md).
+
+```powershell
+python -m pip install -e ".[dev,analysis,validation]"
+python -m lab03.analysis.base              # -> analysis/base_repositorios.csv
+python -m lab03.analysis.rq01_rq02         # -> analysis/rq01_rq02/
+python -m lab03.analysis.rq03_rq04         # -> analysis/rq03_rq04/
+python -m lab03.analysis.c1_reference      # -> analysis/c1_reference/
+python -m lab03.analysis.rq05              # -> analysis/rq05/
+python -m lab03.analysis.rq06              # -> analysis/rq06/
+python -m lab03.analysis.cfr_b_validation  # -> analysis/validacao_cfr_b/
+```
+
+Decisões e resultados de cada análise estão em
+[`analysis/README.md`](analysis/README.md).
+
+| Item | Estado |
+|---|---|
+| RQ01–RQ04 e classificação C1 | analisadas e no artigo |
+| RQ05 e RQ06 | analisadas e no artigo |
+| Validação do CFR (b) | parcial: avaliador único (B), 178 releases; ver abaixo |
+| RQ07 (C1 × C2 × C3) | pendente: falta a coleta complementar de pré-releases e tags |
+| Discussão, ameaças à validade e replicação | pendentes no artigo |
+
+**Desvio da validação manual.** O protocolo previa três avaliadores e consenso
+sobre `labels/reamostragem-v2/`, que não foi rotulada. Por decisão do grupo, a
+validação usa só os rótulos humanos do avaliador B na 1ª rodada
+(`labels/rotulos_B_*`). Os rótulos de A nessa rodada são rascunhos de IA e
+entram apenas como referência auxiliar declarada. Resultado: precisão 0,234,
+recall 0,929 e F1 0,374, ou seja, o CFR (b) tende a superestimar falhas.
+
+O artigo (formato SBC) está em `article/`: `main.tex` inclui
+`sections/introducao.tex` e `sections/resultados.tex`, e as figuras são lidas
+de `analysis/`. Para o Overleaf, envie `main.tex`, `sbc-template.sty`,
+`sections/` e as pastas de figuras (`rq01_rq02/`, `rq03_rq04/`, `rq05/`) na raiz
+do projeto. O `\graphicspath` aceita as duas localizações.
+
 ## Estrutura e contratos
 
 - `src/lab03/domain.py`: contratos imutáveis de repositório, release, commit,
@@ -155,7 +207,9 @@ dataset congelado.
 - `src/lab03/metrics/`: funções puras para frequência de releases por semana
   exata, lead time em horas nas variantes por release e por commit, e
   classificação DORA com tratamento explícito de dados incompletos.
-- `src/lab03/analysis/`: projeção dos contratos e métricas no relatório JSON.
+- `src/lab03/analysis/`: projeção dos contratos e métricas no relatório JSON e
+  scripts das análises da S03 (`base`, `rq01_rq02` a `rq06`, `c1_reference`,
+  `cfr_b_validation`).
 - `src/lab03/pipeline.py`: orquestra os coletores, métricas e análise de um
   repositório.
 - `src/lab03/pilot.py`: integra seleção, elegibilidade, coleta de métricas e
