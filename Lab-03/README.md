@@ -155,8 +155,7 @@ Todas as análises partem do dataset congelado `data/amostra_completa.json.gz`
 2ª parte. O dataset versionado reúne as duas partes da coleta de 13/10/2026
 (`pilot_sample.slices = [[0, 183], [183, 300]]`), com a mesma janela e os
 mesmos critérios, na ordem da seleção e com a heurística v2 em todos os
-repositórios. A integração está descrita em
-[`docs/integracao-parte2.md`](docs/integracao-parte2.md). A
+repositórios. As duas partes foram unidas com `lab03.merge`. A
 `labels/reamostragem-v2/` foi sorteada de outro dataset de 300 repositórios
 (SHA-256 `87656c1c…`, coletado em 15/10), que não é este (`bbc65239…`), e por
 isso continua não vinculada.
