@@ -4,9 +4,10 @@
     "labels/amostra_ouro_releases.csv": "de3da30dc6f340cbba92067f088474a04192ebe8f5afe6a5f1f7db4f1f88d924",
     "labels/rotulos_A_releases.csv": "07f65ee68f30be6a59873ab1fbeea43314e8eb84e5888a1049dab1cfb7e7502c",
     "labels/rotulos_B_releases.csv": "c3676c736b78d5766a41ca57f2ce5c4a404e0a52ada1e9969695e8af1d56ecfb",
-    "labels/reamostragem-v2/amostra_ouro_sorteio.json": "73b3037060a0ab57e82e1293a2d52c74ea6f73965d0c9262104232852cf4c13a"
+    "labels/reamostragem-v2/amostra_ouro_sorteio.json": "73b3037060a0ab57e82e1293a2d52c74ea6f73965d0c9262104232852cf4c13a",
+    "validation/dataset-v1/rq07_classificacoes.csv": "b0cd883eff29193519a5274bf050395dfdb234c12df8e010520a122fc4039277"
   },
-  "python": "3.11.9",
+  "python": "3.12.10",
   "outputs": {
     "base_repositorios.csv": {
       "sha256": "f0633cb8aacb95925661d9b4f4e455afe20d40ab5e5f46c390791d0585b080e1",
@@ -75,9 +76,9 @@
       "stable": true
     },
     "rq05/rq05_dispersao.png": {
-      "sha256": "19af507b1bdba872ff54ef6198db76009b8b1e2c84df3b4aed248e853896ccc4",
-      "canonical_sha256": "19af507b1bdba872ff54ef6198db76009b8b1e2c84df3b4aed248e853896ccc4",
-      "bytes": 102742,
+      "sha256": "bafbd72a7cb8c8a2fcdbe45a74feaef93ca8d2b86450a202085408b621729093",
+      "canonical_sha256": "bafbd72a7cb8c8a2fcdbe45a74feaef93ca8d2b86450a202085408b621729093",
+      "bytes": 78092,
       "stable": false
     },
     "rq05/rq05_resultados.json": {
@@ -108,6 +109,24 @@
       "sha256": "fb760c1d09ec1d88f11e95be5183fcbc74c35da710908be865903a9114e8f2fe",
       "canonical_sha256": "5688596cb8e5d8d928bd8e09e3750e60fba917dd4c6d4541f28ef6ec0fede981",
       "bytes": 4980,
+      "stable": true
+    },
+    "rq07/rq07_matrizes.csv": {
+      "sha256": "f5e457b6efbfb17f135884236fd237fa8f843975261bc2ce56e876b713022387",
+      "canonical_sha256": "c774f578d9e7ff079dd1c86c9ab29cfd6cbe9f2b3ba12f0169df136f44243ca1",
+      "bytes": 1005,
+      "stable": true
+    },
+    "rq07/rq07_resultados.json": {
+      "sha256": "a58657f23193d9629bc8bf4e7677515e91bd2418da580023b177ed56fbe5ed60",
+      "canonical_sha256": "03222e8155a0024c86bc3fc7ff817e500670a4c87efeab5c63fc50ad02275575",
+      "bytes": 3330,
+      "stable": true
+    },
+    "rq07/rq07_resultados.md": {
+      "sha256": "c2bdb3e9de50d905a9304ca3e8ee09e570f85a518496ec6c7b06de03cf0282e0",
+      "canonical_sha256": "5e4f940b7ca5c6f12240f9da04c0ad23265259ba4e815dd9862781973928ea41",
+      "bytes": 1769,
       "stable": true
     },
     "validacao_cfr_b/releases.csv": {
