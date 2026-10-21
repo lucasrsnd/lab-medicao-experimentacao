@@ -70,3 +70,53 @@ recuperações tardias. Uma mitigação é estender a observação por ao menos 
 dias após a janela principal para o CFR (b), reportar separadamente os
 episódios censurados e repetir a análise com uma janela de acompanhamento
 adicional.
+
+\subsection{Validade externa}
+\label{sec:ameacas-externa}
+
+Os resultados se restringem a uma amostra intencional de projetos populares:
+repositórios públicos com mais de 1.000 estrelas, GitHub Actions, ao menos
+cinco releases e 50 execuções válidas de \texttt{push}, além dos limites de
+coleta definidos no protocolo. Dos 311 repositórios elegíveis, foram
+selecionados os 300 mais populares
+(Seção~\ref{sec:amostra}). A seleção não é aleatória e exclui projetos menos
+populares, sem Actions ou com menor atividade; portanto, não sustenta
+generalizações para esses projetos, para sistemas comerciais ou para equipes
+em geral.
+
+O tipo de projeto também não pode ser usado para caracterizar os 300: esse
+rótulo foi coletado somente nos 60 repositórios da amostra-ouro. A ausência de
+rótulos fora desse subconjunto impede estimar a distribuição de tipos na
+amostra completa ou comparar seus resultados por tipo sem uma nova rotulagem.
+
+\subsection{Validade de conclusão}
+\label{sec:ameacas-conclusao}
+
+A RQ06 executou 12 testes de Kruskal--Wallis e aplicou a correção de Holm à
+família completa. Dois testes permaneceram significativos, ambos para lead
+time; os tamanhos de efeito foram $\varepsilon^2 = 0,099$ (médio) e
+$\varepsilon^2 = 0,053$ (pequeno)
+(\texttt{analysis/rq06/rq06\_resultados.md}). A correção reduz o risco de
+falsos positivos na família, mas não transforma associações observacionais em
+efeitos causais nem permite concluir ausência de efeito nos testes não
+significativos. Também não foram feitas comparações \textit{post hoc}, de
+modo que os testes não identificam quais pares de grupos diferem.
+
+Há grupos pequenos e heterogêneos: Java reúne 10 repositórios e C++ 13; as 16
+linguagens com menos de 10 repositórios foram agrupadas em ``Outras'' (51
+repositórios). Essa decisão evita estimativas em células muito pequenas, mas
+combina linguagens distintas e pode ocultar variação entre elas. Os empates
+também limitam a discriminação dos postos: 24 repositórios têm CFR (a) igual a
+zero e 52 têm CFR (b) igual a zero; os procedimentos usam correção ou postos
+médios para empates, mas a concentração de zeros continua limitando a
+informação disponível
+(\texttt{analysis/rq05/rq05\_resultados.md};
+\texttt{analysis/README.md}).
+
+Por fim, os intervalos de Wilson da validação tratam 283 releases como
+observações independentes, embora estejam agrupadas em 58 repositórios. Essa
+dependência pode tornar os intervalos estreitos demais
+(\texttt{analysis/validacao\_cfr\_b/resultados.md}). Uma validação futura deve
+usar intervalos ou reamostragem que preservem o agrupamento por repositório,
+além de ampliar a rotulagem independente e reportar os tamanhos dos grupos e
+os efeitos junto aos valores de significância.
