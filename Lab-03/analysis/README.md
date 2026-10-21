@@ -5,6 +5,7 @@ que por sua vez é derivado do dataset congelado da coleta completa.
 
 ```powershell
 python -m pip install -e ".[dev,analysis]"
+python -m lab03.analysis.reproduce # tudo abaixo, mais analysis/MANIFESTO.json (--check compara com ele)
 python -m lab03.analysis.base      # data/amostra_completa.json.gz -> analysis/base_repositorios.csv
 python -m lab03.analysis.rq01_rq02 # analysis/rq01_rq02/
 python -m lab03.analysis.rq03_rq04 # analysis/rq03_rq04/

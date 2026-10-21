@@ -161,8 +161,21 @@ Todas as análises partem do dataset congelado `data/amostra_completa.json.gz`
 localmente com algum integrante. Para integrá-lo, siga
 [`docs/integracao-parte2.md`](docs/integracao-parte2.md).
 
+Reprodução com um comando (Python 3.12+, a partir da pasta `Lab-03`):
+
 ```powershell
-python -m pip install -e ".[dev,analysis,validation]"
+python -m pip install -e ".[dev,analysis]"
+python -m lab03.analysis.reproduce          # refaz tudo em analysis/ e grava analysis/MANIFESTO.json
+python -m lab03.analysis.reproduce --check  # refaz numa pasta temporária e compara com o manifesto
+python -m lab03.delivery --reproduce        # arquivos obrigatórios, segredos, caminhos pessoais e --check
+```
+
+O manifesto registra o SHA-256 das entradas congeladas e de cada saída. As
+figuras (`.png`) entram nele, mas não na comparação, porque variam com a versão
+do matplotlib. Nos JSON, a comparação ignora ruído de ponto flutuante entre
+versões do scipy. Para rodar uma etapa isolada:
+
+```powershell
 python -m lab03.analysis.base              # -> analysis/base_repositorios.csv
 python -m lab03.analysis.rq01_rq02         # -> analysis/rq01_rq02/
 python -m lab03.analysis.rq03_rq04         # -> analysis/rq03_rq04/
@@ -181,7 +194,8 @@ Decisões e resultados de cada análise estão em
 | RQ05 e RQ06 | analisadas e no artigo |
 | Validação do CFR (b) | parcial: avaliador único (B), 178 releases; ver abaixo |
 | RQ07 (C1 × C2 × C3) | pendente: falta a coleta complementar de pré-releases e tags |
-| Discussão, ameaças à validade e replicação | pendentes no artigo |
+| Discussão (`article/sections/discussao.tex`) | redigida com os 183 repositórios |
+| Ameaças à validade e replicação | pendentes no artigo |
 
 **Desvio da validação manual.** O protocolo previa três avaliadores e consenso
 sobre `labels/reamostragem-v2/`, que não foi rotulada. Por decisão do grupo, a
