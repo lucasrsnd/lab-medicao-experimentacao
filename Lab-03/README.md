@@ -150,16 +150,16 @@ dataset congelado.
 Todas as análises partem do dataset congelado `data/amostra_completa.json.gz`
 (coleta de 13/10/2026) e são reexecutáveis.
 
-**Cobertura: 183 de 300.** O funil aprovou 311 elegíveis, e a seleção
+**Cobertura: 300 de 300.** O funil aprovou 311 elegíveis, e a seleção
 (`data/selecao-amostra-revisada.json`) tem 300, já com as 17 substituições da
-2ª parte. O dataset versionado contém só a 1ª parte da coleta
-(`pilot_sample.slice = [0, 183]`): os 183 mais populares, de cerca de 32 mil a
-289 mil estrelas. A 2ª parte, índices 183 a 299 (117 repositórios, de cerca de
-24 mil a 32 mil estrelas), não está no GitHub em nenhuma branch ou PR. A
-`labels/reamostragem-v2/` foi sorteada de um dataset com 300 repositórios
-(SHA-256 `87656c1c…`, coletado em 15/10), o que indica que ele existe
-localmente com algum integrante. Para integrá-lo, siga
-[`docs/integracao-parte2.md`](docs/integracao-parte2.md).
+2ª parte. O dataset versionado reúne as duas partes da coleta de 13/10/2026
+(`pilot_sample.slices = [[0, 183], [183, 300]]`), com a mesma janela e os
+mesmos critérios, na ordem da seleção e com a heurística v2 em todos os
+repositórios. A integração está descrita em
+[`docs/integracao-parte2.md`](docs/integracao-parte2.md). A
+`labels/reamostragem-v2/` foi sorteada de outro dataset de 300 repositórios
+(SHA-256 `87656c1c…`, coletado em 15/10), que não é este (`bbc65239…`), e por
+isso continua não vinculada.
 
 Reprodução com um comando (Python 3.12+, a partir da pasta `Lab-03`):
 
@@ -192,17 +192,17 @@ Decisões e resultados de cada análise estão em
 |---|---|
 | RQ01–RQ04 e classificação C1 | analisadas e no artigo |
 | RQ05 e RQ06 | analisadas e no artigo |
-| Validação do CFR (b) | parcial: avaliador único (B), 178 releases; ver abaixo |
+| Validação do CFR (b) | parcial: avaliador único (B), 283 releases; ver abaixo |
 | RQ07 (C1 × C2 × C3) | pendente: falta a coleta complementar de pré-releases e tags |
-| Discussão (`article/sections/discussao.tex`) | redigida com os 183 repositórios |
+| Discussão (`article/sections/discussao.tex`) | redigida com os 300 repositórios |
 | Ameaças à validade e replicação | pendentes no artigo |
 
 **Desvio da validação manual.** O protocolo previa três avaliadores e consenso
 sobre `labels/reamostragem-v2/`, que não foi rotulada. Por decisão do grupo, a
 validação usa só os rótulos humanos do avaliador B na 1ª rodada
 (`labels/rotulos_B_*`). Os rótulos de A nessa rodada são rascunhos de IA e
-entram apenas como referência auxiliar declarada. Resultado: precisão 0,234,
-recall 0,929 e F1 0,374, ou seja, o CFR (b) tende a superestimar falhas.
+entram apenas como referência auxiliar declarada. Resultado: precisão 0,238,
+recall 0,870 e F1 0,374, ou seja, o CFR (b) tende a superestimar falhas.
 
 O artigo (formato SBC) está em `article/`: `main.tex` inclui
 `sections/introducao.tex` e `sections/resultados.tex`, e as figuras são lidas

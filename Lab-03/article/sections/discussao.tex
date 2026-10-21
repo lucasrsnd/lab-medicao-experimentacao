@@ -2,26 +2,26 @@
 \section{Discussão}
 \label{sec:discussao}
 
-Esta seção confronta as hipóteses da Seção~\ref{sec:introducao} com os 183
+Esta seção confronta as hipóteses da Seção~\ref{sec:introducao} com os 300
 repositórios analisados. As hipóteses foram escritas antes de observar os
 resultados. A Tabela~\ref{tab:hipoteses} resume o veredito, e os parágrafos
 seguintes discutem o que ele significa e o que não permite concluir.
 
 \begin{table}[ht]
 \centering
-\caption{Hipóteses prévias e resultados (183 repositórios).}
+\caption{Hipóteses prévias e resultados (300 repositórios).}
 \label{tab:hipoteses}
 \small
 \begin{tabular}{lll}
 \hline
 Hipótese & Resultado & Veredito \\
 \hline
-H01 frequência heterogênea, abaixo de 1/semana & 90\% abaixo de 1/semana & Sustentada \\
-H02 lead time (a) $>$ (b) & 250,5 h $>$ 172,4 h; 72\% dos repositórios & Sustentada \\
-H03 CFR (a) e (b) divergem & medianas 0,047 e 0,275 & Sustentada \\
-H04 recuperação assimétrica & mediana 3,5 h, Q3 17,8 h & Sustentada \\
-H05 associação fraca ou não positiva & $\rho$ = 0,151 e 0,547 & \textbf{Refutada} \\
-H06 diferença em ao menos uma métrica & 0 de 12 após Holm & \textbf{Não sustentada} \\
+H01 frequência heterogênea, abaixo de 1/semana & 89\% abaixo de 1/semana & Sustentada \\
+H02 lead time (a) $>$ (b) & 250,8 h $>$ 169,4 h; 73\% dos repositórios & Sustentada \\
+H03 CFR (a) e (b) divergem & medianas 0,054 e 0,292 & Sustentada \\
+H04 recuperação assimétrica & mediana 4,9 h, Q3 21,5 h & Sustentada \\
+H05 associação fraca ou não positiva & $\rho$ = 0,182 e 0,567 & \textbf{Refutada} \\
+H06 diferença em ao menos uma métrica & 2 de 12 após Holm, ambas em lead time & Sustentada, só em lead time \\
 H07 mudança de categoria nas variantes & não calculada & Pendente \\
 \hline
 \end{tabular}
@@ -31,38 +31,44 @@ H07 mudança de categoria nas variantes & não calculada & Pendente \\
 frequência e CFR, e os dados mostram associação positiva com as duas variantes.
 Isso contraria a leitura do DORA de que velocidade e estabilidade andam juntas.
 Duas ressalvas impedem concluir que publicar mais gera mais falhas. A primeira
-é que o CFR (b) tem a associação mais forte ($\rho = 0{,}547$) justamente por
+é que o CFR (b) tem a associação mais forte ($\rho = 0{,}567$) justamente por
 construção: quem publica várias releases por semana tem mais chance de ter uma
 \textit{patch} nos sete dias seguintes, que a heurística marca como corretiva.
 Com o CFR (a), que não depende do ritmo de releases, a associação é fraca
-($\rho = 0{,}151$) e fica perto do limiar de significância. A segunda é que a
-amostra reúne projetos populares e muito ativos, em que frequência e CFR podem
-crescer juntos por causa do tamanho do projeto e do volume de CI. É uma
+($\rho = 0{,}182$), embora significativa com os 300 repositórios. A segunda é
+que a amostra reúne projetos populares e muito ativos, em que frequência e CFR
+podem crescer juntos por causa do tamanho do projeto e do volume de CI. É uma
 associação entre postos, sem controle de confundidores.
 
-\textbf{Sem efeito detectável.} Na RQ06, nenhum dos 12 testes é significativo
-após Holm, e o maior efeito (contribuidores e lead time (a),
-$\varepsilon^2 = 0{,}076$, $p_{Holm} = 0{,}055$) é pequeno. Com grupos de 13 a
-46 repositórios, isso não demonstra ausência de efeito, e sim que esta amostra
-não o detecta. Também não houve ajuste por mais de um fator ao mesmo tempo.
+\textbf{Efeito só no lead time.} Na RQ06, apenas 2 dos 12 testes são
+significativos após Holm, e os dois envolvem o lead time (a): linguagem
+($\varepsilon^2 = 0{,}099$) e quartil de contribuidores
+($\varepsilon^2 = 0{,}053$). Frequência, CFR (a), recuperação e estrelas não
+diferem. Projetos em TypeScript e Python têm lead time mediano menor do que os
+em Rust e C++, e projetos com mais contribuidores entregam de forma mais
+espaçada. Esses padrões são descritivos. Os testes não identificam quais pares
+de grupos diferem, e linguagem e número de contribuidores podem refletir o tipo
+de projeto, que não foi controlado. Alguns grupos de linguagem têm só 10 a 13
+repositórios, e a ausência de significância nas demais combinações não
+demonstra ausência de efeito.
 
 \textbf{O CFR (b) está inflado.} Na validação de avaliador único, a heurística
-tem recall de 0,929 e precisão de 0,234 (F1 = 0,374), abaixo do limiar de 0,70
-do protocolo. Ela quase não perde releases corretivas, mas rotula como
-corretivas muitas que não são. Por isso a mediana do CFR (b), 0,275, deve ser
-lida como limite superior, não como taxa de falha. A validação tem limites
-sérios: um só avaliador, 178 releases em 37 repositórios, e a rodada de
-consenso prevista não foi feita. Não é possível separar o erro da heurística
-dos critérios pessoais do avaliador.
+tem recall de 0,870 e precisão de 0,238 (F1 = 0,374), abaixo do limiar de 0,70
+do protocolo. Ela perde poucas releases corretivas (6 de 46), mas rotula como
+corretivas muitas que não são (apenas 40 das 168 marcadas foram confirmadas).
+Por isso a mediana do CFR (b), 0,292, deve ser lida como limite superior, não
+como taxa de falha. A validação tem limites sérios: um só avaliador, 283
+releases em 58 repositórios, e a rodada de consenso prevista não foi feita. Não
+é possível separar o erro da heurística dos critérios pessoais do avaliador.
 
 \textbf{Os proxies divergem.} Na classificação C1, nenhum repositório é Elite em
-frequência e 91 são Low, enquanto 148 (81\%) são Elite em CFR (a). A categoria
-geral, a mediana das quatro pontuações, esconde essa oposição e se concentra em
-Medium e High. A classificação depende da métrica de falha escolhida, e a
-sensibilidade a essa escolha é o objeto da RQ07.
+frequência e 136 (45\%) são Low, enquanto 230 (77\%) são Elite em CFR (a). A
+categoria geral, a mediana das quatro pontuações, esconde essa oposição e se
+concentra em Medium e High. A classificação depende da métrica de falha
+escolhida, e a sensibilidade a essa escolha é o objeto da RQ07.
 
 \textbf{Outliers.} Frequência, lead time e recuperação têm caudas longas
-(lead time (a) com Q3 de 776 h, recuperação com Q3 de 17,8 h). Foram mantidos
+(lead time (a) com Q3 de 756 h, recuperação com Q3 de 21,5 h). Foram mantidos
 em todas as análises, com mediana, IQR e testes por postos, e as figuras usam
 escala \textit{symlog}. Testes por postos e medianas são pouco sensíveis a poucos
 repositórios extremos, ao contrário da média, que seria distorcida.
@@ -71,13 +77,10 @@ repositórios extremos, ao contrário da média, que seria distorcida.
 CI não é falha em produção, e a heurística de release corretiva é um proxy.
 Nenhum resultado aqui mede incidentes reais. Todas as associações são
 observacionais, e a amostra, de projetos populares de código aberto, não
-representa equipes comerciais. A coleta cobre 183 dos 300 repositórios
-previstos (Seção~\ref{sec:amostra}), com os mais populares, o que pode
-enviesar as distribuições.
+representa equipes comerciais nem projetos menos populares.
 
 \textbf{RQ07 e trabalho futuro.} A sensibilidade das categorias às definições
 de entrega (C1, C2 e C3) não foi calculada, porque depende da coleta
-complementar de pré-releases e tags, que não foi executada. O código de análise
-pode ser aplicado quando os dados existirem. Como pendências: integrar a 2ª
-parte da coleta (117 repositórios), rotular a segunda rodada de validação com
-mais de um avaliador e executar a replicação cruzada.
+complementar de pré-releases e tags, que não foi executada.
+Como pendências: rotular a segunda
+rodada de validação com mais de um avaliador e executar a replicação cruzada.

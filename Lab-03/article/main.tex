@@ -19,18 +19,19 @@ Pontifícia Universidade Católica de Minas Gerais (PUC Minas)}
 \begin{abstract}
 This study proposes mining software delivery proxies from public GitHub
 repositories using GitHub Actions. Releases, commit timestamps and workflow
-runs support alternative operational definitions of DORA metrics. In the 183
-most popular of 300 selected repositories, the median project publishes one
-release every four weeks, and lead time per release exceeds lead time per
-commit (250 h versus 172 h). The two change failure rate proxies diverge
-(medians 0.047 for CI failures and 0.275 for corrective releases), as do the
-DORA categories: no project is Elite in frequency, while 81\% are Elite in CI
+runs support alternative operational definitions of DORA metrics. In the 300
+selected repositories, the median project publishes one release every four
+weeks, and lead time per release exceeds lead time per
+commit (251 h versus 169 h). The two change failure rate proxies diverge
+(medians 0.054 for CI failures and 0.292 for corrective releases), as do the
+DORA categories: no project is Elite in frequency, while 77\% are Elite in CI
 failure rate. Deployment frequency is positively correlated with both change
-failure rate variants (Spearman $\rho = 0.151$ for CI failures and $0.547$ for
+failure rate variants (Spearman $\rho = 0.182$ for CI failures and $0.567$ for
 corrective releases), contrary to the DORA claim that speed and stability do
-not compete. Language, popularity and community size show no significant
-differences after Holm correction. A single-rater validation of the corrective
-release heuristic on 178 releases yields precision 0.234, recall 0.929 and
+not compete. Across 12 tests with Holm correction, only lead time differs
+significantly, by main language and by contributor quartile, with small to
+medium effects. A single-rater validation of the corrective
+release heuristic on 283 releases yields precision 0.238, recall 0.870 and
 F1 0.374, indicating that this proxy overestimates delivery failures.
 \end{abstract}
 
@@ -38,18 +39,19 @@ F1 0.374, indicating that this proxy overestimates delivery failures.
 Este estudo propõe minerar proxies de entrega de software em repositórios
 públicos do GitHub que utilizam GitHub Actions. Releases, datas de commits e
 execuções de workflows sustentam definições operacionais alternativas das
-métricas DORA. Nos 183 mais populares dos 300 repositórios selecionados, o
+métricas DORA. Nos 300 repositórios selecionados, o
 projeto mediano publica uma release a cada quatro semanas, e o lead time por
-release supera o por commit (250 h contra 172 h). As duas variantes de taxa de
-falha divergem (medianas de 0,047 para falhas de CI e 0,275 para releases
+release supera o por commit (251 h contra 169 h). As duas variantes de taxa de
+falha divergem (medianas de 0,054 para falhas de CI e 0,292 para releases
 corretivas), assim como as categorias DORA: nenhum projeto é Elite em
-frequência, enquanto 81\% são Elite em falha de CI. A frequência de deploy correlaciona-se
-positivamente com as duas variantes de taxa de falha (Spearman $\rho = 0{,}151$
-para falhas de CI e $0{,}547$ para releases corretivas), contrariando a
-afirmação do DORA de que velocidade e estabilidade não competem. Linguagem,
-popularidade e tamanho da comunidade não mostram diferenças significativas
-após a correção de Holm. Uma validação com avaliador único da heurística de
-release corretiva, em 178 releases, resulta em precisão 0,234, recall 0,929 e
+frequência, enquanto 77\% são Elite em falha de CI. A frequência de deploy correlaciona-se
+positivamente com as duas variantes de taxa de falha (Spearman $\rho = 0{,}182$
+para falhas de CI e $0{,}567$ para releases corretivas), contrariando a
+afirmação do DORA de que velocidade e estabilidade não competem. Em 12 testes
+com correção de Holm, só o lead time difere significativamente, por linguagem
+principal e por quartil de contribuidores, com efeitos pequenos a médios. Uma
+validação com avaliador único da heurística de
+release corretiva, em 283 releases, resulta em precisão 0,238, recall 0,870 e
 F1 0,374, o que indica que esse proxy superestima as falhas de entrega.
 \end{resumo}
 

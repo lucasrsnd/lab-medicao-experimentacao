@@ -1,5 +1,5 @@
 {
-  "repositories": 183,
+  "repositories": 300,
   "alpha": 0.05,
   "method": "spearman",
   "correction": "holm",
@@ -7,27 +7,27 @@
     {
       "x": "deployment_frequency_per_week",
       "y": "cfr_a",
-      "n": 183,
+      "n": 300,
       "excluded_missing": 0,
-      "rho": 0.15090811845999474,
-      "p_value": 0.041434879167547116,
+      "rho": 0.18184019170811563,
+      "p_value": 0.0015624591913756614,
       "undefined_reason": null,
       "x_zeros": 9,
-      "y_zeros": 20,
+      "y_zeros": 24,
       "x_summary": {
-        "median": 0.24863387978142076,
+        "median": 0.2677595628415301,
         "q1": 0.13387978142076504,
         "q3": 0.5546448087431695,
         "iqr": 0.4207650273224044
       },
       "y_summary": {
-        "median": 0.046610169491525424,
-        "q1": 0.012744455931625412,
-        "q3": 0.12755950236901167,
-        "iqr": 0.11481504643738626
+        "median": 0.05377199634032161,
+        "q1": 0.019742022868302515,
+        "q3": 0.1417094072583263,
+        "iqr": 0.12196738439002378
       },
       "label": "CFR (a) — runs de CI com falha",
-      "p_holm": 0.041434879167547116,
+      "p_holm": 0.0015624591913756614,
       "strength": "fraca",
       "direction": "positiva",
       "significant_holm": true
@@ -35,27 +35,27 @@
     {
       "x": "deployment_frequency_per_week",
       "y": "cfr_b",
-      "n": 172,
+      "n": 289,
       "excluded_missing": 11,
-      "rho": 0.5465639452295653,
-      "p_value": 8.76658123241825e-15,
+      "rho": 0.5671146985377543,
+      "p_value": 5.398842136619652e-26,
       "undefined_reason": null,
       "x_zeros": 0,
-      "y_zeros": 33,
+      "y_zeros": 52,
       "x_summary": {
-        "median": 0.27732240437158473,
+        "median": 0.28688524590163933,
         "q1": 0.15300546448087432,
-        "q3": 0.578551912568306,
-        "iqr": 0.42554644808743164
+        "q3": 0.5737704918032787,
+        "iqr": 0.42076502732240434
       },
       "y_summary": {
-        "median": 0.27525252525252525,
-        "q1": 0.10919540229885057,
-        "q3": 0.5,
-        "iqr": 0.39080459770114945
+        "median": 0.2916666666666667,
+        "q1": 0.125,
+        "q3": 0.5217391304347826,
+        "iqr": 0.3967391304347826
       },
       "label": "CFR (b) — release seguida de corretiva em 7 dias",
-      "p_holm": 1.75331624648365e-14,
+      "p_holm": 1.0797684273239303e-25,
       "strength": "forte",
       "direction": "positiva",
       "significant_holm": true

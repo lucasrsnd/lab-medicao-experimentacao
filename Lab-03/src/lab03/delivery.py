@@ -8,6 +8,8 @@ Execute na pasta Lab-03.
 from __future__ import annotations
 
 import argparse
+import gzip
+import json
 import re
 import sys
 from pathlib import Path
@@ -26,7 +28,7 @@ SECRET = re.compile(r"(?:ghp|gho|ghs|ghu|ghr)_[A-Za-z0-9]{30,}|github_pat_[A-Za-
 PERSONAL_PATH = re.compile(
     r"[A-Za-z]:[\\/]+Users[\\/]+[^\\/\s\"']+|/Users/[A-Za-z0-9._-]+/|/home/[A-Za-z0-9._-]+/"
 )
-SKIPPED_DIRS = {".git", ".venv", "__pycache__", ".pytest_cache", "htmlcov", "build", "dist"}
+SKIPPED_DIRS = {"data", ".git", ".venv", "__pycache__", ".pytest_cache", "htmlcov", "build", "dist"}
 BINARY_SUFFIXES = {".gz", ".sqlite3", ".png", ".pdf", ".pyc", ".xml"}
 # Caminhos de exemplo em arquivos que explicam o que NÃO versionar.
 ALLOWED_PERSONAL_PATH = {"docs/integracao-parte2.md"}
@@ -56,6 +58,19 @@ def scan(root: Path) -> list[str]:
     return problems
 
 
+def dataset_warnings(root: Path) -> list[str]:
+    """Avisos (não bloqueiam) sobre o dataset congelado, que não pode ser editado sem mudar o hash."""
+    path = root / "data" / "amostra_completa.json.gz"
+    try:
+        with gzip.open(path, "rt", encoding="utf-8") as handle:
+            execution = json.load(handle).get("execution", {})
+    except (OSError, ValueError):
+        return []
+    if PERSONAL_PATH.search(json.dumps(execution)):
+        return ["dataset congelado: execution.cache.path guarda caminho local (metadado, não editado)"]
+    return []
+
+
 def check(root: Path) -> list[str]:
     problems = [f"ausente: {name}" for name in REQUIRED if not (root / name).is_file()]
     if (root / ".env").exists():
@@ -70,6 +85,8 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
 
     problems = check(args.root)
+    for warning in dataset_warnings(args.root):
+        print(f"aviso: {warning}", file=sys.stderr)
     for problem in problems:
         print(f"- {problem}", file=sys.stderr)
     if args.reproduce:

@@ -1,63 +1,63 @@
 {
-  "repositories": 183,
+  "repositories": 300,
   "results": [
     {
       "metric": "cfr_a",
       "label": "CFR (a) — falha de CI",
-      "n_valid": 183,
+      "n_valid": 300,
       "n_missing": 0,
-      "median": 0.046610169491525424,
-      "q1": 0.012744455931625412,
-      "q3": 0.12755950236901167,
-      "iqr": 0.11481504643738626
+      "median": 0.05377199634032161,
+      "q1": 0.019742022868302515,
+      "q3": 0.1417094072583263,
+      "iqr": 0.12196738439002378
     },
     {
       "metric": "cfr_b",
       "label": "CFR (b) — release seguida de corretiva",
-      "n_valid": 172,
+      "n_valid": 289,
       "n_missing": 11,
-      "median": 0.27525252525252525,
-      "q1": 0.10919540229885057,
-      "q3": 0.5,
-      "iqr": 0.39080459770114945
+      "median": 0.2916666666666667,
+      "q1": 0.125,
+      "q3": 0.5217391304347826,
+      "iqr": 0.3967391304347826
     },
     {
       "metric": "recovery_hours",
       "label": "Recuperação (horas)",
-      "n_valid": 158,
-      "n_missing": 25,
-      "median": 3.4902083333333334,
-      "q1": 0.8606944444444444,
-      "q3": 17.771979166666668,
-      "iqr": 16.911284722222224
+      "n_valid": 268,
+      "n_missing": 32,
+      "median": 4.8938194444444445,
+      "q1": 0.8442361111111111,
+      "q3": 21.483472222222222,
+      "iqr": 20.63923611111111
     }
   ],
   "censoring": {
     "cfr_b_releases": {
-      "n_repositories_with_counts": 183,
-      "n_repositories_with_events": 174,
+      "n_repositories_with_counts": 300,
+      "n_repositories_with_events": 291,
       "n_repositories_without_events": 9,
       "n_repositories_missing": 0,
-      "observed": 4613,
-      "censored": 149,
-      "total": 4762,
-      "pooled_proportion": 0.03128937421251575,
+      "observed": 8267,
+      "censored": 251,
+      "total": 8518,
+      "pooled_proportion": 0.02946701103545433,
       "repository_proportions": {
         "median": 0.0,
         "q1": 0.0,
-        "q3": 0.02072704081632653,
-        "iqr": 0.02072704081632653
+        "q3": 0.024127906976744187,
+        "iqr": 0.024127906976744187
       }
     },
     "recovery_episodes": {
-      "n_repositories_with_counts": 183,
-      "n_repositories_with_events": 158,
-      "n_repositories_without_events": 25,
+      "n_repositories_with_counts": 300,
+      "n_repositories_with_events": 270,
+      "n_repositories_without_events": 30,
       "n_repositories_missing": 0,
-      "observed": 2649,
-      "censored": 46,
-      "total": 2695,
-      "pooled_proportion": 0.017068645640074213,
+      "observed": 4044,
+      "censored": 75,
+      "total": 4119,
+      "pooled_proportion": 0.01820830298616169,
       "repository_proportions": {
         "median": 0.0,
         "q1": 0.0,
@@ -67,21 +67,21 @@
     }
   },
   "paired_cfr_b_minus_a": {
-    "n": 172,
-    "median": 0.18216783216783217,
-    "q1": 0.0022045401722844,
-    "q3": 0.40350076103500765,
-    "iqr": 0.40129622086272326
+    "n": 289,
+    "median": 0.2,
+    "q1": 0.0,
+    "q3": 0.40909090909090906,
+    "iqr": 0.40909090909090906
   },
   "gold_validation": {
     "status": "not_linked_to_frozen_dataset",
     "gold_repositories": 60,
     "gold_releases": 300,
     "gold_source_sha256": "87656c1c9637fd1e938f1d4e2775be55e29df701a94fa2268096f71ec623fa52",
-    "frozen_source_sha256": "3e66a07889dc99ad4dc0219214121875dcd9afc1a1f1f28ef60623e7b01ecdef",
+    "frozen_source_sha256": "bbc652390d9f6938c8478c1cb4b5103b3bb2e193a26f87f44a1fd17e8ddb6fa6",
     "reason": "hash de origem da amostra-ouro difere do dataset congelado",
     "heuristic_f1": null,
     "consensus_status": "ausente"
   },
-  "input_csv_sha256": "cbfde52fa148c45acdbbd5425a1aa8fd7f7eaf22d7964c28b3c6bded8d41ee55"
+  "input_csv_sha256": "f0633cb8aacb95925661d9b4f4e455afe20d40ab5e5f46c390791d0585b080e1"
 }
