@@ -158,7 +158,8 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     try:
         rows = read_classifications(args.classificacoes)
-        digest = hashlib.sha256(args.classificacoes.read_bytes()).hexdigest()
+        # CRLF vira LF: o CSV versionado muda de fim de linha com o autocrlf do Git.
+        digest = hashlib.sha256(args.classificacoes.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
     except (OSError, ValueError) as error:
         print(f"Erro: {error}", file=sys.stderr)
         return 1

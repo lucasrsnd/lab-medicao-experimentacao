@@ -85,6 +85,20 @@ def test_analisa_os_tres_pares_e_exporta(tmp_path):
     assert len(lines) == 1 + 3 * 16
 
 
+def test_hash_da_entrada_nao_depende_do_fim_de_linha(tmp_path):
+    """Regressão: com autocrlf, o mesmo CSV tem CRLF no Windows e LF no Linux (CI)."""
+    text = "repositorio,C1_categoria,C1_status,C2_categoria,C2_status,C3_categoria,C3_status\n" \
+           "a/a,High,classified,Low,classified,High,classified\n"
+    digests = []
+    for name, newline in (("lf", "\n"), ("crlf", "\r\n")):
+        source = tmp_path / f"{name}.csv"
+        source.write_bytes(text.replace("\n", newline).encode("utf-8"))
+        out = tmp_path / name
+        assert rq07.main(["--classificacoes", str(source), "--output-dir", str(out)]) == 0
+        digests.append(json.loads((out / "rq07_resultados.json").read_text(encoding="utf-8"))["input_csv_sha256"])
+    assert digests[0] == digests[1]
+
+
 def test_coluna_ausente_e_arquivo_inexistente_falham_com_mensagem(tmp_path, capsys):
     broken = tmp_path / "x.csv"
     broken.write_text("repositorio,C1_categoria\na/a,High\n", encoding="utf-8")
