@@ -1,122 +1,88 @@
 \section{Ameaças à validade}
 \label{sec:ameacas}
 
+As quatro categorias clássicas de ameaças à validade organizam esta análise
+\cite{wohlin}.
+
 \subsection{Validade de construto}
 \label{sec:ameacas-construto}
 
-As métricas observadas são proxies, não medidas diretas de entrega em
-produção. Uma release publicada não demonstra que a mudança foi implantada ou
-adotada por usuários; uma falha de CI pode bloquear uma mudança antes da
-produção e não equivale a uma falha em produção. Assim, os CFRs (a) e (b)
-representam eventos operacionais distintos, e nenhum deles mede incidentes
+As métricas são proxies, não medidas de entrega em produção: release não
+demonstra implantação ou adoção, e falha de CI não equivale a falha em
+produção. Os CFRs (a) e (b) capturam eventos distintos, nenhum deles incidentes
 reais.
 
-Essa limitação é especialmente importante para o CFR (b). Na validação de 283
-releases em 58 repositórios, com um único avaliador, a heurística obteve
-precisão de 0,238 (IC 95\% de Wilson [0,180; 0,308]), recall de 0,870 e
-$F_1 = 0,374$, abaixo do limiar de 0,70
-(Seção~\ref{sec:validacao-cfrb};
-\texttt{analysis/validacao\_cfr\_b/resultados.md}). Das 168 releases marcadas
-como corretivas, apenas 40 foram confirmadas; entre as 46 corretivas segundo o
-avaliador, seis não foram identificadas. O viés observado é, portanto, de
-superestimação do CFR (b), sem que a avaliação de um único julgador permita
-separar o erro da heurística de critérios individuais.
+Na amostra de validação (283 releases, 58 repositórios), com avaliador único,
+a heurística teve precisão 0,238 (IC 95\% de Wilson [0,180; 0,308]), recall
+0,870 e $F_1 = 0,374$, abaixo do limiar 0,70
+(\texttt{analysis/validacao\_cfr\_b/resultados.md}). B confirmou 40 das 168
+releases marcadas; a heurística perdeu seis das 46 corretivas segundo B. A
+amostra não está ligada ao dataset congelado (\texttt{analysis/rq03\_rq04/});
+esses valores não validam diretamente o CFR (b) dos 300 repositórios.
 
-A sensibilidade da categoria geral reforça que a escolha operacional afeta a
-interpretação: mudaram de categoria 44,4\% dos 259 repositórios comparáveis
-entre C1 e C2 ($\kappa = 0,311$), 28,5\% dos 260 entre C1 e C3
-($\kappa = 0,625$) e 41,0\% dos 261 entre C2 e C3 ($\kappa = 0,428$)
-(\texttt{analysis/rq07/rq07\_resultados.md}). Como C2 usa o CFR (b), essas
-mudanças não isolam o efeito da definição de entrega do possível erro de sua
-heurística. Não se deve interpretar essas proporções como mudanças de
-desempenho em produção.
+Também mudaram de categoria 44,4\% (C1$\times$C2; $\kappa = 0,311$), 28,5\%
+(C1$\times$C3; $\kappa = 0,625$) e 41,0\% (C2$\times$C3; $\kappa = 0,428$)
+dos repositórios comparáveis (\texttt{analysis/rq07/rq07\_resultados.md}).
+C2 usa o CFR (b); essas diferenças não isolam a definição do erro da
+heurística nem indicam desempenho em produção.
 
 \subsection{Validade interna}
 \label{sec:ameacas-interna}
 
-As associações e diferenças entre grupos são observacionais e não controlam
-todos os fatores que podem influenciar as métricas. Idade e atividade dos
-repositórios, por exemplo, podem afetar simultaneamente volume de releases,
-commits e execuções de CI. A RQ06 compara linguagem, quartis de estrelas e
-quartis de contribuidores, mas não ajusta por idade ou atividade; seus dois
-resultados significativos entre 12 testes dizem respeito ao lead time e não
-estabelecem efeitos causais (\texttt{analysis/rq06/rq06\_resultados.md}).
+As análises são observacionais. Idade e atividade podem afetar releases,
+commits e CI, mas a RQ06 compara apenas linguagem e quartis de estrelas e
+contribuidores; não ajusta por esses fatores. Seus dois resultados
+significativos entre 12 testes não estabelecem causalidade
+(\texttt{analysis/rq06/rq06\_resultados.md}).
 
-O CFR (b) também depende de uma heurística: uma alteração apenas de \textit{patch}
-ou mensagens contendo termos como \texttt{fix}, \texttt{hotfix} ou
-\texttt{revert} podem classificar uma release como corretiva sem evidência de
-que a entrega anterior falhou. A validação de avaliador único e seu
-$F_1 = 0,374$ limitam a força das conclusões que usam essa variável. Uma
-mitigação é rotular releases de forma independente por múltiplos avaliadores,
-resolver divergências por consenso e reavaliar a heurística em uma amostra
-separada antes de interpretar o CFR (b).
+No CFR (b), uma alteração apenas de \textit{patch} ou mensagens com
+\texttt{fix}, \texttt{hotfix} ou \texttt{revert} podem marcar uma release sem
+evidência de falha anterior. O $F_1 = 0,374$ limita as conclusões com essa
+variável. Mitigação: rotulagem independente por múltiplos avaliadores,
+consenso e reavaliação da heurística em amostra separada.
 
-O lead time usa \texttt{commit.author.date}, que pode não representar o momento
-em que o commit entrou no branch padrão: rebase e \textit{squash merge} podem
-preservar ou alterar datas de autoria e modificar a relação temporal entre
-commits e releases. Essa fonte de incerteza deve ser considerada junto à
-variabilidade das datas de publicação. Como mitigação, futuras análises podem
-comparar a definição baseada na data de autoria com a data de integração no
-branch padrão, documentando a regra e reportando a sensibilidade dos
-resultados; a análise atual não estima esse efeito separadamente.
+O lead time usa \texttt{commit.author.date}, que pode divergir da entrada no
+branch padrão; rebase e \textit{squash merge} afetam a relação entre datas de
+commits e releases. A análise não estima esse efeito. Futuras replicações
+podem comparar a data de autoria com a de integração e reportar a sensibilidade.
 
-Há ainda censura à direita na janela de observação. No CFR (b), 251 das 8.518
-releases (2,9\%) não dispõem dos sete dias seguintes completos; na recuperação,
-75 dos 4.119 episódios (1,8\%) permanecem sem encerramento
-(\texttt{analysis/rq03\_rq04/rq03\_rq04\_resultados.md}, seção
-\textit{Censura}). Esses eventos foram mantidos como censurados, sem imputar
-tempos ou resultados. Ainda assim, a janela pode subcontar correções e
-recuperações tardias. Uma mitigação é estender a observação por ao menos sete
-dias após a janela principal para o CFR (b), reportar separadamente os
-episódios censurados e repetir a análise com uma janela de acompanhamento
-adicional.
+Há censura à direita: 251 de 8.518 releases do CFR (b) (2,9\%) não têm os sete
+dias seguintes completos, e 75 de 4.119 episódios de recuperação (1,8\%) não
+se encerraram (\texttt{analysis/rq03\_rq04/rq03\_rq04\_resultados.md},
+seção \textit{Censura}). Foram mantidos sem imputação, mas a janela pode
+subcontar eventos tardios. Mitigação: acompanhar o CFR por mais sete dias e
+reportar e analisar separadamente os censurados.
 
 \subsection{Validade externa}
 \label{sec:ameacas-externa}
 
-Os resultados se restringem a uma amostra intencional de projetos populares:
-repositórios públicos com mais de 1.000 estrelas, GitHub Actions, ao menos
-cinco releases e 50 execuções válidas de \texttt{push}, além dos limites de
-coleta definidos no protocolo. Dos 311 repositórios elegíveis, foram
-selecionados os 300 mais populares
-(Seção~\ref{sec:amostra}). A seleção não é aleatória e exclui projetos menos
-populares, sem Actions ou com menor atividade; portanto, não sustenta
-generalizações para esses projetos, para sistemas comerciais ou para equipes
-em geral.
+O estudo abrange projetos públicos com mais de 1.000 estrelas, GitHub Actions,
+ao menos cinco releases e 50 execuções válidas de \texttt{push}, sob os
+limites de coleta do protocolo. Dos 311 elegíveis, foram escolhidos os 300
+mais populares (Seção~\ref{sec:amostra}); a seleção intencional não representa
+projetos menos populares, comerciais ou equipes em geral.
 
-O tipo de projeto também não pode ser usado para caracterizar os 300: esse
-rótulo foi coletado somente nos 60 repositórios da amostra-ouro. A ausência de
-rótulos fora desse subconjunto impede estimar a distribuição de tipos na
-amostra completa ou comparar seus resultados por tipo sem uma nova rotulagem.
+O tipo de projeto foi rotulado apenas nos 60 repositórios da amostra-ouro;
+não se generaliza sua distribuição ou seus resultados aos 300 sem nova
+rotulagem.
 
 \subsection{Validade de conclusão}
 \label{sec:ameacas-conclusao}
 
-A RQ06 executou 12 testes de Kruskal--Wallis e aplicou a correção de Holm à
-família completa. Dois testes permaneceram significativos, ambos para lead
-time; os tamanhos de efeito foram $\varepsilon^2 = 0,099$ (médio) e
-$\varepsilon^2 = 0,053$ (pequeno)
-(\texttt{analysis/rq06/rq06\_resultados.md}). A correção reduz o risco de
-falsos positivos na família, mas não transforma associações observacionais em
-efeitos causais nem permite concluir ausência de efeito nos testes não
-significativos. Também não foram feitas comparações \textit{post hoc}, de
-modo que os testes não identificam quais pares de grupos diferem.
+A RQ06 aplicou Holm aos 12 testes de Kruskal--Wallis: dois foram significativos,
+ambos para lead time, com efeitos $\varepsilon^2 = 0,099$ (médio) e 0,053
+(pequeno). A correção não estabelece causalidade ou ausência de efeito, e sem
+comparações \textit{post hoc} não se identificam pares diferentes
+(\texttt{analysis/rq06/rq06\_resultados.md}).
 
-Há grupos pequenos e heterogêneos: Java reúne 10 repositórios e C++ 13; as 16
-linguagens com menos de 10 repositórios foram agrupadas em ``Outras'' (51
-repositórios). Essa decisão evita estimativas em células muito pequenas, mas
-combina linguagens distintas e pode ocultar variação entre elas. Os empates
-também limitam a discriminação dos postos: 24 repositórios têm CFR (a) igual a
-zero e 52 têm CFR (b) igual a zero; os procedimentos usam correção ou postos
-médios para empates, mas a concentração de zeros continua limitando a
-informação disponível
-(\texttt{analysis/rq05/rq05\_resultados.md};
-\texttt{analysis/README.md}).
+Java tem 10 repositórios e C++ 13; 16 linguagens com menos de 10 foram agrupadas
+em ``Outras'' (51), o que reduz a resolução por linguagem. Há empates em CFR:
+24 repositórios têm CFR (a) zero e 52, CFR (b) zero; as correções de postos não
+eliminam a informação limitada por esses valores
+(\texttt{analysis/rq05/rq05\_resultados.md}; \texttt{analysis/README.md}).
 
-Por fim, os intervalos de Wilson da validação tratam 283 releases como
-observações independentes, embora estejam agrupadas em 58 repositórios. Essa
-dependência pode tornar os intervalos estreitos demais
+Os ICs de Wilson tratam 283 releases como independentes, embora venham de 58
+repositórios, e podem ser estreitos demais
 (\texttt{analysis/validacao\_cfr\_b/resultados.md}). Uma validação futura deve
-usar intervalos ou reamostragem que preservem o agrupamento por repositório,
-além de ampliar a rotulagem independente e reportar os tamanhos dos grupos e
-os efeitos junto aos valores de significância.
+ser vinculada ao dataset congelado e preservar esse agrupamento na estimação
+dos intervalos.

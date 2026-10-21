@@ -38,44 +38,38 @@ Recuperação (h) & 268 & 4,89 & [0,84--21,48] \\
 \end{tabular}
 \end{table}
 
-\textbf{RQ01.} A mediana é de uma release a cada quatro semanas, e 266 dos 300
-repositórios (89\%) publicam menos de uma por semana, o que sustenta a H01.
-Nove repositórios não publicaram release na janela.
+\textbf{RQ01.} A mediana é de uma release a cada quatro semanas; 266 dos 300
+repositórios (89\%) publicam menos de uma por semana. Nove não publicaram
+release na janela.
 
-\textbf{RQ02.} O lead time por release supera o por commit nas medianas (250,8
-h contra 169,4 h) e em 212 dos 289 repositórios (73\%), como previa a H02. A
-variante (a) dá peso a cada release e cresce quando uma entrega inclui um
-commit antigo, enquanto a (b) dilui esse commit entre os demais
+\textbf{RQ02.} O lead time por release supera o por commit nas medianas
+(250,8 h contra 169,4 h) e em 212 dos 289 repositórios (73\%). A variante (a)
+dá o mesmo peso a cada release; a (b), a cada commit
 (Figura~\ref{fig:rq01-rq02}).
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth]{rq01_rq02/rq01_rq02_distribuicoes.png}
+\includegraphics[width=0.85\textwidth]{rq01_rq02/rq01_rq02_distribuicoes.png}
 \caption{RQ01--RQ02: distribuições de frequência e lead time (a) e (b), em
 escala \textit{symlog}, com todos os outliers preservados.}
 \label{fig:rq01-rq02}
 \end{figure}
 
-\textbf{RQ03.} As duas variantes de CFR divergem, como previa a H03. Nos 289
-repositórios com ambas, a mediana da diferença CFR (b) $-$ CFR (a) é 0,200 (IQR
-0,409), com o CFR (b) mais de cinco vezes maior nas medianas
-(Figura~\ref{fig:rq03}). Parte dessa distância vem da própria heurística: a
-validação parcial (Seção~\ref{sec:validacao-cfrb}) indica que o CFR (b)
-superestima as releases corretivas. Nenhuma das duas variantes observa falha em
-produção.
+\textbf{RQ03.} Nos 289 repositórios com ambos os valores, a mediana da diferença
+CFR (b) $-$ CFR (a) é 0,200 (IQR 0,409; Figura~\ref{fig:rq03}). A validação
+parcial (Seção~\ref{sec:validacao-cfrb}) indica superestimação pelo CFR (b);
+nenhuma variante observa falhas em produção.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.7\textwidth]{rq03_rq04/rq03_cfr_comparacao.png}
+\includegraphics[width=0.55\textwidth]{rq03_rq04/rq03_cfr_comparacao.png}
 \caption{RQ03: comparação entre CFR (a) e CFR (b) por repositório.}
 \label{fig:rq03}
 \end{figure}
 
-\textbf{RQ04.} A recuperação é assimétrica, como previa a H04: mediana de 4,9 h,
-com terceiro quartil de 21,5 h. Dos 4.119 episódios, 75 (1,8\%) não foram
-encerrados na janela. Eles foram mantidos como censurados, sem tempo imputado.
-No CFR (b), 251 das 8.518 releases (2,9\%) são censuradas por não terem os sete
-dias seguintes inteiros na janela.
+\textbf{RQ04.} A recuperação tem mediana de 4,9 h e Q3 de 21,5 h. Foram
+censurados 75 dos 4.119 episódios (1,8\%) e 251 das 8.518 releases do CFR (b)
+(2,9\%), sem imputação.
 
 A Tabela~\ref{tab:c1} mostra a classificação DORA de referência (C1), com os
 cortes do enunciado. A categoria geral é a mediana das quatro pontuações,
@@ -102,10 +96,9 @@ Geral & 17 & 89 & 130 & 24 & 40 \\
 \end{tabular}
 \end{table}
 
-Os proxies colocam os projetos em pontos opostos da escala: nenhum é Elite em
-frequência, e 45\% são Low, enquanto 77\% são Elite em CFR (a). A categoria
-geral concentra-se em Medium e High. Como a C1 usa o CFR (a), o efeito de
-trocar pela variante (b), que é bem maior, é tema da RQ07.
+Nenhum repositório é Elite em frequência, e 45\% são Low; em contraste, 77\%
+são Elite em CFR (a). A categoria geral concentra-se em Medium e High. A RQ07
+avalia a sensibilidade à variante de CFR.
 
 \subsection{RQ05: frequência de deploy e taxa de falha}
 
@@ -123,6 +116,7 @@ fraca, mas significativa ($\rho = 0{,}182$; $p_{Holm} = 0{,}002$). Com o CFR
 \texttt{analysis/rq05/rq05\_resultados.json} (\texttt{lab03.analysis.rq05}).}
 \label{tab:rq05}
 \small
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrrc}
 \hline
 Variante de CFR & $n$ & CFR mediano [IQR] & $\rho$ & $p_{Holm}$ & CFR $= 0$ \\
@@ -135,22 +129,17 @@ Variante de CFR & $n$ & CFR mediano [IQR] & $\rho$ & $p_{Holm}$ & CFR $= 0$ \\
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth]{rq05/rq05_dispersao.png}
+\includegraphics[width=0.85\textwidth]{rq05/rq05_dispersao.png}
 \caption{RQ05: frequência de deploy (eixo X em escala \textit{symlog}, que
 mantém os 9 repositórios sem release na janela) versus CFR (a) e CFR (b).}
 \label{fig:rq05}
 \end{figure}
 
-Nenhuma das variantes sustenta a afirmação do DORA de que velocidade e
-estabilidade não competem, o que exigiria $\rho$ negativo. A magnitude no CFR
-(b) é em parte induzida pela definição: com mais releases por semana, é mais
-provável que uma release \textit{patch} ocorra nos sete dias seguintes e seja
-marcada como corretiva. O CFR (a), que mede falha de pipeline e independe do
-ritmo de releases, mostra associação fraca. Em ambos os casos trata-se de
-associação monotônica, sem implicação causal: tamanho e atividade do projeto,
-por exemplo, podem elevar as duas métricas. A validação parcial da heurística
-(Seção~\ref{sec:validacao-cfrb}) indica ainda que o CFR (b) superestima as
-releases corretivas, o que reforça a cautela com essa associação.
+As associações positivas não sustentam a expectativa de que velocidade e
+estabilidade não competem. A associação mais forte com CFR (b) pode decorrer
+da janela de sete dias da heurística; a validação parcial
+(Seção~\ref{sec:validacao-cfrb}) também indica superestimação. São associações
+observacionais, sem inferência causal.
 
 \subsection{RQ06: características dos repositórios}
 
@@ -171,51 +160,37 @@ efeito $\varepsilon^2 = H/(n-1)$.
 \small
 \begin{tabular}{lcccc}
 \hline
-Fator & Frequência & Lead time (a) & CFR (a) & Recuperação \
- & $n = 300$ & $n = 289$ & $n = 300$ & $n = 268$ \
+Fator & Frequência & Lead time (a) & CFR (a) & Recuperação \\
+ & $n = 300$ & $n = 289$ & $n = 300$ & $n = 268$ \\
 \hline
-Linguagem ($k = 8$) & 0,055 (0,22) & 0,099 (0,002)* & 0,041 (0,82) & 0,027 (1,00) \
-Estrelas ($k = 4$) & 0,010 (1,00) & 0,002 (1,00) & 0,022 (0,82) & 0,011 (1,00) \
-Contribuidores ($k = 4$) & 0,007 (1,00) & 0,053 (0,017)* & 0,001 (1,00) & 0,017 (1,00) \
+Linguagem ($k = 8$) & 0,055 (0,22) & 0,099 (0,002)* & 0,041 (0,82) & 0,027 (1,00) \\
+Estrelas ($k = 4$) & 0,010 (1,00) & 0,002 (1,00) & 0,022 (0,82) & 0,011 (1,00) \\
+Contribuidores ($k = 4$) & 0,007 (1,00) & 0,053 (0,017)* & 0,001 (1,00) & 0,017 (1,00) \\
 \hline
 \end{tabular}
 \end{table}
 
-Dois dos 12 testes são significativos após a correção de Holm, ambos sobre o
-lead time (a). Por linguagem, $H = 28{,}37$ ($p_{Holm} = 0{,}002$;
-$\varepsilon^2 = 0{,}099$, médio): as medianas vão de 163~h em TypeScript e
-181~h em Python a 565~h em Rust e 1.070~h em C++ (12 repositórios). Por quartil
-de contribuidores, $H = 15{,}35$ ($p_{Holm} = 0{,}017$; $\varepsilon^2 =
-0{,}053$, pequeno): a mediana é de 142~h e 157~h nos dois primeiros quartis e de
-416~h e 403~h nos dois últimos, o que sugere entregas mais espaçadas em projetos
-com mais colaboradores. Frequência, CFR (a), recuperação e estrelas não
-diferem de forma significativa, e os efeitos nessas combinações são
-desprezíveis ou pequenos ($\varepsilon^2 \le 0{,}055$). Os testes não indicam
-quais grupos diferem entre si, pois não houve comparações \textit{post hoc}.
-Linguagem e número de contribuidores podem refletir o tipo de projeto (por
-exemplo, bibliotecas de sistemas contra aplicações web), que não foi
-controlado. Como alguns grupos têm 10 a 13 repositórios, os resultados por
-linguagem são menos estáveis. Medianas e IQR por grupo estão em
-\texttt{analysis/rq06/rq06\_grupos.csv}. O tipo de projeto não foi usado como
-fator, porque só está rotulado para os 60 repositórios da amostra-ouro.
+Dois testes permanecem significativos após Holm, ambos para lead time (a):
+linguagem ($\varepsilon^2 = 0{,}099$, médio) e quartil de contribuidores
+($\varepsilon^2 = 0{,}053$, pequeno). As medianas são menores em TypeScript e
+Python que em Rust e C++, e nos dois primeiros quartis de contribuidores que
+nos dois últimos. Não houve testes \textit{post hoc}; tipo de projeto não foi
+controlado e está rotulado somente nos 60 repositórios da amostra-ouro.
 
 \subsection{Validação do CFR (b): avaliador único}
 \label{sec:validacao-cfrb}
 
-O protocolo previa três avaliadores independentes e consenso sobre 300
-releases. Isso não foi cumprido: por decisão do grupo, a segunda rodada
-(\texttt{labels/reamostragem-v2/}) não foi rotulada, e na primeira rodada só um
-integrante (avaliador B) rotulou as releases. Os rótulos do avaliador A são
-rascunhos gerados por IA, marcados como tal em todas as linhas. Por isso não
-há consenso nem medida de confiabilidade entre avaliadores. O resultado a
-seguir é uma \emph{validação de avaliador único} e não o F1 contra consenso
-previsto no protocolo.
+O protocolo previa três avaliadores e consenso; somente B rotulou releases na
+primeira rodada, e a segunda não foi realizada. Os rótulos de A são rascunhos
+auxiliares, não uma segunda avaliação. Portanto, não há consenso nem medida de
+confiabilidade entre avaliadores; o resultado é uma
+\emph{validação de avaliador único}.
 
-A primeira rodada foi sorteada da mesma coleta do snapshot (13 de outubro de
-2026, mesma janela). Com o dataset de 300 repositórios, todas as 283 releases
-sorteadas, em 58 repositórios, constam do snapshot e têm identificador e
-veredito da heurística conferidos, e nenhuma foi excluída. A
-Tabela~\ref{tab:validacao-cfrb} compara a heurística v2 com os rótulos de B.
+A validação disponível cobre 283 releases em 58 repositórios. Seu hash de
+origem (87656c1c9637) difere do dataset congelado (bbc652390d9f); o estado é
+\texttt{not\_linked\_to\_frozen\_dataset}. Assim, a tabela descreve essa amostra,
+mas não valida diretamente o CFR (b) dos 300 repositórios analisados.
+\noindent A Tabela~\ref{tab:validacao-cfrb} compara a heurística v2 com B.
 
 \begin{table}[ht]
 \centering
@@ -235,17 +210,10 @@ sim & 6 & 40 & Recall & 0,870 [0,743--0,939] \\
 \end{tabular}
 \end{table}
 
-A heurística deixa escapar poucas releases corretivas (6 de 46), mas só 40
-das 168 releases que ela marca como corretivas foram confirmadas por B. O F1
-fica bem abaixo do limiar de 0,70 do protocolo. O CFR (b) deve, portanto, ser
-lido como tendendo a superestimar a taxa de falha. Uma explicação plausível,
-ainda não verificada caso a caso, são as releases \textit{patch} publicadas em
-até sete dias sem corrigir a entrega anterior.
-Como referência auxiliar, e não como segundo avaliador, os rascunhos de IA
-concordam com B em 88\% das releases ($\kappa$ de Cohen $= 0{,}590$). Os
-intervalos tratam as releases como independentes, embora venham agrupadas em
-cinco por repositório, e por isso são otimistas. Com um único avaliador, erros
-ou critérios pessoais de B não podem ser separados do erro da heurística.
+Com precisão 0,238 e $F_1 = 0,374$, abaixo do limiar de 0,70, a heurística
+tende a superestimar o CFR (b). Os intervalos de Wilson não ajustam o
+agrupamento de releases por repositório; os limites desta validação são
+retomados na Seção~\ref{sec:ameacas}.
 
 \subsection{RQ07: sensibilidade da classificação}
 
@@ -272,10 +240,6 @@ C2$\times$C3 & 261 & 39 & 107 (41,0\%) & 99 & 8 & 0,428 \\
 \end{tabular}
 \end{table}
 
-Nas exclusões, 38 repositórios não têm categoria em nenhuma variante em cada
-par; além deles, C1$\times$C2 exclui 2 sem C1 e 1 sem C2, C1$\times$C3 exclui
-4 sem C1, e C2$\times$C3 exclui 3 sem C2. A C3 não tem exclusões isoladas.
-As mudanças que envolvem C2 exigem cautela: ela usa o CFR (b), cuja validação
-de avaliador único obteve F1 = 0,374, abaixo do limiar de 0,70. Portanto, parte
-das diferenças pode refletir erro da heurística, não apenas a definição de
-entrega. Os resultados descrevem esta amostra e não implicam causalidade.
+Os pares incluem somente repositórios classificados em ambas as variantes.
+Mudanças que envolvem C2 podem refletir o erro do CFR (b), cuja validação
+obteve $F_1 = 0,374$; os resultados não implicam causalidade.
