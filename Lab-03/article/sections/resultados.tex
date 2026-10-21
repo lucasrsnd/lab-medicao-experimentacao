@@ -249,8 +249,33 @@ ou critérios pessoais de B não podem ser separados do erro da heurística.
 
 \subsection{RQ07: sensibilidade da classificação}
 
-\pendente{percentual de repositórios que mudam de categoria e kappa de Cohen
-ponderado (linear) para C1$\times$C2, C1$\times$C3 e C2$\times$C3. Depende da
-S03-06 (\#125) e do complemento de pré-releases e tags para C2 e C3.}
+Comparando a categoria geral entre as variantes, há mudança em todos os pares
+(Tabela~\ref{tab:rq07}). Só entram repositórios classificados nas duas
+variantes; os demais são excluídos, sem imputação. O kappa de Cohen usa pesos
+lineares para a ordem Low $<$ Medium $<$ High $<$ Elite.
 
-\pendente{revisar os valores desta seção com A e C após a S03-07 (\#126).}
+\begin{table}[ht]
+\centering
+\caption{RQ07: mudanças de categoria geral e concordância entre variantes
+(300 repositórios). Fonte: \texttt{analysis/rq07/rq07\_resultados.md}
+(\texttt{lab03.analysis.rq07}).}
+\label{tab:rq07}
+\small
+\begin{tabular}{lrrrrrr}
+\hline
+Par & $n$ & Excluídos & Mudaram (\%) & Subiram & Desceram & $\kappa$ linear \\
+\hline
+C1$\times$C2 & 259 & 41 & 115 (44,4\%) & 36 & 79 & 0,311 \\
+C1$\times$C3 & 260 & 40 & 74 (28,5\%) & 59 & 15 & 0,625 \\
+C2$\times$C3 & 261 & 39 & 107 (41,0\%) & 99 & 8 & 0,428 \\
+\hline
+\end{tabular}
+\end{table}
+
+Nas exclusões, 38 repositórios não têm categoria em nenhuma variante em cada
+par; além deles, C1$\times$C2 exclui 2 sem C1 e 1 sem C2, C1$\times$C3 exclui
+4 sem C1, e C2$\times$C3 exclui 3 sem C2. A C3 não tem exclusões isoladas.
+As mudanças que envolvem C2 exigem cautela: ela usa o CFR (b), cuja validação
+de avaliador único obteve F1 = 0,374, abaixo do limiar de 0,70. Portanto, parte
+das diferenças pode refletir erro da heurística, não apenas a definição de
+entrega. Os resultados descrevem esta amostra e não implicam causalidade.

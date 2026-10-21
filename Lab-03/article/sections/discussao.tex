@@ -22,7 +22,7 @@ H03 CFR (a) e (b) divergem & medianas 0,054 e 0,292 & Sustentada \\
 H04 recuperação assimétrica & mediana 4,9 h, Q3 21,5 h & Sustentada \\
 H05 associação fraca ou não positiva & $\rho$ = 0,182 e 0,567 & \textbf{Refutada} \\
 H06 diferença em ao menos uma métrica & 2 de 12 após Holm, ambas em lead time & Sustentada, só em lead time \\
-H07 mudança de categoria nas variantes & não calculada & Pendente \\
+H07 mudança de categoria nas variantes & 28,5\%--44,4\% nos pares comparados & Sustentada \\
 \hline
 \end{tabular}
 \end{table}
@@ -79,8 +79,13 @@ Nenhum resultado aqui mede incidentes reais. Todas as associações são
 observacionais, e a amostra, de projetos populares de código aberto, não
 representa equipes comerciais nem projetos menos populares.
 
-\textbf{RQ07 e trabalho futuro.} A sensibilidade das categorias às definições
-de entrega (C1, C2 e C3) não foi calculada, porque depende da coleta
-complementar de pré-releases e tags, que não foi executada.
-Como pendências: rotular a segunda
-rodada de validação com mais de um avaliador e executar a replicação cruzada.
+\textbf{RQ07 e trabalho futuro.} A categoria geral muda em 44,4\% dos 259
+repositórios comparáveis entre C1 e C2, em 28,5\% dos 260 entre C1 e C3, e em
+41,0\% dos 261 entre C2 e C3. A concordância ponderada linear é,
+respectivamente, $\kappa = 0{,}311$, $0{,}625$ e $0{,}428$. Esses resultados
+mostram sensibilidade descritiva às variantes nesta amostra, não um efeito
+causal da escolha da unidade de entrega. Em particular, a C2 usa o CFR (b),
+cuja validação de avaliador único teve F1 = 0,374, abaixo do limiar de 0,70;
+mudanças que envolvem C2 podem refletir erro da heurística. Permanecem como
+trabalho futuro rotular a segunda rodada de validação com mais de um avaliador
+e executar a replicação cruzada.

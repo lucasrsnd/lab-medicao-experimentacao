@@ -1,0 +1,163 @@
+{
+  "repositories": 300,
+  "weights": "linear, categorias ordenadas Low < Medium < High < Elite",
+  "pairs": [
+    {
+      "pair": "C1xC2",
+      "n_compared": 259,
+      "n_excluded": 41,
+      "exclusions": {
+        "C1_sem_categoria": 2,
+        "C2_sem_categoria": 1,
+        "ambas_sem_categoria": 38
+      },
+      "changed": 115,
+      "changed_pct": 44.4015444015444,
+      "moved_up": 36,
+      "moved_down": 79,
+      "weighted_kappa_linear": 0.31054913915246285,
+      "kappa_undefined_reason": null,
+      "matrix": {
+        "rows": "categoria em C1",
+        "columns": "categoria em C2",
+        "categories": [
+          "Low",
+          "Medium",
+          "High",
+          "Elite"
+        ],
+        "counts": [
+          [
+            10,
+            13,
+            1,
+            0
+          ],
+          [
+            10,
+            99,
+            21,
+            0
+          ],
+          [
+            4,
+            48,
+            35,
+            1
+          ],
+          [
+            0,
+            4,
+            13,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "pair": "C1xC3",
+      "n_compared": 260,
+      "n_excluded": 40,
+      "exclusions": {
+        "C1_sem_categoria": 4,
+        "C3_sem_categoria": 0,
+        "ambas_sem_categoria": 36
+      },
+      "changed": 74,
+      "changed_pct": 28.46153846153846,
+      "moved_up": 59,
+      "moved_down": 15,
+      "weighted_kappa_linear": 0.6248969497114591,
+      "kappa_undefined_reason": null,
+      "matrix": {
+        "rows": "categoria em C1",
+        "columns": "categoria em C3",
+        "categories": [
+          "Low",
+          "Medium",
+          "High",
+          "Elite"
+        ],
+        "counts": [
+          [
+            13,
+            10,
+            1,
+            0
+          ],
+          [
+            4,
+            84,
+            41,
+            1
+          ],
+          [
+            1,
+            6,
+            76,
+            6
+          ],
+          [
+            0,
+            0,
+            4,
+            13
+          ]
+        ]
+      }
+    },
+    {
+      "pair": "C2xC3",
+      "n_compared": 261,
+      "n_excluded": 39,
+      "exclusions": {
+        "C2_sem_categoria": 3,
+        "C3_sem_categoria": 0,
+        "ambas_sem_categoria": 36
+      },
+      "changed": 107,
+      "changed_pct": 40.99616858237548,
+      "moved_up": 99,
+      "moved_down": 8,
+      "weighted_kappa_linear": 0.42765399224654405,
+      "kappa_undefined_reason": null,
+      "matrix": {
+        "rows": "categoria em C2",
+        "columns": "categoria em C3",
+        "categories": [
+          "Low",
+          "Medium",
+          "High",
+          "Elite"
+        ],
+        "counts": [
+          [
+            13,
+            7,
+            5,
+            0
+          ],
+          [
+            5,
+            92,
+            68,
+            0
+          ],
+          [
+            0,
+            3,
+            48,
+            19
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      }
+    }
+  ],
+  "input_csv_sha256": "f4e27f81a1c362e40bb5e2c596c1732c9f51972f058dcb73eb3630f7db0f20b8"
+}
