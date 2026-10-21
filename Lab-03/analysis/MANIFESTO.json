@@ -1,0 +1,132 @@
+{
+  "inputs": {
+    "data/amostra_completa.json.gz": "4e648213196d85f566f8101380a5d68021ef168f520cf15b43f6b40fa4df7578",
+    "labels/amostra_ouro_releases.csv": "de3da30dc6f340cbba92067f088474a04192ebe8f5afe6a5f1f7db4f1f88d924",
+    "labels/rotulos_A_releases.csv": "07f65ee68f30be6a59873ab1fbeea43314e8eb84e5888a1049dab1cfb7e7502c",
+    "labels/rotulos_B_releases.csv": "c3676c736b78d5766a41ca57f2ce5c4a404e0a52ada1e9969695e8af1d56ecfb",
+    "labels/reamostragem-v2/amostra_ouro_sorteio.json": "73b3037060a0ab57e82e1293a2d52c74ea6f73965d0c9262104232852cf4c13a"
+  },
+  "python": "3.11.9",
+  "outputs": {
+    "base_repositorios.csv": {
+      "sha256": "f0633cb8aacb95925661d9b4f4e455afe20d40ab5e5f46c390791d0585b080e1",
+      "canonical_sha256": "ff10b3cf7cb20223f56df35875b1d152e3bbe98ba9bb1d8dd584e2ccfe85687f",
+      "bytes": 61341,
+      "stable": true
+    },
+    "c1_reference/c1_classificacoes.csv": {
+      "sha256": "47a5a2d10e26acf951239c2600061f80cb16fb540a1548af24c9d77dd0500ca9",
+      "canonical_sha256": "213c863a9b9cf2a44ef05aa9394f3e0f521cce753e35eeea427c39f3273fa1d1",
+      "bytes": 37247,
+      "stable": true
+    },
+    "c1_reference/c1_distribuicao.csv": {
+      "sha256": "e12722978ee8f4cedd77f572fc2ab963397170dd9cf8523cf6ceba8592fbc38b",
+      "canonical_sha256": "86c3129f698aad7a9483a7c7288e0f3fc1a34d11dd18ec4ba770f1b82db88aac",
+      "bytes": 1482,
+      "stable": true
+    },
+    "c1_reference/c1_resultados.json": {
+      "sha256": "2675d1413ad901f79d0a254d5103d8271a347c2f4b3a040a7070d430089b2f9c",
+      "canonical_sha256": "d73372282b5b2e920abb72261667311a434146916c98a1448c20e7d36307f303",
+      "bytes": 4533,
+      "stable": true
+    },
+    "c1_reference/c1_resultados.md": {
+      "sha256": "7d6ce6171a9d311964fdc3ce320a336c902e658f110a1443d23e7ba397232055",
+      "canonical_sha256": "55ae86a33b514743363266d879a1a642921b6f40466314fe57267cf229ab0cc7",
+      "bytes": 1244,
+      "stable": true
+    },
+    "rq01_rq02/rq01_rq02_distribuicoes.png": {
+      "sha256": "9597e25866d0797bb7096af252e499b2b606e7665d470a530a5a4f55299da5c5",
+      "canonical_sha256": "9597e25866d0797bb7096af252e499b2b606e7665d470a530a5a4f55299da5c5",
+      "bytes": 201617,
+      "stable": false
+    },
+    "rq01_rq02/rq01_rq02_resultados.json": {
+      "sha256": "0f536f02d7072ee3d9e22681bb5eaac566e72f2535bfd37ada34885bcf1aa948",
+      "canonical_sha256": "549a6d90d32b7e3b116c61b6a58caf41be9fbc7fe79aeb7f9441cd517964db12",
+      "bytes": 1148,
+      "stable": true
+    },
+    "rq01_rq02/rq01_rq02_resultados.md": {
+      "sha256": "ddadb1b1f4222843a2e586d81c7ef47ea9b99fc5fd019d91388d240fd6caed25",
+      "canonical_sha256": "5edc491958b2496f1b83e05bf136a56c06a4ae8032ddc98d9da0631d8caa97b2",
+      "bytes": 1391,
+      "stable": true
+    },
+    "rq03_rq04/rq03_cfr_comparacao.png": {
+      "sha256": "efa6913fa7f09058ab7ec0c592e71d8c2f902ee950684fcfcf94a5df98f6501e",
+      "canonical_sha256": "efa6913fa7f09058ab7ec0c592e71d8c2f902ee950684fcfcf94a5df98f6501e",
+      "bytes": 61503,
+      "stable": false
+    },
+    "rq03_rq04/rq03_rq04_resultados.json": {
+      "sha256": "2b080aafee2bcdbd310c1653f1a973e28b6b0c95e6993c9156710166ccd12129",
+      "canonical_sha256": "1f9389d042fe00d39104aaf79eafadaae9ca72ed4158fe1106324f01329f3b0d",
+      "bytes": 2518,
+      "stable": true
+    },
+    "rq03_rq04/rq03_rq04_resultados.md": {
+      "sha256": "52ad54ca318a4dffb62326248add794ee69ab0a0fd39f6dfbdaf3bc0c28ddc6e",
+      "canonical_sha256": "9c63246f1bec016d7a0a6bf852374f0ca10e398ecba73045e0c8a76847500f3d",
+      "bytes": 2140,
+      "stable": true
+    },
+    "rq05/rq05_dispersao.png": {
+      "sha256": "19af507b1bdba872ff54ef6198db76009b8b1e2c84df3b4aed248e853896ccc4",
+      "canonical_sha256": "19af507b1bdba872ff54ef6198db76009b8b1e2c84df3b4aed248e853896ccc4",
+      "bytes": 102742,
+      "stable": false
+    },
+    "rq05/rq05_resultados.json": {
+      "sha256": "60e142990c038aa1c7442704628d43a4243222d10dd8fe3ac82e1b430a997638",
+      "canonical_sha256": "41d5ef91a8ea38da6b2484498654150e167c8fd9c2f0e32b9309addd81483c4f",
+      "bytes": 1764,
+      "stable": true
+    },
+    "rq05/rq05_resultados.md": {
+      "sha256": "f4758a1bfbc89dde99655360d7552bfc95153ec679c9662d8ac1f30606050d27",
+      "canonical_sha256": "4b53c2d7cb4be47b18a7a3dac57b940b72dc7896bc53067e79ad7aea3dc0acf0",
+      "bytes": 1007,
+      "stable": true
+    },
+    "rq06/rq06_grupos.csv": {
+      "sha256": "b435578b6821ae392c1dc17a73012f498f62b527fce50e57655ea5e950f51da9",
+      "canonical_sha256": "a5a1bfdce667e02ff4753ddd4decce2d67bff886f1ad58c69f0b9f65e2c94d49",
+      "bytes": 7265,
+      "stable": true
+    },
+    "rq06/rq06_resultados.json": {
+      "sha256": "ff3fb4cb649910ad586040667c1694a7428c0302e12b138682e6a82546627d20",
+      "canonical_sha256": "ad0ed5ac348c798224701caa38edfe4385c492126d5038bf29c9edb2f8d61aa5",
+      "bytes": 21315,
+      "stable": true
+    },
+    "rq06/rq06_resultados.md": {
+      "sha256": "fb760c1d09ec1d88f11e95be5183fcbc74c35da710908be865903a9114e8f2fe",
+      "canonical_sha256": "5688596cb8e5d8d928bd8e09e3750e60fba917dd4c6d4541f28ef6ec0fede981",
+      "bytes": 4980,
+      "stable": true
+    },
+    "validacao_cfr_b/releases.csv": {
+      "sha256": "7ff08970376ff40a99224ed892391113af8f208216fca48d274662abb40a8df8",
+      "canonical_sha256": "ca4b7565997dda1897ed251d673cbbea11425f9e02a2c11dc566a7323424ef35",
+      "bytes": 14902,
+      "stable": true
+    },
+    "validacao_cfr_b/resultados.json": {
+      "sha256": "be2b3aaf80d50ba630f8094eb067a3b0eff205c68730a2c7eb7e9fceb3408673",
+      "canonical_sha256": "9dc4818247f3c04937a2bad6b1e65022351005a0c24e6a36a180fe7c64cd40cf",
+      "bytes": 4193,
+      "stable": true
+    },
+    "validacao_cfr_b/resultados.md": {
+      "sha256": "d2507f91cfc1d2acac5236498c961c10635d3bfcbfc7dd6818503ad9203f5be5",
+      "canonical_sha256": "3470a74b95a414b40e306d511dae2e8418cf138f882f7e7d8d4a0452caa2bc6a",
+      "bytes": 1200,
+      "stable": true
+    }
+  }
+}

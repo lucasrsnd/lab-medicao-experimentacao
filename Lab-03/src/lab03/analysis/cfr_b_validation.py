@@ -48,7 +48,11 @@ def _load_dataset(path: Path) -> dict:
 
 
 def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    """SHA-256 do arquivo. Em CSV, CRLF vira LF para o hash não depender do sistema (autocrlf)."""
+    data = path.read_bytes()
+    if path.suffix == ".csv":
+        data = data.replace(b"\r\n", b"\n")
+    return hashlib.sha256(data).hexdigest()
 
 
 def wilson(successes: int, total: int) -> list[float] | None:

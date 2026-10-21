@@ -23,3 +23,8 @@ article/*.toc
 data/*
 !data/amostra_completa.json.gz
 !data/selecao-amostra-revisada.json
+
+# Partes e junção da coleta (grandes; só o .gz é versionado)
+/data/parte*.json
+/data/parte*.zip
+/data/amostra_completa.json

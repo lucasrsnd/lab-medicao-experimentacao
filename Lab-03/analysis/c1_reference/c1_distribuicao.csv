@@ -1,26 +1,26 @@
 metrica,rotulo,categoria,n,proporcao
 deployment_frequency_per_week,Frequência,Elite,0,0.0
-deployment_frequency_per_week,Frequência,High,19,0.10382513661202186
-deployment_frequency_per_week,Frequência,Medium,73,0.3989071038251366
-deployment_frequency_per_week,Frequência,Low,91,0.4972677595628415
+deployment_frequency_per_week,Frequência,High,34,0.11333333333333333
+deployment_frequency_per_week,Frequência,Medium,130,0.43333333333333335
+deployment_frequency_per_week,Frequência,Low,136,0.4533333333333333
 deployment_frequency_per_week,Frequência,Não classificável,0,0.0
-lead_time_hours,Lead time (a),Elite,20,0.1092896174863388
-lead_time_hours,Lead time (a),High,44,0.24043715846994534
-lead_time_hours,Lead time (a),Medium,61,0.3333333333333333
-lead_time_hours,Lead time (a),Low,47,0.2568306010928962
-lead_time_hours,Lead time (a),Não classificável,11,0.060109289617486336
-change_failure_rate,CFR (a),Elite,148,0.8087431693989071
-change_failure_rate,CFR (a),High,23,0.12568306010928962
-change_failure_rate,CFR (a),Medium,6,0.03278688524590164
-change_failure_rate,CFR (a),Low,6,0.03278688524590164
+lead_time_hours,Lead time (a),Elite,42,0.14
+lead_time_hours,Lead time (a),High,72,0.24
+lead_time_hours,Lead time (a),Medium,98,0.32666666666666666
+lead_time_hours,Lead time (a),Low,77,0.25666666666666665
+lead_time_hours,Lead time (a),Não classificável,11,0.03666666666666667
+change_failure_rate,CFR (a),Elite,230,0.7666666666666667
+change_failure_rate,CFR (a),High,40,0.13333333333333333
+change_failure_rate,CFR (a),Medium,17,0.056666666666666664
+change_failure_rate,CFR (a),Low,13,0.043333333333333335
 change_failure_rate,CFR (a),Não classificável,0,0.0
-recovery_time_hours,Recuperação,Elite,47,0.2568306010928962
-recovery_time_hours,Recuperação,High,80,0.4371584699453552
-recovery_time_hours,Recuperação,Medium,25,0.1366120218579235
-recovery_time_hours,Recuperação,Low,6,0.03278688524590164
-recovery_time_hours,Recuperação,Não classificável,25,0.1366120218579235
-overall,Geral,Elite,12,0.06557377049180328
-overall,Geral,High,54,0.29508196721311475
-overall,Geral,Medium,68,0.37158469945355194
-overall,Geral,Low,16,0.08743169398907104
-overall,Geral,Não classificável,33,0.18032786885245902
+recovery_time_hours,Recuperação,Elite,77,0.25666666666666665
+recovery_time_hours,Recuperação,High,135,0.45
+recovery_time_hours,Recuperação,Medium,40,0.13333333333333333
+recovery_time_hours,Recuperação,Low,16,0.05333333333333334
+recovery_time_hours,Recuperação,Não classificável,32,0.10666666666666667
+overall,Geral,Elite,17,0.056666666666666664
+overall,Geral,High,89,0.2966666666666667
+overall,Geral,Medium,130,0.43333333333333335
+overall,Geral,Low,24,0.08
+overall,Geral,Não classificável,40,0.13333333333333333

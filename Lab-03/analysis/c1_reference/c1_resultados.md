@@ -1,15 +1,15 @@
 # Classificação DORA de referência C1
 
-Base: 183 repositórios. SHA-256 do CSV-base: `cbfde52fa148c45acdbbd5425a1aa8fd7f7eaf22d7964c28b3c6bded8d41ee55`.
+Base: 300 repositórios. SHA-256 do CSV-base: `f0633cb8aacb95925661d9b4f4e455afe20d40ab5e5f46c390791d0585b080e1`.
 O classificador de `lab03.metrics.classification` foi aplicado sem alterar os cortes; a mediana das quatro pontuações é arredondada para baixo. A categoria geral recalculada foi conferida contra `categoria_geral_c1`.
 
 | Métrica | Elite | High | Medium | Low | Não classificável |
 |---|---:|---:|---:|---:|---:|
-| Frequência | 0 | 19 | 73 | 91 | 0 |
-| Lead time (a) | 20 | 44 | 61 | 47 | 11 |
-| CFR (a) | 148 | 23 | 6 | 6 | 0 |
-| Recuperação | 47 | 80 | 25 | 6 | 25 |
-| Geral | 12 | 54 | 68 | 16 | 33 |
+| Frequência | 0 | 34 | 130 | 136 | 0 |
+| Lead time (a) | 42 | 72 | 98 | 77 | 11 |
+| CFR (a) | 230 | 40 | 17 | 13 | 0 |
+| Recuperação | 77 | 135 | 40 | 16 | 32 |
+| Geral | 17 | 89 | 130 | 24 | 40 |
 
 ## Regras de fronteira
 

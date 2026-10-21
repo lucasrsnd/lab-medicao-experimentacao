@@ -5,13 +5,11 @@
   "sample": {
     "gold_releases": 283,
     "gold_repositories": 58,
-    "evaluated_releases": 178,
-    "evaluated_repositories": 37,
-    "excluded": {
-      "repositorio_fora_do_snapshot": 105
-    },
-    "positives_b": 28,
-    "a_rows_marked_ai_draft": 178
+    "evaluated_releases": 283,
+    "evaluated_repositories": 58,
+    "excluded": {},
+    "positives_b": 46,
+    "a_rows_marked_ai_draft": 283
   },
   "heuristic_vs_b": {
     "schema_version": 1,
@@ -26,27 +24,27 @@
       "columns_are_heuristic": true,
       "values": [
         [
-          65,
-          85
+          109,
+          128
         ],
         [
-          2,
-          26
+          6,
+          40
         ]
       ],
       "rows_are_reference": "rotulo_b"
     },
     "metrics": {
-      "precision": 0.23423423423423423,
-      "recall": 0.9285714285714286,
-      "f1": 0.37410071942446044
+      "precision": 0.23809523809523808,
+      "recall": 0.8695652173913043,
+      "f1": 0.37383177570093457
     },
-    "precision": 0.23423423423423423,
-    "recall": 0.9285714285714286,
-    "f1": 0.37410071942446044,
-    "expected_releases": 178,
-    "releases_with_prediction": 178,
-    "evaluated_releases": 178,
+    "precision": 0.23809523809523808,
+    "recall": 0.8695652173913043,
+    "f1": 0.37383177570093457,
+    "expected_releases": 283,
+    "releases_with_prediction": 283,
+    "evaluated_releases": 283,
     "excluded_missing_or_uncertain_consensus": 0,
     "excluded_missing_prediction": 0,
     "predictions_without_consensus": 0,
@@ -56,18 +54,18 @@
       "Rótulos incertos ou ausentes não entram nas métricas binárias e são contados."
     ],
     "precision_ci95": [
-      0.16515665147744646,
-      0.32109160236859097
+      0.18000046417619395,
+      0.3078996001975465
     ],
     "recall_ci95": [
-      0.7735463743160095,
-      0.9801879358846942
+      0.74334142220927,
+      0.9388215963796489
     ],
-    "accuracy": 0.5112359550561798
+    "accuracy": 0.5265017667844523
   },
   "auxiliary_llm": {
-    "kappa_b_vs_llm": 0.5061043285238623,
-    "agreement_b_vs_llm": 0.8595505617977528,
+    "kappa_b_vs_llm": 0.5896568390526821,
+    "agreement_b_vs_llm": 0.8833922261484098,
     "heuristic_vs_llm": {
       "schema_version": 1,
       "heuristic_version": "v2",
@@ -81,27 +79,27 @@
         "columns_are_heuristic": true,
         "values": [
           [
-            67,
-            78
+            114,
+            118
           ],
           [
-            0,
-            33
+            1,
+            50
           ]
         ],
         "rows_are_reference": "rotulo_a_llm"
       },
       "metrics": {
-        "precision": 0.2972972972972973,
-        "recall": 1.0,
-        "f1": 0.4583333333333333
+        "precision": 0.2976190476190476,
+        "recall": 0.9803921568627451,
+        "f1": 0.45662100456621
       },
-      "precision": 0.2972972972972973,
-      "recall": 1.0,
-      "f1": 0.4583333333333333,
-      "expected_releases": 178,
-      "releases_with_prediction": 178,
-      "evaluated_releases": 178,
+      "precision": 0.2976190476190476,
+      "recall": 0.9803921568627451,
+      "f1": 0.45662100456621,
+      "expected_releases": 283,
+      "releases_with_prediction": 283,
+      "evaluated_releases": 283,
       "excluded_missing_or_uncertain_consensus": 0,
       "excluded_missing_prediction": 0,
       "predictions_without_consensus": 0,
@@ -111,14 +109,14 @@
         "Rótulos incertos ou ausentes não entram nas métricas binárias e são contados."
       ],
       "precision_ci95": [
-        0.22020824463768182,
-        0.38794720321099085
+        0.2336338534503717,
+        0.3706525599293369
       ],
       "recall_ci95": [
-        0.895730002457548,
-        1.0
+        0.8969543127385502,
+        0.9965303073589391
       ],
-      "accuracy": 0.5617977528089888
+      "accuracy": 0.5795053003533569
     }
   },
   "limitations": [
@@ -127,9 +125,9 @@
     "Releases do mesmo repositório não são independentes; os intervalos de Wilson ignoram esse agrupamento e tendem a ser estreitos demais."
   ],
   "input_sha256": {
-    "dataset": "315e063b498498a55594afae43ea7173a2595284a8b8672340c4eb008dd2187c",
-    "sample": "0de4a5d3543a096c012b3d3f2002e30f5f5262506b19066198531c7c476da10d",
-    "rater_b": "4bb95881679c337cf9a5848bb90c7d179a2a1d776bb5cd1782cf9fcea7e463fd",
-    "rater_a_llm": "884bffa07724c17b51e2651b1857e92dcce6bb25a96594a53bbbfdd690a79ae5"
+    "dataset": "4e648213196d85f566f8101380a5d68021ef168f520cf15b43f6b40fa4df7578",
+    "sample": "de3da30dc6f340cbba92067f088474a04192ebe8f5afe6a5f1f7db4f1f88d924",
+    "rater_b": "c3676c736b78d5766a41ca57f2ce5c4a404e0a52ada1e9969695e8af1d56ecfb",
+    "rater_a_llm": "07f65ee68f30be6a59873ab1fbeea43314e8eb84e5888a1049dab1cfb7e7502c"
   }
 }

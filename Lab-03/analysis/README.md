@@ -5,6 +5,7 @@ que por sua vez é derivado do dataset congelado da coleta completa.
 
 ```powershell
 python -m pip install -e ".[dev,analysis]"
+python -m lab03.analysis.reproduce # tudo abaixo, mais analysis/MANIFESTO.json (--check compara com ele)
 python -m lab03.analysis.base      # data/amostra_completa.json.gz -> analysis/base_repositorios.csv
 python -m lab03.analysis.rq01_rq02 # analysis/rq01_rq02/
 python -m lab03.analysis.rq03_rq04 # analysis/rq03_rq04/
@@ -61,12 +62,12 @@ indefinido, com o motivo registrado. A dispersão usa eixo X `symlog`: a
 frequência varia em mais de duas ordens de grandeza e tem zeros, que um log
 puro descartaria.
 
-Resultado na amostra de 183 repositórios (`rq05_resultados.md`):
+Resultado na amostra de 300 repositórios (`rq05_resultados.md`):
 
-- **CFR (a), CI:** ρ = 0,151, p (Holm) = 0,041, n = 183. Associação positiva
+- **CFR (a), CI:** ρ = 0,182, p (Holm) = 0,002, n = 300. Associação positiva
   **fraca**: repositórios que publicam mais releases têm, em postos, uma
   proporção levemente maior de runs com falha.
-- **CFR (b), release corretiva:** ρ = 0,547, p (Holm) < 0,001, n = 172 (11 sem
+- **CFR (b), release corretiva:** ρ = 0,567, p (Holm) < 0,001, n = 289 (11 sem
   release avaliável). Associação positiva **forte**.
 
 Discussão. Nenhuma das variantes apoia a leitura do DORA de que velocidade e
@@ -78,7 +79,7 @@ corretiva. Já o CFR (a) mede falha de pipeline, independente do ritmo de
 releases, e por isso a associação quase desaparece. Em ambos os casos é uma
 associação entre postos: não há base para afirmar que publicar mais *causa*
 mais falhas. Projetos maiores ou mais ativos podem ter as duas coisas, por
-exemplo. Os 33 repositórios com CFR (b) = 0 e os 20 com CFR (a) = 0 entram com
+exemplo. Os 52 repositórios com CFR (b) = 0 e os 24 com CFR (a) = 0 entram com
 postos médios (empates).
 
 ## RQ06 — subgrupos (`rq06/`)
@@ -88,29 +89,43 @@ e quartis de contribuidores. Métricas de referência C1: frequência, lead time
 (a), CFR (a) e recuperação. São 3 × 4 = 12 testes Kruskal-Wallis (todos os fatores
 têm 3+ grupos) com ε² = H/(n−1), corrigidos juntos por Holm. Para fatores com
 dois grupos, o script usa Mann-Whitney e Cliff δ. Cada teste usa só os
-repositórios com a métrica observada, por isso n varia: 183 em frequência e
-CFR, 172 em lead time e 158 em recuperação.
+repositórios com a métrica observada, por isso n varia: 300 em frequência e
+CFR, 289 em lead time e 268 em recuperação (298 e 287 na linguagem, por 2 repositórios sem
+linguagem principal).
 
 Decisões:
 
-- Linguagens com menos de 10 repositórios são agrupadas em "Outras" (40
-  repositórios, 13 linguagens). Isso evita grupos com n de 1 a 9, em que
+- Linguagens com menos de 10 repositórios são agrupadas em "Outras" (51
+  repositórios, 16 linguagens). Isso evita grupos com n de 1 a 9, em que
   Kruskal-Wallis fica instável. O preço é um grupo heterogêneo, e isso conta
   como ameaça à validade.
 - Os quartis vêm dos cortes amostrais, com empate no corte indo para o quartil
-  inferior. Os cortes e tamanhos (45 ou 46 por grupo) estão em `rq06_resultados.md`.
+  inferior. Os cortes e tamanhos (74 a 76 por grupo) estão em `rq06_resultados.md`.
 - Tipo de projeto **não** é fator. Não foi escolhido no protocolo, e o rótulo
   só existe para os 60 repositórios da amostra-ouro, então não é extrapolado.
 - Empates (por exemplo CFR = 0) usam a correção de empates do `scipy.stats.kruskal`.
 
-Resultado: nenhum dos 12 testes é significativo após Holm. O mais próximo é
-contribuidores × lead time (a), com H = 13,03, p = 0,005 e p (Holm) = 0,055,
-ε² = 0,076 (pequeno): o lead time mediano cresce de 131 h (Q1) para 443 h (Q3)
-e 289 h (Q4). Os demais efeitos são desprezíveis ou pequenos (ε² ≤ 0,061).
-Nesta amostra de repositórios populares, linguagem, popularidade e tamanho da
-comunidade explicam pouco da variação das métricas DORA. A ausência de
-significância não prova ausência de efeito, porque os grupos têm de 13 a 46
-repositórios.
+Resultado: 2 dos 12 testes são significativos após Holm, ambos sobre o lead
+time (a). Linguagem: H = 28,37, p (Holm) = 0,002, ε² = 0,099 (médio), com
+medianas de 163 h (TypeScript) e 181 h (Python) até 565 h (Rust) e 1.070 h
+(C++, n = 12). Contribuidores: H = 15,35, p (Holm) = 0,017, ε² = 0,053
+(pequeno), com 142 h e 157 h nos dois primeiros quartis e 416 h e 403 h nos dois
+últimos. Frequência, CFR (a), recuperação e estrelas não diferem (ε² ≤ 0,055).
+Não há comparações *post hoc*, então os testes não dizem quais grupos diferem,
+e linguagem e contribuidores podem refletir o tipo de projeto, não controlado.
+
+## RQ07 — sensibilidade às variantes (`rq07/`)
+
+Entrada: `validation/dataset-v1/rq07_classificacoes.csv`, gerado por
+`python -m lab03.variants` depois da coleta complementar (`lab03.complement`).
+Para C1×C2, C1×C3 e C2×C3, `python -m lab03.analysis.rq07` calcula o percentual
+de repositórios que mudam de categoria geral (com subidas e descidas), a matriz
+de transição e o kappa de Cohen ponderado linear (categorias ordenadas
+Low < Medium < High < Elite). Só entram repositórios classificados nas duas
+variantes. Os demais são excluídos com o motivo registrado (sem C1, sem C2 ou
+sem as duas) e nunca imputados. Se a entrada existir, `lab03.analysis.reproduce`
+inclui esta etapa e o manifesto passa a registrá-la. A C2 usa o CFR (b), cuja
+validação ficou abaixo do limiar de F1 do protocolo, e isso é dito no relatório.
 
 ## Validação do CFR (b) — avaliador único (`validacao_cfr_b/`)
 
@@ -120,16 +135,15 @@ Os rótulos de A são rascunhos de IA (todas as linhas trazem `[rascunho IA]`).
 Por isso não existe consenso. A referência é B, e A entra só como referência
 auxiliar declarada (LLM), nunca como segundo avaliador.
 
-A 1ª rodada saiu da mesma coleta do snapshot (13/10/2026, mesma janela), mas
-sorteada sobre mais repositórios. Só entram releases cujo repositório está no
-snapshot e cujo `release_id` e veredito conferem: 178 de 283 releases, em 37
-dos 58 repositórios com releases sorteadas. As 105 restantes são de 21
-repositórios fora dos 183.
+A 1ª rodada saiu da mesma coleta do snapshot (13/10/2026, mesma janela). Com o
+dataset de 300 repositórios, as 283 releases sorteadas, em 58 repositórios,
+constam do snapshot e têm `release_id` e veredito conferidos. Nenhuma foi
+excluída.
 
-Resultado (heurística v2 × B, `resultados.md`): precisão 0,234 (IC 95% de
-Wilson 0,165–0,321), recall 0,929 (0,774–0,980), F1 0,374. Entre as 111
-releases marcadas como corretivas pela heurística, B confirmou 26. Das 28
-corretivas segundo B, a heurística perdeu 2. O F1 fica abaixo do limiar de
+Resultado (heurística v2 × B, `resultados.md`): precisão 0,238 (IC 95% de
+Wilson 0,180–0,308), recall 0,870 (0,743–0,939), F1 0,374. Entre as 168
+releases marcadas como corretivas pela heurística, B confirmou 40. Das 46
+corretivas segundo B, a heurística perdeu 6. O F1 fica abaixo do limiar de
 0,70 do protocolo, e o viés é de **superestimação** do CFR (b). Auxiliar: κ de
-Cohen B × LLM = 0,506. Os intervalos ignoram o agrupamento de releases por
+Cohen B × LLM = 0,590. Os intervalos ignoram o agrupamento de releases por
 repositório e por isso são otimistas.

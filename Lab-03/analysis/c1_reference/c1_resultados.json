@@ -1,6 +1,6 @@
 {
-  "repositories": 183,
-  "input_csv_sha256": "cbfde52fa148c45acdbbd5425a1aa8fd7f7eaf22d7964c28b3c6bded8d41ee55",
+  "repositories": 300,
+  "input_csv_sha256": "f0633cb8aacb95925661d9b4f4e455afe20d40ab5e5f46c390791d0585b080e1",
   "classification_source": "lab03.metrics.classification.classify_dora",
   "overall_requires_all_four_metrics": true,
   "overall_median_rounding": "floor",
@@ -16,22 +16,22 @@
       "metrica": "deployment_frequency_per_week",
       "rotulo": "Frequência",
       "categoria": "High",
-      "n": 19,
-      "proporcao": 0.10382513661202186
+      "n": 34,
+      "proporcao": 0.11333333333333333
     },
     {
       "metrica": "deployment_frequency_per_week",
       "rotulo": "Frequência",
       "categoria": "Medium",
-      "n": 73,
-      "proporcao": 0.3989071038251366
+      "n": 130,
+      "proporcao": 0.43333333333333335
     },
     {
       "metrica": "deployment_frequency_per_week",
       "rotulo": "Frequência",
       "categoria": "Low",
-      "n": 91,
-      "proporcao": 0.4972677595628415
+      "n": 136,
+      "proporcao": 0.4533333333333333
     },
     {
       "metrica": "deployment_frequency_per_week",
@@ -44,64 +44,64 @@
       "metrica": "lead_time_hours",
       "rotulo": "Lead time (a)",
       "categoria": "Elite",
-      "n": 20,
-      "proporcao": 0.1092896174863388
+      "n": 42,
+      "proporcao": 0.14
     },
     {
       "metrica": "lead_time_hours",
       "rotulo": "Lead time (a)",
       "categoria": "High",
-      "n": 44,
-      "proporcao": 0.24043715846994534
+      "n": 72,
+      "proporcao": 0.24
     },
     {
       "metrica": "lead_time_hours",
       "rotulo": "Lead time (a)",
       "categoria": "Medium",
-      "n": 61,
-      "proporcao": 0.3333333333333333
+      "n": 98,
+      "proporcao": 0.32666666666666666
     },
     {
       "metrica": "lead_time_hours",
       "rotulo": "Lead time (a)",
       "categoria": "Low",
-      "n": 47,
-      "proporcao": 0.2568306010928962
+      "n": 77,
+      "proporcao": 0.25666666666666665
     },
     {
       "metrica": "lead_time_hours",
       "rotulo": "Lead time (a)",
       "categoria": "Não classificável",
       "n": 11,
-      "proporcao": 0.060109289617486336
+      "proporcao": 0.03666666666666667
     },
     {
       "metrica": "change_failure_rate",
       "rotulo": "CFR (a)",
       "categoria": "Elite",
-      "n": 148,
-      "proporcao": 0.8087431693989071
+      "n": 230,
+      "proporcao": 0.7666666666666667
     },
     {
       "metrica": "change_failure_rate",
       "rotulo": "CFR (a)",
       "categoria": "High",
-      "n": 23,
-      "proporcao": 0.12568306010928962
+      "n": 40,
+      "proporcao": 0.13333333333333333
     },
     {
       "metrica": "change_failure_rate",
       "rotulo": "CFR (a)",
       "categoria": "Medium",
-      "n": 6,
-      "proporcao": 0.03278688524590164
+      "n": 17,
+      "proporcao": 0.056666666666666664
     },
     {
       "metrica": "change_failure_rate",
       "rotulo": "CFR (a)",
       "categoria": "Low",
-      "n": 6,
-      "proporcao": 0.03278688524590164
+      "n": 13,
+      "proporcao": 0.043333333333333335
     },
     {
       "metrica": "change_failure_rate",
@@ -114,71 +114,71 @@
       "metrica": "recovery_time_hours",
       "rotulo": "Recuperação",
       "categoria": "Elite",
-      "n": 47,
-      "proporcao": 0.2568306010928962
+      "n": 77,
+      "proporcao": 0.25666666666666665
     },
     {
       "metrica": "recovery_time_hours",
       "rotulo": "Recuperação",
       "categoria": "High",
-      "n": 80,
-      "proporcao": 0.4371584699453552
+      "n": 135,
+      "proporcao": 0.45
     },
     {
       "metrica": "recovery_time_hours",
       "rotulo": "Recuperação",
       "categoria": "Medium",
-      "n": 25,
-      "proporcao": 0.1366120218579235
+      "n": 40,
+      "proporcao": 0.13333333333333333
     },
     {
       "metrica": "recovery_time_hours",
       "rotulo": "Recuperação",
       "categoria": "Low",
-      "n": 6,
-      "proporcao": 0.03278688524590164
+      "n": 16,
+      "proporcao": 0.05333333333333334
     },
     {
       "metrica": "recovery_time_hours",
       "rotulo": "Recuperação",
       "categoria": "Não classificável",
-      "n": 25,
-      "proporcao": 0.1366120218579235
+      "n": 32,
+      "proporcao": 0.10666666666666667
     },
     {
       "metrica": "overall",
       "rotulo": "Geral",
       "categoria": "Elite",
-      "n": 12,
-      "proporcao": 0.06557377049180328
+      "n": 17,
+      "proporcao": 0.056666666666666664
     },
     {
       "metrica": "overall",
       "rotulo": "Geral",
       "categoria": "High",
-      "n": 54,
-      "proporcao": 0.29508196721311475
+      "n": 89,
+      "proporcao": 0.2966666666666667
     },
     {
       "metrica": "overall",
       "rotulo": "Geral",
       "categoria": "Medium",
-      "n": 68,
-      "proporcao": 0.37158469945355194
+      "n": 130,
+      "proporcao": 0.43333333333333335
     },
     {
       "metrica": "overall",
       "rotulo": "Geral",
       "categoria": "Low",
-      "n": 16,
-      "proporcao": 0.08743169398907104
+      "n": 24,
+      "proporcao": 0.08
     },
     {
       "metrica": "overall",
       "rotulo": "Geral",
       "categoria": "Não classificável",
-      "n": 33,
-      "proporcao": 0.18032786885245902
+      "n": 40,
+      "proporcao": 0.13333333333333333
     }
   ]
 }

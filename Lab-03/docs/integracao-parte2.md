@@ -1,5 +1,15 @@
 # Integração da 2ª parte da coleta (183 → 300 repositórios)
 
+> **Status (20/10/2026): integrada.** A `parte2.json` (117 repositórios,
+> `slice = [183, 300]`, SHA-256 `cb8a7398…`) foi unida à 1ª parte com
+> `lab03.merge` e `selecao-amostra-revisada.json`. Conferido: 300 repositórios
+> únicos, ordem da seleção, mesma `window` e `criteria`, heurística v2 em todos,
+> `collection_validation.status = complete`. Hashes do JSON: 183 antes
+> `3e66a078…`, 300 depois `bbc65239…`. Hashes do `.gz`: antes `315e063b…`, depois
+> `4e648213…` (66 MB). O dataset de 300 tem `collected_at` de 13/10, e não é o de
+> 15/10 (`87656c1c…`), então a `labels/reamostragem-v2/` segue não vinculada.
+> O texto abaixo é o guia original.
+
 **Responsável:** Lucas, que tem a coleta local (o cache registrado no dataset
 aponta para `C:\Users\Lucas\...\Lab-03\data\cache_estudo.sqlite3`).
 **Contexto:** o dataset versionado, `data/amostra_completa.json.gz`, tem só a
