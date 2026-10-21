@@ -76,9 +76,9 @@
       "stable": true
     },
     "rq05/rq05_dispersao.png": {
-      "sha256": "bafbd72a7cb8c8a2fcdbe45a74feaef93ca8d2b86450a202085408b621729093",
-      "canonical_sha256": "bafbd72a7cb8c8a2fcdbe45a74feaef93ca8d2b86450a202085408b621729093",
-      "bytes": 78092,
+      "sha256": "19af507b1bdba872ff54ef6198db76009b8b1e2c84df3b4aed248e853896ccc4",
+      "canonical_sha256": "19af507b1bdba872ff54ef6198db76009b8b1e2c84df3b4aed248e853896ccc4",
+      "bytes": 102742,
       "stable": false
     },
     "rq05/rq05_resultados.json": {

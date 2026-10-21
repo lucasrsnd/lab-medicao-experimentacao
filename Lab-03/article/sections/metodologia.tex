@@ -16,21 +16,16 @@ Para limitar o custo da coleta, também ficaram de fora repositórios com mais d
 elegíveis, e os 300 mais populares formaram a seleção. A amostra é intencional
 (por popularidade), não aleatória.
 
-A coleta foi dividida em duas partes, pelos índices da seleção (0 a 182 e 183
-a 299). Na segunda, 17 repositórios deixaram de cumprir o mínimo de releases ao
-se verificar a ancestralidade no branch padrão. Eles foram substituídos pelos
-próximos candidatos elegíveis em ordem de estrelas, abaixo do menor valor da
-seleção original. As substituições estão registradas em
-\texttt{data/selecao-amostra-revisada.json}.
+A coleta foi dividida nos índices 0--182 e 183--299. Na segunda parte, 17
+repositórios não cumpriram o mínimo de releases na verificação de ancestralidade
+e foram substituídos pelos próximos elegíveis em ordem de estrelas
+(\texttt{data/selecao-amostra-revisada.json}).
 
-\textbf{Amostra analisada.} O dataset congelado no repositório
+\textbf{Amostra analisada.} O dataset congelado
 (\texttt{data/amostra\_completa.json.gz}, coleta de 13 de outubro de 2026)
-reúne as duas partes, com 183 e 117 repositórios, e cobre os \textbf{300
-repositórios selecionados}, o mínimo previsto no protocolo. As partes têm a
-mesma janela e os mesmos critérios, a ordem segue a seleção revisada e todos os
-repositórios usam a heurística v2. Como a seleção é por popularidade, a amostra
-tem de cerca de 24 mil a 289 mil estrelas e não representa projetos menos
-populares.
+reúne 183 e 117 repositórios, totalizando os 300 selecionados. A janela e os
+critérios são comuns às partes; todos usam a heurística v2. A amostra varia de
+cerca de 24 mil a 289 mil estrelas e não representa projetos menos populares.
 
 \subsection{Janela e unidades}
 
@@ -65,11 +60,11 @@ nunca são imputadas como zero, e cada uma tem o motivo registrado.
 
 \subsection{Validação manual}
 
-Foram sorteados 60 repositórios, com cinco releases cada, a partir da coleta de
-13 de outubro (semente 42). O protocolo previa rotulagem cega por três
-avaliadores e o cálculo do F1 da heurística contra o consenso. Na prática, só
-um avaliador humano concluiu a rotulagem. O desvio e a validação resultante
-estão na Seção~\ref{sec:validacao-cfrb}.
+O protocolo previa 60 repositórios, cinco releases por projeto e rotulagem
+cega por três avaliadores. O relatório disponível cobre 283 releases em 58
+repositórios, mas seu hash de origem difere do dataset congelado; os resultados
+não validam diretamente o CFR (b) dos 300 repositórios. Só um avaliador humano
+concluiu a rotulagem, sem consenso (Seção~\ref{sec:validacao-cfrb}).
 
 \subsection{Análise estatística}
 

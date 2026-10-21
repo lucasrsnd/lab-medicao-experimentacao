@@ -30,9 +30,9 @@ failure rate variants (Spearman $\rho = 0.182$ for CI failures and $0.567$ for
 corrective releases), contrary to the DORA claim that speed and stability do
 not compete. Across 12 tests with Holm correction, only lead time differs
 significantly, by main language and by contributor quartile, with small to
-medium effects. A single-rater validation of the corrective
+medium effects. A single-rater validation, not linked to the frozen dataset, of the corrective
 release heuristic on 283 releases yields precision 0.238, recall 0.870 and
-F1 0.374, indicating that this proxy overestimates delivery failures.
+F1 0.374, suggesting overestimation but not directly validating the dataset.
 \end{abstract}
 
 \begin{resumo}
@@ -51,14 +51,17 @@ afirmação do DORA de que velocidade e estabilidade não competem. Em 12 testes
 com correção de Holm, só o lead time difere significativamente, por linguagem
 principal e por quartil de contribuidores, com efeitos pequenos a médios. Uma
 validação com avaliador único da heurística de
-release corretiva, em 283 releases, resulta em precisão 0,238, recall 0,870 e
-F1 0,374, o que indica que esse proxy superestima as falhas de entrega.
+release corretiva, não vinculada ao dataset congelado, em 283 releases,
+resulta em precisão 0,238, recall 0,870 e F1 0,374; os rótulos sugerem
+superestimação, mas não validam diretamente o dataset.
 \end{resumo}
 
 \input{sections/introducao}
 \input{sections/metodologia}
 \input{sections/resultados}
 \input{sections/discussao}
+\input{sections/ameacas}
+\input{sections/replicacao}
 \begin{thebibliography}{9}
 \bibitem[Forsgren et al. 2018]{accelerate}
 Forsgren, N.; Humble, J.; Kim, G. (2018).
@@ -72,5 +75,9 @@ Acesso em: 7 out. 2026.
 GitHub. \textit{REST API endpoints for commits}.
 Disponível em: \url{https://docs.github.com/en/rest/commits/commits}.
 Acesso em: 7 out. 2026.
+\bibitem[Wohlin et al. 2012]{wohlin}
+Wohlin, C.; Runeson, P.; H\"ost, M.; Ohlsson, M. C.; Regnell, B.; Wessl\'en,
+A. (2012). \textit{Experimentation in Software Engineering}. 2nd ed.
+Springer.
 \end{thebibliography}
 \end{document}

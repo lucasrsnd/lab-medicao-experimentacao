@@ -1,22 +1,10 @@
 \section{Introdução}
 \label{sec:introducao}
 
-A entrega frequente de mudanças precisa ser analisada em conjunto com a
-estabilidade do software. O trabalho de Forsgren, Humble e Kim
-\cite{accelerate} e as métricas de desempenho de entrega do DORA \cite{dora}
-motivam o estudo dessa relação. Neste laboratório, o interesse recai sobre
-frequência de entrega, tempo entre a escrita e a entrega de mudanças,
-proporção de entregas com falha e tempo de recuperação. Adotam-se as quatro
-dimensões e os cortes de classificação fixados pelo enunciado, preservando
-definições comuns entre os grupos da disciplina.
-
-Repositórios públicos oferecem releases, commits e registros de integração
-contínua, mas esses registros não demonstram, por si só, quando uma mudança
-chegou à produção ou provocou um incidente. Uma release de biblioteca pode
-ser disponibilizada sem adoção imediata; uma falha de CI pode impedir uma
-entrega em vez de representar falha em produção. Os valores minerados são,
-portanto, \textit{proxies}, cujo significado depende de suas definições
-operacionais.
+DORA motiva avaliar em conjunto frequência e estabilidade de entrega
+\cite{accelerate,dora}. Releases, commits e registros de integração contínua
+são proxies: não demonstram implantação ou incidente em produção. O estudo
+adota as quatro métricas e os cortes de classificação fixados pelo enunciado.
 
 O objetivo deste estudo é caracterizar proxies DORA em projetos open-source
 que utilizam GitHub Actions e avaliar a confiança nas comparações resultantes.
@@ -25,45 +13,33 @@ As questões de pesquisa investigam frequência de releases (RQ01), lead time
 entre frequência e falha (RQ05), diferenças entre características dos projetos
 (RQ06) e sensibilidade da classificação às definições operacionais (RQ07).
 
-O protocolo da disciplina prevê uma janela de doze meses, uma amostra final
-de pelo menos 300 repositórios elegíveis e definições comuns. São elegíveis
-projetos públicos com mais de 1.000 estrelas, pelo menos cinco releases
-publicadas e 50 execuções válidas de GitHub Actions no branch padrão durante
-a janela. Para lead time,
-serão comparadas a mediana dos tempos por release, considerando o commit
-mais antigo de cada entrega, e a mediana dos tempos de todos os commits
-incluídos nas releases. A paginação da API evita que essas comparações sejam
-limitadas silenciosamente a uma fração dos commits \cite{github}.
+O protocolo prevê doze meses e ao menos 300 repositórios públicos elegíveis
+(mais de 1.000 estrelas, cinco releases e 50 execuções válidas de Actions no
+branch padrão). O lead time compara a mediana por release, do commit mais
+antigo à publicação, com a mediana por commit incluído. A paginação da API
+evita truncar silenciosamente a comparação \cite{github}.
 
-A janela adotada para a S02 abrange 6 de outubro de 2025 a 7 de outubro de
-2026, à meia-noite no fuso UTC$-3$, com o limite final exclusivo. São 366 dias,
-um dia além dos doze meses previstos. A exceção foi autorizada por Gustavo em
-13 de outubro de 2026, após a coleta parcial, para compatibilidade com os
-183 repositórios informados pelo outro integrante. A confirmação docente
-registrada na main em 14 de outubro refere-se à janela original de doze
-meses; a aprovação da extensão de um dia não está registrada. A configuração
-versionada distingue essas decisões; eventual revisão exigirá revalidar os
-dados e repetir a coleta quando necessário. O piloto inicial previa 100
-repositórios elegíveis, mas seu manifesto registra execução interrompida.
-Esta versão relata os resultados das RQ05 e RQ06 e a validação parcial do CFR
-(b) sobre os 300 repositórios do dataset congelado. As demais questões estão
-marcadas como pendentes na seção de resultados.
+A janela S02 foi de 6/10/2025 a 7/10/2026 (UTC$-3$), fim exclusivo: 366 dias.
+Gustavo autorizou a extensão de um dia para compatibilizar a coleta com 183
+repositórios de outro integrante; a confirmação docente registrada na
+\texttt{main} refere-se a doze meses, e não há aprovação da extensão
+registrada. O manifesto do piloto de 100 repositórios registra execução
+interrompida. Esta versão relata RQ01--RQ07 nos 300 repositórios congelados e
+a validação parcial do CFR (b).
 
-O protocolo previa examinar a validade dos proxies com três avaliadores
-independentes em 60 repositórios, com cinco releases por projeto, e medir a
-concordância e a qualidade da heurística corretiva contra o consenso. Por
-decisão do grupo, apenas um avaliador humano rotulou a amostra-ouro. A
-validação do CFR (b) foi feita, portanto, com um único avaliador, e esse
-desvio é discutido na Seção~\ref{sec:validacao-cfrb}. A comparação entre
-combinações de releases, pré-releases, tags e variantes de lead time e CFR
-avaliará a estabilidade das classificações.
+O protocolo previa três avaliadores em 60 repositórios, com cinco releases
+cada. A validação disponível é de avaliador único e não está ligada ao dataset
+congelado; esse limite é discutido na Seção~\ref{sec:validacao-cfrb}. A RQ07
+compara combinações de releases, pré-releases, tags e variantes de lead time e
+CFR.
 
 \subsection{Hipóteses a priori}
 
 As hipóteses abaixo acompanham o protocolo versionado antes da coleta deste
-estudo; a revisão conjunta permanece pendente. Elas expressam expectativas
-a confrontar com os dados, não resultados observados. Revisões posteriores
-à observação dos resultados deverão ser identificadas como exploratórias.
+estudo. O repositório não registra uma revisão conjunta das hipóteses pelo
+grupo. Elas expressam expectativas a confrontar com os dados, não resultados
+observados. Revisões posteriores à observação dos resultados deverão ser
+identificadas como exploratórias.
 
 \begin{description}
 \item[H01 (RQ01).] Espera-se heterogeneidade na frequência de releases,
@@ -89,9 +65,3 @@ de contribuidores como fatores antes de observar resultados.
 DORA ao alterar as definições de entrega, lead time e CFR, especialmente
 próximo aos cortes de classificação.
 \end{description}
-
-Os artefatos serão organizados em módulos de coleta, normalização, métricas e
-análise, com testes e rastreabilidade por issues. Validação manual, sensibilidade
-e replicação cruzada deverão sustentar a discussão dos limites do estudo.
-Repositório: \url{https://github.com/lucasrsnd/lab-medicao-experimentacao}.
-Acompanhamento: \url{https://github.com/users/lucasrsnd/projects/2}.

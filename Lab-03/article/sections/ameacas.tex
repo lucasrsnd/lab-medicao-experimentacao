@@ -1,0 +1,88 @@
+\section{Ameaças à validade}
+\label{sec:ameacas}
+
+As quatro categorias clássicas de ameaças à validade organizam esta análise
+\cite{wohlin}.
+
+\subsection{Validade de construto}
+\label{sec:ameacas-construto}
+
+As métricas são proxies, não medidas de entrega em produção: release não
+demonstra implantação ou adoção, e falha de CI não equivale a falha em
+produção. Os CFRs (a) e (b) capturam eventos distintos, nenhum deles incidentes
+reais.
+
+Na amostra de validação (283 releases, 58 repositórios), com avaliador único,
+a heurística teve precisão 0,238 (IC 95\% de Wilson [0,180; 0,308]), recall
+0,870 e $F_1 = 0,374$, abaixo do limiar 0,70
+(\texttt{analysis/validacao\_cfr\_b/resultados.md}). B confirmou 40 das 168
+releases marcadas; a heurística perdeu seis das 46 corretivas segundo B. A
+amostra não está ligada ao dataset congelado (\texttt{analysis/rq03\_rq04/});
+esses valores não validam diretamente o CFR (b) dos 300 repositórios.
+
+Também mudaram de categoria 44,4\% (C1$\times$C2; $\kappa = 0,311$), 28,5\%
+(C1$\times$C3; $\kappa = 0,625$) e 41,0\% (C2$\times$C3; $\kappa = 0,428$)
+dos repositórios comparáveis (\texttt{analysis/rq07/rq07\_resultados.md}).
+C2 usa o CFR (b); essas diferenças não isolam a definição do erro da
+heurística nem indicam desempenho em produção.
+
+\subsection{Validade interna}
+\label{sec:ameacas-interna}
+
+As análises são observacionais. Idade e atividade podem afetar releases,
+commits e CI, mas a RQ06 compara apenas linguagem e quartis de estrelas e
+contribuidores; não ajusta por esses fatores. Seus dois resultados
+significativos entre 12 testes não estabelecem causalidade
+(\texttt{analysis/rq06/rq06\_resultados.md}).
+
+No CFR (b), uma alteração apenas de \textit{patch} ou mensagens com
+\texttt{fix}, \texttt{hotfix} ou \texttt{revert} podem marcar uma release sem
+evidência de falha anterior. O $F_1 = 0,374$ limita as conclusões com essa
+variável. Mitigação: rotulagem independente por múltiplos avaliadores,
+consenso e reavaliação da heurística em amostra separada.
+
+O lead time usa \texttt{commit.author.date}, que pode divergir da entrada no
+branch padrão; rebase e \textit{squash merge} afetam a relação entre datas de
+commits e releases. A análise não estima esse efeito. Futuras replicações
+podem comparar a data de autoria com a de integração e reportar a sensibilidade.
+
+Há censura à direita: 251 de 8.518 releases do CFR (b) (2,9\%) não têm os sete
+dias seguintes completos, e 75 de 4.119 episódios de recuperação (1,8\%) não
+se encerraram (\texttt{analysis/rq03\_rq04/rq03\_rq04\_resultados.md},
+seção \textit{Censura}). Foram mantidos sem imputação, mas a janela pode
+subcontar eventos tardios. Mitigação: acompanhar o CFR por mais sete dias e
+reportar e analisar separadamente os censurados.
+
+\subsection{Validade externa}
+\label{sec:ameacas-externa}
+
+O estudo abrange projetos públicos com mais de 1.000 estrelas, GitHub Actions,
+ao menos cinco releases e 50 execuções válidas de \texttt{push}, sob os
+limites de coleta do protocolo. Dos 311 elegíveis, foram escolhidos os 300
+mais populares (Seção~\ref{sec:amostra}); a seleção intencional não representa
+projetos menos populares, comerciais ou equipes em geral.
+
+O tipo de projeto foi rotulado apenas nos 60 repositórios da amostra-ouro;
+não se generaliza sua distribuição ou seus resultados aos 300 sem nova
+rotulagem.
+
+\subsection{Validade de conclusão}
+\label{sec:ameacas-conclusao}
+
+A RQ06 aplicou Holm aos 12 testes de Kruskal--Wallis: dois foram significativos,
+ambos para lead time, com efeitos $\varepsilon^2 = 0,099$ (médio) e 0,053
+(pequeno). A correção não estabelece causalidade ou ausência de efeito, e sem
+comparações \textit{post hoc} não se identificam pares diferentes
+(\texttt{analysis/rq06/rq06\_resultados.md}).
+
+Java tem 10 repositórios e C++ 13; 16 linguagens com menos de 10 foram agrupadas
+em ``Outras'' (51), o que reduz a resolução por linguagem. Há empates em CFR:
+24 repositórios têm CFR (a) zero e 52, CFR (b) zero; as correções de postos não
+eliminam a informação limitada por esses valores
+(\texttt{analysis/rq05/rq05\_resultados.md}; \texttt{analysis/README.md}).
+
+Os ICs de Wilson tratam 283 releases como independentes, embora venham de 58
+repositórios, e podem ser estreitos demais
+(\texttt{analysis/validacao\_cfr\_b/resultados.md}). Uma validação futura deve
+ser vinculada ao dataset congelado e preservar esse agrupamento na estimação
+dos intervalos.
