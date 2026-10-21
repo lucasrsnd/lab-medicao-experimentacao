@@ -22,14 +22,18 @@ from lab03.analysis import (
     rq03_rq04,
     rq05,
     rq06,
+    rq07,
 )
 
+# Entrada opcional: só existe depois da coleta complementar (C2 e C3).
+RQ07_INPUT = "validation/dataset-v1/rq07_classificacoes.csv"
 INPUTS = (
     "data/amostra_completa.json.gz",
     "labels/amostra_ouro_releases.csv",
     "labels/rotulos_A_releases.csv",
     "labels/rotulos_B_releases.csv",
     "labels/reamostragem-v2/amostra_ouro_sorteio.json",
+    RQ07_INPUT,
 )
 BASE = "base_repositorios.csv"
 MANIFEST_NAME = "MANIFESTO.json"
@@ -39,7 +43,10 @@ VOLATILE_SUFFIXES = (".png",)
 
 def steps(output: Path):
     base_csv = str(output / BASE)
-    return (
+    optional = ()
+    if Path(RQ07_INPUT).is_file():
+        optional = (("rq07", rq07.main, ["--classificacoes", RQ07_INPUT, "--output-dir", str(output / "rq07")]),)
+    return optional + (
         ("base", base.main, ["--output", base_csv]),
         ("rq01_rq02", rq01_rq02.main, ["--base", base_csv, "--output-dir", str(output / "rq01_rq02")]),
         ("rq03_rq04", rq03_rq04.main, ["--base", base_csv, "--output-dir", str(output / "rq03_rq04")]),
@@ -64,12 +71,21 @@ def _rounded(value):
     return value
 
 
+TEXT_SUFFIXES = (".md", ".csv", ".json", ".txt")
+
+
 def canonical_sha256(path: Path) -> str:
-    """Hash do conteúdo; em JSON, ignora ruído de ponto flutuante entre versões do scipy."""
-    if path.suffix != ".json":
+    """Hash do conteúdo, igual no Windows e no Linux.
+
+    Em texto, CRLF vira LF (o checkout e a escrita de arquivos mudam o fim de linha).
+    Em JSON, ainda ignora ruído de ponto flutuante entre versões do scipy.
+    """
+    if path.suffix not in TEXT_SUFFIXES:
         return sha256(path)
-    data = _rounded(json.loads(path.read_text(encoding="utf-8")))
-    return hashlib.sha256(json.dumps(data, sort_keys=True).encode("utf-8")).hexdigest()
+    text = path.read_bytes().decode("utf-8").replace("\r\n", "\n")
+    if path.suffix == ".json":
+        text = json.dumps(_rounded(json.loads(text)), sort_keys=True)
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def build_manifest(output: Path, manifest_name: str) -> dict:
@@ -85,7 +101,7 @@ def build_manifest(output: Path, manifest_name: str) -> dict:
             "stable": path.suffix not in VOLATILE_SUFFIXES,
         }
     return {
-        "inputs": {name: sha256(Path(name)) for name in INPUTS if Path(name).is_file()},
+        "inputs": {name: canonical_sha256(Path(name)) for name in INPUTS if Path(name).is_file()},
         "python": platform.python_version(),
         "outputs": outputs,
     }

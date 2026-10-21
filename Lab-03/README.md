@@ -193,7 +193,7 @@ Decisões e resultados de cada análise estão em
 | RQ01–RQ04 e classificação C1 | analisadas e no artigo |
 | RQ05 e RQ06 | analisadas e no artigo |
 | Validação do CFR (b) | parcial: avaliador único (B), 283 releases; ver abaixo |
-| RQ07 (C1 × C2 × C3) | pendente: falta a coleta complementar de pré-releases e tags |
+| RQ07 (C1 × C2 × C3) | análise pronta (`lab03.analysis.rq07`); pendente a coleta complementar de pré-releases e tags |
 | Discussão (`article/sections/discussao.tex`) | redigida com os 300 repositórios |
 | Ameaças à validade e replicação | pendentes no artigo |
 

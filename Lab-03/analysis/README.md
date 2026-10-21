@@ -114,6 +114,19 @@ medianas de 163 h (TypeScript) e 181 h (Python) até 565 h (Rust) e 1.070 h
 Não há comparações *post hoc*, então os testes não dizem quais grupos diferem,
 e linguagem e contribuidores podem refletir o tipo de projeto, não controlado.
 
+## RQ07 — sensibilidade às variantes (`rq07/`)
+
+Entrada: `validation/dataset-v1/rq07_classificacoes.csv`, gerado por
+`python -m lab03.variants` depois da coleta complementar (`lab03.complement`).
+Para C1×C2, C1×C3 e C2×C3, `python -m lab03.analysis.rq07` calcula o percentual
+de repositórios que mudam de categoria geral (com subidas e descidas), a matriz
+de transição e o kappa de Cohen ponderado linear (categorias ordenadas
+Low < Medium < High < Elite). Só entram repositórios classificados nas duas
+variantes. Os demais são excluídos com o motivo registrado (sem C1, sem C2 ou
+sem as duas) e nunca imputados. Se a entrada existir, `lab03.analysis.reproduce`
+inclui esta etapa e o manifesto passa a registrá-la. A C2 usa o CFR (b), cuja
+validação ficou abaixo do limiar de F1 do protocolo, e isso é dito no relatório.
+
 ## Validação do CFR (b) — avaliador único (`validacao_cfr_b/`)
 
 Desvio do protocolo, por decisão do grupo: a `labels/reamostragem-v2/` não foi
