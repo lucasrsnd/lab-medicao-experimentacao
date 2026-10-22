@@ -194,7 +194,8 @@ Decisões e resultados de cada análise estão em
 | Validação do CFR (b) | parcial: avaliador único (B), 283 releases; ver abaixo |
 | RQ07 (C1 × C2 × C3) | coleta completa (300/300), analisada e no artigo; mudanças de categoria em 28,5%–44,4% dos pares comparáveis |
 | Discussão (`article/sections/discussao.tex`) | redigida com os 300 repositórios |
-| Ameaças à validade e replicação | pendentes no artigo |
+| Ameaças à validade | redigidas nas quatro categorias (`article/sections/ameacas.tex`) |
+| Replicação cruzada | não realizada: o sorteio não ocorreu; a comparação está pronta em `lab03.replication.compare` ([`docs/replicacao.md`](docs/replicacao.md)) |
 
 **Desvio da validação manual.** O protocolo previa três avaliadores e consenso
 sobre `labels/reamostragem-v2/`, que não foi rotulada. Por decisão do grupo, a

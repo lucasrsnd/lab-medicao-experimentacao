@@ -42,11 +42,11 @@ e recuperação, inclui n válido e proporções agrupadas e por repositório pa
 censuras. A seção identifica CFR (a) como proxy de falha de CI e CFR (b) como
 proxy de release corretiva; nenhum deles é tratado como observação de falha em
 produção. A validação humana só é considerada evidência para esta base quando
-o hash de origem da amostra-ouro coincide com o dataset congelado.
-Esse estado (`not_linked_to_frozen_dataset`) diz respeito à validação do
-protocolo, com consenso sobre a `reamostragem-v2`, que não foi feita. A
-validação parcial, com um avaliador sobre a 1ª rodada, está em
-`validacao_cfr_b/` e é descrita abaixo.
+o hash de origem da amostra-ouro coincide com o dataset congelado. A 1ª rodada
+(`labels/amostra_ouro_sorteio.json`), a única rotulada, foi sorteada deste
+dataset, e o estado é `source_matches`. A `reamostragem-v2` veio de outra coleta
+(`87656c1c…`) e não foi rotulada. A validação, com um avaliador sobre a 1ª
+rodada, está em `validacao_cfr_b/` e é descrita abaixo.
 
 `c1_reference` aplica o classificador já testado às quatro métricas C1, exporta
 categoria e status por repositório, distribuição de categorias e contagem de

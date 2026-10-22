@@ -74,12 +74,12 @@
     "iqr": 0.40909090909090906
   },
   "gold_validation": {
-    "status": "not_linked_to_frozen_dataset",
+    "status": "source_matches",
     "gold_repositories": 60,
-    "gold_releases": 300,
-    "gold_source_sha256": "87656c1c9637fd1e938f1d4e2775be55e29df701a94fa2268096f71ec623fa52",
+    "gold_releases": 283,
+    "gold_source_sha256": "bbc652390d9f6938c8478c1cb4b5103b3bb2e193a26f87f44a1fd17e8ddb6fa6",
     "frozen_source_sha256": "bbc652390d9f6938c8478c1cb4b5103b3bb2e193a26f87f44a1fd17e8ddb6fa6",
-    "reason": "hash de origem da amostra-ouro difere do dataset congelado",
+    "reason": "origem compatível; F1 de avaliador único, sem consenso, em analysis/validacao_cfr_b",
     "heuristic_f1": null,
     "consensus_status": "ausente"
   },

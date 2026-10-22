@@ -17,8 +17,9 @@ a heurística teve precisão 0,238 (IC 95\% de Wilson [0,180; 0,308]), recall
 0,870 e $F_1 = 0,374$, abaixo do limiar 0,70
 (\texttt{analysis/validacao\_cfr\_b/resultados.md}). B confirmou 40 das 168
 releases marcadas; a heurística perdeu seis das 46 corretivas segundo B. A
-amostra não está ligada ao dataset congelado (\texttt{analysis/rq03\_rq04/});
-esses valores não validam diretamente o CFR (b) dos 300 repositórios.
+amostra foi sorteada do próprio dataset congelado (\texttt{analysis/rq03\_rq04/}),
+mas a referência é um único avaliador, sem consenso nem medida de
+confiabilidade entre avaliadores.
 
 Também mudaram de categoria 44,4\% (C1$\times$C2; $\kappa = 0,311$), 28,5\%
 (C1$\times$C3; $\kappa = 0,625$) e 41,0\% (C2$\times$C3; $\kappa = 0,428$)
@@ -84,5 +85,5 @@ eliminam a informação limitada por esses valores
 Os ICs de Wilson tratam 283 releases como independentes, embora venham de 58
 repositórios, e podem ser estreitos demais
 (\texttt{analysis/validacao\_cfr\_b/resultados.md}). Uma validação futura deve
-ser vinculada ao dataset congelado e preservar esse agrupamento na estimação
+usar múltiplos avaliadores com consenso e preservar esse agrupamento na estimação
 dos intervalos.

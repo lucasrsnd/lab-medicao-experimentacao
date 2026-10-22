@@ -1,8 +1,9 @@
 # Replicação cruzada (entrega final)
 
-Estado: **o grupo a replicar ainda não foi sorteado**. Este documento descreve
-como a comparação será feita. Nenhum resultado de replicação existe ainda, e
-nada aqui deve ser lido como tal.
+Estado: **a replicação não foi realizada**, porque o sorteio do grupo a
+replicar não aconteceu. Este documento descreve a ferramenta de comparação que
+ficou pronta. Não existe resultado de replicação, e nada aqui deve ser lido
+como tal.
 
 ## Comparação original × replicado (FINAL-02, #130)
 
@@ -52,8 +53,9 @@ esperado do que indica defeito:
   que justifica uma issue no repositório autor, com valores, repositórios
   afetados e comando reproduzível.
 
-## Pendências
+## Não realizado
 
-- FINAL-01 (#129): executar o pipeline sorteado em 30 repositórios. Depende do sorteio.
-- FINAL-03 (#131) e FINAL-04 (#132): issues no repositório autor e relato no
-  artigo. Dependem da execução e da comparação reais.
+Sem sorteio, não foram feitas: a execução de um pipeline externo em 30
+repositórios (FINAL-01, #129), as issues de execução e de divergência no
+repositório autor (FINAL-03, #131, e FINAL-04, #132) nem a comparação com dados
+reais. O artigo registra isso na seção "Replicação cruzada".

@@ -1,12 +1,27 @@
 \section{Replicação cruzada}
 \label{sec:replicacao}
 
-\noindent\textbf{PENDENTE:} o grupo aguarda o sorteio do professor. Ainda não
-há dados ou resultados de replicação.
+A replicação cruzada não foi realizada. Ela dependia do sorteio, pelo
+professor, do pipeline de outro grupo a ser executado em 30 repositórios do
+dataset original, e o sorteio não ocorreu. Por isso não há execução de pipeline
+externo, comparação de resultados nem issues abertas no repositório de outro
+grupo, e esta seção não relata dados de replicação.
 
-Após o sorteio, Gustavo executará
-\texttt{python -m lab03.replication.compare} e preencherá esta seção com a
-saída e as divergências, conforme \texttt{Lab-03/docs/replicacao.md}.
+O grupo deixou preparada a etapa de comparação: o módulo
+\texttt{lab03.replication.compare} alinha os CSVs original e replicado por
+repositório, mapeia as colunas do outro grupo e calcula, por métrica, a
+diferença relativa e a absoluta, além do percentual de repositórios com a mesma
+categoria DORA. O módulo trata explicitamente originais iguais a zero, valores
+ausentes e execução parcial. Ele foi testado apenas com dados de exemplo
+(\texttt{Lab-03/docs/replicacao.md}).
+
+Do lado autor, a reprodutibilidade do próprio estudo foi verificada em
+ambiente limpo: um clone novo, com dependências instaladas apenas pelo README,
+regera todas as análises a partir do dataset congelado e confere o resultado
+com o manifesto versionado (\texttt{python -m lab03.analysis.reproduce
+-{}-check}). A mesma verificação roda na integração contínua, em Linux e com
+Python 3.12 e 3.13. Isso não substitui a replicação por outro grupo, que
+continua sendo a principal lacuna de validação externa do estudo.
 
 \medskip
 \noindent\textbf{Código e acompanhamento.} Repositório:
