@@ -8,8 +8,8 @@ humanos não há consenso; por isso os rótulos do avaliador B (humano) servem d
 referência e o resultado é uma validação de avaliador único, não um F1 contra
 consenso.
 
-A 1ª rodada (`labels/amostra_ouro_*`) foi sorteada da coleta de 2026-10-13, a
-mesma do snapshot analisado, mas sobre um conjunto maior de repositórios. Só
+A 1ª rodada (`labels/amostra_ouro_*`) foi sorteada do próprio dataset congelado
+(o `source_dataset_sha256` do sorteio é o hash do JSON de 300 repositórios). Só
 entram as releases cujo repositório está no snapshot e cujo `release_id` e
 veredito da heurística conferem; as demais são contadas como excluídas.
 

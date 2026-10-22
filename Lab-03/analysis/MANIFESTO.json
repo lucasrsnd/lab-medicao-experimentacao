@@ -4,7 +4,7 @@
     "labels/amostra_ouro_releases.csv": "de3da30dc6f340cbba92067f088474a04192ebe8f5afe6a5f1f7db4f1f88d924",
     "labels/rotulos_A_releases.csv": "07f65ee68f30be6a59873ab1fbeea43314e8eb84e5888a1049dab1cfb7e7502c",
     "labels/rotulos_B_releases.csv": "c3676c736b78d5766a41ca57f2ce5c4a404e0a52ada1e9969695e8af1d56ecfb",
-    "labels/reamostragem-v2/amostra_ouro_sorteio.json": "73b3037060a0ab57e82e1293a2d52c74ea6f73965d0c9262104232852cf4c13a",
+    "labels/amostra_ouro_sorteio.json": "f8c1f4431c07d3591ae89500d3f56df9dc8a7b62cdc33d6ba76c83e809702cf1",
     "validation/dataset-v1/rq07_classificacoes.csv": "b0cd883eff29193519a5274bf050395dfdb234c12df8e010520a122fc4039277"
   },
   "python": "3.12.10",
@@ -64,15 +64,15 @@
       "stable": false
     },
     "rq03_rq04/rq03_rq04_resultados.json": {
-      "sha256": "2b080aafee2bcdbd310c1653f1a973e28b6b0c95e6993c9156710166ccd12129",
-      "canonical_sha256": "1f9389d042fe00d39104aaf79eafadaae9ca72ed4158fe1106324f01329f3b0d",
-      "bytes": 2518,
+      "sha256": "791429f4295c176bfcc4a531246db1333a9fe9b154f62e529b9a8d6b7b0d4669",
+      "canonical_sha256": "22bd4eab9659a4e972ae975022c56f6680fd574efe6791b6d672830a1eeef87f",
+      "bytes": 2531,
       "stable": true
     },
     "rq03_rq04/rq03_rq04_resultados.md": {
-      "sha256": "52ad54ca318a4dffb62326248add794ee69ab0a0fd39f6dfbdaf3bc0c28ddc6e",
-      "canonical_sha256": "9c63246f1bec016d7a0a6bf852374f0ca10e398ecba73045e0c8a76847500f3d",
-      "bytes": 2140,
+      "sha256": "6dabe77ab3e923436f38f99a053544445214cc4017f92fa7014dca3568654760",
+      "canonical_sha256": "ae9e99aadf4a3e92ec55488909a81d2d75afb258732bc387e455513d513eae39",
+      "bytes": 2153,
       "stable": true
     },
     "rq05/rq05_dispersao.png": {

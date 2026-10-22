@@ -85,7 +85,7 @@ def validation_evidence(manifest_path: Path, source_path: Path) -> dict:
         "gold_releases": manifest.get("releases"),
         "gold_source_sha256": expected_hash,
         "frozen_source_sha256": source_hash,
-        "reason": "origem compatível; consenso/F1 ainda deve ser confirmado",
+        "reason": "origem compatível; F1 de avaliador único, sem consenso, em analysis/validacao_cfr_b",
         "heuristic_f1": None,
         "consensus_status": "ausente",
     }
@@ -238,8 +238,10 @@ def plot(rows: list[dict], analysis: dict, path: Path) -> None:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--base", type=Path, default=Path("analysis/base_repositorios.csv"))
+    # 1ª rodada: a única rotulada (avaliador B). A reamostragem-v2 não foi rotulada
+    # e veio de outro dataset, então não serve de evidência para esta base.
     parser.add_argument("--gold-manifest", type=Path,
-                        default=Path("labels/reamostragem-v2/amostra_ouro_sorteio.json"))
+                        default=Path("labels/amostra_ouro_sorteio.json"))
     parser.add_argument("--source-dataset", type=Path,
                         default=Path("data/amostra_completa.json.gz"))
     parser.add_argument("--output-dir", type=Path, default=Path("analysis/rq03_rq04"))

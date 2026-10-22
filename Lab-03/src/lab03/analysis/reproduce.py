@@ -32,7 +32,7 @@ INPUTS = (
     "labels/amostra_ouro_releases.csv",
     "labels/rotulos_A_releases.csv",
     "labels/rotulos_B_releases.csv",
-    "labels/reamostragem-v2/amostra_ouro_sorteio.json",
+    "labels/amostra_ouro_sorteio.json",
     RQ07_INPUT,
 )
 BASE = "base_repositorios.csv"

@@ -19,7 +19,7 @@ Base congelada: 300 repositórios. n válido é o número de repositórios com v
 
 CFR (a) mede a proporção de execuções válidas de CI que falharam; CFR (b) marca releases predecessoras de uma release corretiva dentro de sete dias. São proxies operacionais distintos e sua divergência não demonstra falha nem sucesso em produção. Para CFR (b), a heurística deve ser interpretada à luz de rótulos humanos do mesmo dataset; a concordância entre avaliadores sozinha não substitui a avaliação da heurística.
 
-Estado da validação vinculada: **not_linked_to_frozen_dataset**. hash de origem da amostra-ouro difere do dataset congelado. F1 da heurística: —; consenso: ausente. Hashes SHA-256 (amostra-ouro/fonte congelada): `87656c1c9637` / `bbc652390d9f`.
+Estado da validação vinculada: **source_matches**. origem compatível; F1 de avaliador único, sem consenso, em analysis/validacao_cfr_b. F1 da heurística: —; consenso: ausente. Hashes SHA-256 (amostra-ouro/fonte congelada): `bbc652390d9f` / `bbc652390d9f`.
 
 Nos repositórios com ambos os CFR observados (n=289), a mediana da diferença CFR (b) − CFR (a) é 0.200 (IQR 0.409). A diferença é descritiva, não uma comparação de falhas em produção.
 
