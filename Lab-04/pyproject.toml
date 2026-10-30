@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lab04-testes-hipotese"
+version = "0.1.0"
+description = "Simulação e comparação dos testes de Pearson e Spearman do Laboratório 04"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=1.26,<3",
+    "scipy>=1.12,<2",
+    "pandas>=2.2,<3",
+    "plotly>=5.20,<7",
+    "streamlit>=1.35,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
