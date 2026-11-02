@@ -1,0 +1,17 @@
+{
+  "fonte": "PROMISE / tera-PROMISE (Jureczko & Madeyski) — Apache Ant 1.7, via klainfo/DefectData (MIT)",
+  "n": 30,
+  "params": {
+    "loc_mu": 4.922853178784091,
+    "loc_sigma": 1.4809567864815052,
+    "defects_mean": 0.7333333333333333,
+    "defects_dispersion": 0.22734045999352126
+  },
+  "observado": {
+    "pearson_r": 0.6169751182287095,
+    "spearman_rho": 0.5561529592478616,
+    "assimetria_loc": 2.3606765009883204,
+    "assimetria_defects": 2.834134975385096,
+    "prop_zeros": 0.7333333333333333
+  }
+}
