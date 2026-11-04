@@ -27,3 +27,5 @@ SIMULATIONS_PATH = OUTPUTS_DIR / "simulacoes.csv"
 
 REPO_URL = "https://github.com/lucasrsnd/lab-medicao-experimentacao"
 PROJECTS_URL = "https://github.com/users/lucasrsnd/projects/2"
+# Preenchido quando o dashboard for publicado (FINAL-02).
+DASHBOARD_URL: str | None = None
