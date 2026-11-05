@@ -11,11 +11,15 @@ from lab04.contracts import SIMULATED_COLUMNS
 from lab04.style import DATA_COLORS, apply_layout
 
 LOC_TICKS = (10, 100, 1_000, 10_000)
-Y_TITLE = "Proporção de módulos (0–1)"
+# Defeitos >= DEFECTS_CAP entram numa única barra "10+": a cauda simulada chega a
+# dezenas de defeitos e esticaria o eixo com barras quase vazias.
+DEFECTS_CAP = 10
+Y_TITLE = "Classes na faixa (%)"
 X_TITLES = {
-    "loc": "LOC (linhas de código, escala log)",
-    "defects": "Defeitos por módulo (contagem)",
+    "loc": "LOC por classe (linhas, escala log)",
+    "defects": f"Defeitos por classe ({DEFECTS_CAP}+ agrupados)",
 }
+SUBPLOT_TITLES = ("Tamanho (LOC)", "Defeitos")
 
 
 def _check(df: pd.DataFrame, name: str) -> None:
@@ -29,11 +33,11 @@ def _check(df: pd.DataFrame, name: str) -> None:
 
 
 def figure(real: pd.DataFrame, simulated: pd.DataFrame) -> go.Figure:
-    """Grade 2×2: linhas = LOC e defeitos; colunas = dados reais e simulados.
+    """Dois painéis (LOC e defeitos) com barras real × simulado lado a lado.
 
-    Cada histograma usa a proporção de módulos por faixa, o que torna comparáveis
-    uma amostra pequena (real) e um conjunto grande (simulado). Os limites dos
-    eixos e as faixas são compartilhados entre real e simulado.
+    Cada histograma usa a proporção de classes por faixa, o que torna comparáveis
+    uma amostra pequena (real) e um conjunto grande (simulado). Real e simulado
+    usam as mesmas faixas, e as barras de cada faixa ficam adjacentes.
     """
     _check(real, "real")
     _check(simulated, "simulated")
@@ -44,60 +48,48 @@ def figure(real: pd.DataFrame, simulated: pd.DataFrame) -> go.Figure:
         "end": float(np.ceil(log_all.max() * 4) / 4),
         "size": 0.25,
     }
-    defects_max = int(max(real["defects"].max(), simulated["defects"].max()))
+    defects_bins = {"start": -0.5, "end": DEFECTS_CAP + 0.5, "size": 1}
 
-    panels = (("Real", "real"), ("Simulado", "simulado"))
-    titles = [f"LOC — {label}" for label, _ in panels] + [
-        f"Defeitos — {label}" for label, _ in panels
-    ]
-    fig = make_subplots(rows=2, cols=2, subplot_titles=titles, vertical_spacing=0.18)
-
-    for col, (label, key) in enumerate(panels, start=1):
-        data = real if key == "real" else simulated
-        legend = {"name": f"{label} (n = {len(data):,})".replace(",", "."), "legendgroup": key}
+    fig = make_subplots(rows=1, cols=2, subplot_titles=SUBPLOT_TITLES, horizontal_spacing=0.1)
+    for label, key, data in (("Real", "real", real), ("Simulado", "simulado", simulated)):
+        common = {
+            "name": f"{label} (n = {len(data):,})".replace(",", "."),
+            "legendgroup": key,
+            "histnorm": "probability",
+            "marker": {"color": DATA_COLORS[key], "line": {"color": "white", "width": 1}},
+        }
         fig.add_trace(
             go.Histogram(
-                x=np.log10(data["loc"].astype(float)),
-                xbins=loc_bins,
-                histnorm="probability",
-                marker={"color": DATA_COLORS[key], "line": {"color": "white", "width": 0.5}},
-                **legend,
+                x=np.log10(data["loc"].astype(float)), xbins=loc_bins,
+                hovertemplate="%{y:.1%} das classes<extra>" + label + "</extra>", **common,
             ),
-            row=1,
-            col=col,
+            row=1, col=1,
         )
         fig.add_trace(
             go.Histogram(
-                x=data["defects"],
-                xbins={"start": -0.5, "end": defects_max + 0.5, "size": 1},
-                histnorm="probability",
-                marker={"color": DATA_COLORS[key], "line": {"color": "white", "width": 0.5}},
-                showlegend=False,
-                **legend,
+                x=np.minimum(data["defects"], DEFECTS_CAP), xbins=defects_bins, showlegend=False,
+                hovertemplate="%{x} defeitos: %{y:.1%} das classes<extra>" + label + "</extra>",
+                **common,
             ),
-            row=2,
-            col=col,
+            row=1, col=2,
         )
 
     apply_layout(fig, "G1 — Dados reais × dados simulados", X_TITLES["loc"], Y_TITLE)
-    for col in (1, 2):
-        fig.update_xaxes(
-            title_text=X_TITLES["loc"],
-            tickvals=[np.log10(t) for t in LOC_TICKS],
-            ticktext=[f"{t:,}".replace(",", ".") for t in LOC_TICKS],
-            row=1,
-            col=col,
-        )
-        fig.update_xaxes(title_text=X_TITLES["defects"], dtick=1, row=2, col=col)
-    # Mesma escala entre real e simulado, em cada linha.
-    fig.update_xaxes(matches="x", row=1, col=2)
-    fig.update_xaxes(matches="x3", row=2, col=2)
-    fig.update_yaxes(matches="y", row=1, col=2)
-    fig.update_yaxes(matches="y3", row=2, col=2)
+    fig.update_xaxes(
+        tickvals=[np.log10(t) for t in LOC_TICKS],
+        ticktext=[f"{t:,}".replace(",", ".") for t in LOC_TICKS],
+        row=1, col=1,
+    )
+    fig.update_xaxes(
+        title_text=X_TITLES["defects"],
+        tickvals=list(range(DEFECTS_CAP + 1)),
+        ticktext=[str(v) for v in range(DEFECTS_CAP)] + [f"{DEFECTS_CAP}+"],
+        row=1, col=2,
+    )
+    fig.update_yaxes(tickformat=".0%", rangemode="tozero")
     fig.update_layout(
-        height=660,
-        bargap=0.05,
+        barmode="group", bargap=0.2, bargroupgap=0.05, height=460,
         margin={"l": 70, "r": 20, "t": 80, "b": 110},
-        legend={"orientation": "h", "yanchor": "bottom", "y": -0.2, "x": 0.0},
+        legend={"orientation": "h", "yanchor": "top", "y": -0.22, "x": 0.0},
     )
     return fig

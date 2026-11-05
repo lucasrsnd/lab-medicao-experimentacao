@@ -9,6 +9,10 @@ TEST_LABELS = {"pearson": "Pearson (r)", "spearman": "Spearman (ρ)"}
 DATA_COLORS = {"real": "#555555", "simulado": "#009E73"}
 REFERENCE_COLOR = "#D55E00"  # linhas de referência, ex.: α = 5% no G3
 TEMPLATE = "plotly_white"
+INK = "#1F2430"
+# Legível no projetor da apresentação (o padrão do Plotly é 12 px).
+FONT_SIZE = 14
+TITLE_SIZE = 18
 
 
 def apply_layout(fig: go.Figure, title: str, x_title: str, y_title: str) -> go.Figure:
@@ -16,8 +20,13 @@ def apply_layout(fig: go.Figure, title: str, x_title: str, y_title: str) -> go.F
     if not (title and x_title and y_title):
         raise ValueError("Título e nomes dos eixos são obrigatórios.")
     fig.update_layout(
-        title={"text": title, "x": 0.0, "xanchor": "left"},
+        title={"text": title, "x": 0.0, "xanchor": "left", "font": {"size": TITLE_SIZE}},
+        font={"size": FONT_SIZE, "color": INK},
+        hoverlabel={"font": {"size": FONT_SIZE}},
         template=TEMPLATE,
+        # Explícito: o Streamlit aplicaria a cor de fundo do tema da página.
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#FFFFFF",
         showlegend=True,
         legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0.0},
         margin={"l": 60, "r": 20, "t": 90, "b": 60},

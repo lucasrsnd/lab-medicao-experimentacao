@@ -140,14 +140,14 @@ def figure(
     fig.add_annotation(
         x=t_obs, y=0.98, yref="paper", yanchor="top", text=f"t observado = {_num(t_obs, 2)}",
         showarrow=False, xanchor="left" if t_obs >= 0 else "right", xshift=6 if t_obs >= 0 else -6,
-        font={"color": CURVE_COLOR, "size": 12}, bgcolor="rgba(255,255,255,0.8)",
+        font={"color": CURVE_COLOR, "size": 13}, bgcolor="rgba(255,255,255,0.8)",
     )
     # Seta para a cauda: com p pequeno a área colorida é estreita demais para ver sozinha.
     tail_x = abs(t_obs) + 0.1
     fig.add_annotation(
         x=tail_x, y=stats.t.pdf(tail_x, df) / 2, ax=40, ay=-55,
         text="área colorida = p-valor", showarrow=True, arrowhead=2, arrowwidth=1.5,
-        arrowcolor=CURVE_COLOR, font={"color": CURVE_COLOR, "size": 11},
+        arrowcolor=CURVE_COLOR, font={"color": CURVE_COLOR, "size": 13},
         bgcolor="rgba(255,255,255,0.8)",
     )
     apply_layout(
@@ -157,9 +157,9 @@ def figure(
         "Densidade de probabilidade",
     )
     fig.update_layout(
-        height=430,
-        legend={"orientation": "h", "yanchor": "top", "y": -0.2, "x": 0.0},
-        margin={"l": 60, "r": 20, "t": 60, "b": 120},
+        height=480,
+        legend={"orientation": "h", "yanchor": "top", "y": -0.27, "x": 0.0},
+        margin={"l": 60, "r": 20, "t": 60, "b": 150},
     )
     fig.update_yaxes(rangemode="tozero")
     return fig

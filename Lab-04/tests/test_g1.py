@@ -11,7 +11,7 @@ PARAMS = MarginalParams(loc_mu=4.9, loc_sigma=1.5, defects_mean=0.75, defects_di
 
 
 def _fixture(n, rho, seed):
-    """Conjunto simulado de teste (cópula gaussiana), até o merge do gerador."""
+    """Conjunto simulado de teste (cópula gaussiana), independente do gerador."""
     rng = np.random.default_rng(seed)
     z = rng.multivariate_normal([0, 0], [[1, rho], [rho, 1]], size=n)
     loc = np.maximum(1, np.round(np.exp(PARAMS.loc_mu + PARAMS.loc_sigma * z[:, 0]))).astype(int)
@@ -41,22 +41,32 @@ def test_colors_follow_style_and_legend_is_not_duplicated(frames):
     assert any("Real (n = 30)" in n for n in names)
 
 
-def test_titles_and_axes(frames):
+def test_titles_axes_and_percent_scale(frames):
     fig = g1_dados.figure(*frames)
     assert fig.layout.title.text.startswith("G1")
     assert fig.layout.showlegend is True
     assert fig.layout.xaxis.title.text == g1_dados.X_TITLES["loc"]
-    assert fig.layout.xaxis3.title.text == g1_dados.X_TITLES["defects"]
+    assert fig.layout.xaxis2.title.text == g1_dados.X_TITLES["defects"]
     assert fig.layout.yaxis.title.text == g1_dados.Y_TITLE
-    subtitles = [a.text for a in fig.layout.annotations]
-    assert len(subtitles) == 4 and "LOC — Real" in subtitles and "Defeitos — Simulado" in subtitles
+    assert fig.layout.yaxis.tickformat == ".0%"
+    assert [a.text for a in fig.layout.annotations] == list(g1_dados.SUBPLOT_TITLES)
 
 
-def test_real_and_simulated_share_axes(frames):
+def test_real_and_simulated_are_side_by_side_with_same_bins(frames):
     fig = g1_dados.figure(*frames)
-    assert fig.layout.xaxis2.matches == "x" and fig.layout.xaxis4.matches == "x3"
-    assert fig.layout.yaxis2.matches == "y" and fig.layout.yaxis4.matches == "y3"
-    assert fig.data[0].xbins.start == fig.data[2].xbins.start
+    assert fig.layout.barmode == "group"
+    # Real (0, 1) e simulado (2, 3) no mesmo painel e com as mesmas faixas.
+    assert fig.data[0].xaxis == fig.data[2].xaxis == "x"
+    assert fig.data[1].xaxis == fig.data[3].xaxis == "x2"
+    assert fig.data[0].xbins == fig.data[2].xbins
+    assert fig.data[1].xbins == fig.data[3].xbins
+
+
+def test_defects_tail_is_grouped(frames):
+    real, sim = frames
+    fig = g1_dados.figure(real.assign(defects=real["defects"] + 50), sim)
+    assert max(fig.data[1].x) == g1_dados.DEFECTS_CAP
+    assert fig.layout.xaxis2.ticktext[-1] == f"{g1_dados.DEFECTS_CAP}+"
 
 
 def test_rejects_bad_input(frames):
