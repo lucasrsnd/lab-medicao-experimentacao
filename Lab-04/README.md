@@ -22,6 +22,21 @@ python -m pip install -e ".[dev]"
 python -m pytest
 ```
 
+## Simulações Monte Carlo
+
+No diretório `Lab-04`, com o pacote instalado, execute:
+
+```powershell
+python scripts/simular.py
+```
+
+O comando gera as taxas de rejeição para cada cenário, efeito e teste, com
+intervalos de confiança de 95%, e salva `outputs/simulacoes.csv`. O módulo
+`lab04.simulation.sample_size` oferece `power_by_n` para estimar o poder por
+tamanho amostral, `power_at_observed_n` para o tamanho real e
+`minimum_sample_sizes` para encontrar o menor `n` observado que atinge o poder
+alvo.
+
 ## Dashboard
 
 No diretório `Lab-04`, com o ambiente ativado:
