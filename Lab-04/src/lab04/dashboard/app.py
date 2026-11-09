@@ -17,8 +17,8 @@ import streamlit as st
 from lab04.config import (
     ALPHA, DASHBOARD_URL, N_SIMS, PROJECTS_URL, REPO_URL, SEED, SIMULATIONS_PATH, TESTS,
 )
-from lab04.dashboard import content, theme
-from lab04.plots import g1_dados, g2_nula
+from lab04.dashboard import content, interativo, theme
+from lab04.plots import g1_dados, g2_nula, g3_erro_tipo1, g4_poder
 from lab04.real_data import load_raw
 from lab04.simulation.scenarios import get as get_scenario
 from lab04.style import TEST_LABELS
@@ -199,7 +199,7 @@ def sidebar(ready: dict[str, bool]) -> None:
         st.markdown("\n".join(
             f"- {'✓' if ready[key] else '⏳'} [{label}](#{key})"
             for key, label, _ in SECTIONS
-        ))
+        ) + ("\n- ★ [Simulador de poder (bônus)](#simulador)" if ready["poder"] else ""))
         st.caption("✓ pronto · ⏳ em construção")
         with st.expander("Perguntas da apresentação"):
             st.markdown("\n".join(
@@ -288,6 +288,62 @@ def section_tests() -> None:
         callout("concl", "testes", CONCLUSION, parts)
 
 
+def section_type1(sims: pd.DataFrame | None) -> None:
+    with section("erro-tipo-i"):
+        if sims is None:
+            pending("erro-tipo-i", dict((k, w) for k, _, w in SECTIONS)["erro-tipo-i"])
+            return
+        parts = content.section_parts("04-erro-tipo1")
+        callout("obs", "erro-tipo-i", OBSERVE, parts)
+        chart(g3_erro_tipo1.figure(sims))
+        verdicts = g3_erro_tipo1.classify(sims)
+        st.table(
+            verdicts.assign(
+                Teste=verdicts["test"].map(TEST_LABELS),
+                Taxa=(verdicts["rate"] * 100).map(lambda v: f"{num(v, 1)}%"),
+                IC=[f"[{num(lo * 100, 1)}%; {num(hi * 100, 1)}%]"
+                    for lo, hi in zip(verdicts["ci_low"], verdicts["ci_high"])],
+                Veredicto=verdicts["verdict"].map(g3_erro_tipo1.VERDICT_LABELS),
+            )
+            .rename(columns={"label": "Situação"})
+            .set_index(["Situação", "Teste"])[["Taxa", "IC", "Veredicto"]]
+            .rename(columns={"IC": "IC 95%"})
+        )
+        violations = content.section_parts("q3-violacoes")
+        if violations:
+            with st.expander("Como as violações de pressuposto foram simuladas (Q3)"):
+                for title, body in violations.items():
+                    if title:
+                        st.markdown(f"**{title}**")
+                    st.markdown(body)
+        callout("concl", "erro-tipo-i", CONCLUSION, parts)
+
+
+def section_power(sims: pd.DataFrame | None) -> None:
+    with section("poder"):
+        if sims is None:
+            pending("poder", dict((k, w) for k, _, w in SECTIONS)["poder"])
+            return
+        parts = content.section_parts("05-poder")
+        callout("obs", "poder", OBSERVE, parts)
+        chart(g4_poder.figure(sims))
+        with st.expander("Ver as taxas de rejeição em tabela"):
+            table = sims.assign(Teste=sims["test"].map(TEST_LABELS)).pivot_table(
+                index=["label", "effect"], columns="Teste", values="rate", sort=False,
+            )
+            table.index.names = ["Situação", "ρ latente"]
+            st.dataframe(table.style.format(lambda v: f"{num(v * 100, 1)}%"), width="stretch")
+        callout("concl", "poder", CONCLUSION, parts)
+        with st.container(key="sim-box"):
+            st.subheader("Experimente: simulador de poder (bônus)", anchor="simulador")
+            st.markdown(
+                "Escolha a situação, o tamanho da amostra e o tamanho do efeito e veja o poder dos "
+                "dois testes mudar. Teste, por exemplo, **quantas classes seriam necessárias para "
+                "chegar a 80%**."
+            )
+            interativo.render()
+
+
 def section_pending(key: str, what: str) -> None:
     with section(key):
         pending(key, what)
@@ -306,7 +362,10 @@ def main() -> None:
     section_scenario(real)
     section_data(real)
     section_tests()
-    for key, _, what in SECTIONS[3:]:
+    sims = content.simulations()
+    section_type1(sims)
+    section_power(sims)
+    for key, _, what in SECTIONS[5:]:
         section_pending(key, what)
 
 

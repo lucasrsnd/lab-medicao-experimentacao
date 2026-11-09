@@ -5,4 +5,4 @@ O tamanho de uma classe (LOC) está associado ao número de defeitos? E qual tes
 Spearman deve ter **mais poder** e manter o erro tipo I perto de 5%; Pearson deve sofrer com a assimetria dos dados e com outliers.
 
 ## Até agora
-**Sprint 1:** dados reais muito assimétricos (73% das classes sem defeito). No exemplo simulado os dois testes detectam a associação, mas a nula do Pearson já é irregular. Erro tipo I e poder: Sprint 2.
+**Erro tipo I:** o Pearson é liberal em todas as situações (5,8% a 7,4%); o Spearman fica em 5% ou abaixo. **Poder:** o Spearman lidera a partir de ρ ≈ 0,3 e domina com outliers; com n = 30, nenhum teste chega a 80%.

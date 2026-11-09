@@ -14,9 +14,9 @@ import numpy as np
 import pandas as pd
 
 from lab04.config import (
-    DASHBOARD_TEXTS_DIR, EXAMPLE_PATH, REAL_PARAMS_PATH, SAMPLE_PATH, SEED, TESTS,
+    DASHBOARD_TEXTS_DIR, EXAMPLE_PATH, REAL_PARAMS_PATH, SAMPLE_PATH, SEED, SIMULATIONS_PATH, TESTS,
 )
-from lab04.contracts import MarginalParams, TestResult
+from lab04.contracts import SIMULATION_COLUMNS, MarginalParams, TestResult
 from lab04.simulation.generator import generate
 
 # Tamanho do conjunto simulado do G1: grande o bastante para mostrar a forma da marginal.
@@ -62,6 +62,17 @@ def section_parts(name: str, base: Path = DASHBOARD_TEXTS_DIR) -> dict[str, str]
 
 def real_sample(path: Path = SAMPLE_PATH) -> pd.DataFrame | None:
     return pd.read_csv(path) if path.exists() else None
+
+
+def simulations(path: Path = SIMULATIONS_PATH) -> pd.DataFrame | None:
+    """``outputs/simulacoes.csv`` (Q1–Q3), validado contra o contrato de colunas."""
+    if not path.exists():
+        return None
+    data = pd.read_csv(path)
+    missing = set(SIMULATION_COLUMNS) - set(data.columns)
+    if missing:
+        raise ValueError(f"simulacoes.csv sem as colunas {sorted(missing)}.")
+    return data
 
 
 def real_params(path: Path = REAL_PARAMS_PATH) -> RealParams | None:
