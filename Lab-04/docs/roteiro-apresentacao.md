@@ -11,7 +11,7 @@ Até **7 minutos** para as 15 perguntas: cerca de **28 s por resposta**. Cada um
 ## Antes de começar
 
 - [ ] Abrir o link publicado **10 minutos antes**: app sem acesso recente pode hibernar; se aparecer a tela para acordar, clicar e esperar.
-- [ ] Plano B no notebook: `cd Lab-04` → `streamlit run streamlit_app.py`.
+- [ ] Plano B no notebook (PowerShell): `cd Lab-04` → `.\.venv\Scripts\Activate.ps1` → `python -m streamlit run streamlit_app.py`. Use `python -m`: o `streamlit` sozinho pode pegar o ambiente de outro lab que esteja ativo.
 - [ ] Zoom do navegador em 110–125% para o projetor; barra lateral aberta.
 - [ ] Deixar desligada a "nula por permutação" (seção 3); ligar só na pergunta 6.
 - [ ] Simulador (seção 5) em: Realista, n = 30, ρ = 0,3.
