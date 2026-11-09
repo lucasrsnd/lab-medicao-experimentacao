@@ -22,15 +22,29 @@ python -m pip install -e ".[dev]"
 python -m pytest
 ```
 
-## Simulações Monte Carlo
+## Reprodução com um comando
 
-No diretório `Lab-04`, com o pacote instalado, execute:
+No diretório `Lab-04`, com o ambiente ativado:
 
 ```powershell
-python scripts/simular.py
+python -m lab04                  # roda tudo, na ordem abaixo (~30 s)
+streamlit run streamlit_app.py   # abre o dashboard
 ```
 
-O comando gera as taxas de rejeição para cada cenário, efeito e teste, com
+| Etapa | Gera | Para |
+|---|---|---|
+| `python -m lab04 amostra` | `data/real/amostra.csv`, `outputs/real_params.json` | G1 e parâmetros da simulação |
+| `python -m lab04 exemplo` | `outputs/exemplo_simulado.json` | G2 |
+| `python -m lab04 simular` | `outputs/simulacoes.csv` | G3, G4 |
+
+A semente é fixa (`SEED = 42`): rodar de novo produz exatamente os mesmos
+arquivos, e `git status` não mostra diferença. O cenário realista da simulação
+lê os parâmetros de `outputs/real_params.json`, então uma nova amostra se propaga
+para as simulações.
+
+## Simulações Monte Carlo
+
+A etapa `simular` (ou `python scripts/simular.py`) gera as taxas de rejeição para cada cenário, efeito e teste, com
 intervalos de confiança de 95%, e salva `outputs/simulacoes.csv`. O módulo
 `lab04.simulation.sample_size` oferece `power_by_n` para estimar o poder por
 tamanho amostral, `power_at_observed_n` para o tamanho real e
@@ -106,4 +120,4 @@ streamlit run Lab-04/streamlit_app.py
 | `lab04.contracts` | `MarginalParams`, `Scenario`, `TestResult` e colunas dos arquivos trocados entre módulos |
 | `lab04.style` | cor e rótulo de cada teste e `apply_layout` (título, eixos e legenda) |
 
-O comando único de reprodução será adicionado na integração final (FINAL-01).
+A reprodução completa está em "Reprodução com um comando", acima.
