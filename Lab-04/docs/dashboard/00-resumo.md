@@ -4,5 +4,5 @@ O tamanho de uma classe (LOC) está associado ao número de defeitos? E qual tes
 ## Expectativa
 Spearman deve ter **mais poder** e manter o erro tipo I perto de 5%; Pearson deve sofrer com a assimetria dos dados e com outliers.
 
-## Até agora
-**Erro tipo I:** o Pearson é liberal em todas as situações (5,8% a 7,4%); o Spearman fica em 5% ou abaixo. **Poder:** o Spearman lidera a partir de ρ ≈ 0,3 e domina com outliers; com n = 30, nenhum teste chega a 80%.
+## Resultado
+**Usar o Spearman.** O Pearson é liberal em todas as situações (5,8% a 7,4% de falsos positivos); o Spearman fica em 5% ou abaixo e lidera em poder a partir de ρ ≈ 0,3. Nos dados reais, os dois detectam a associação (ρ = 0,56), mas só o p-valor do Spearman confere com a permutação.

@@ -18,7 +18,7 @@ def recorded(monkeypatch):
 
 def test_default_runs_every_step_in_pipeline_order(recorded):
     cli.main([])
-    assert recorded == ["amostra", "exemplo", "simular"]
+    assert recorded == ["amostra", "exemplo", "simular", "dados-reais"]
 
 
 def test_single_step(recorded):

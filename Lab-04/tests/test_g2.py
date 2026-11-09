@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 from scipy import stats
 
+from lab04.permutation import permutation_null
 from lab04.plots import g2_nula
 from lab04.style import TEST_COLORS
 
@@ -68,8 +69,8 @@ def test_uses_test_color_and_has_title_axes_legend():
 
 def test_permutation_null_is_reproducible_and_centered():
     x, y = synthetic_pair(seed=1, rho=0.0)
-    a = g2_nula.permutation_null("spearman", x, y, n_perm=4_000, rng=np.random.default_rng(7))
-    b = g2_nula.permutation_null("spearman", x, y, n_perm=4_000, rng=np.random.default_rng(7))
+    a = permutation_null("spearman", x, y, n_perm=4_000, rng=np.random.default_rng(7))
+    b = permutation_null("spearman", x, y, n_perm=4_000, rng=np.random.default_rng(7))
     np.testing.assert_array_equal(a, b)
     assert abs(a.mean()) < 0.1
     # Para postos sem empates a nula por permutação é próxima da t(n−2).
@@ -78,7 +79,7 @@ def test_permutation_null_is_reproducible_and_centered():
 
 def test_permutation_overlay_is_drawn():
     x, y = synthetic_pair()
-    nulls = g2_nula.permutation_null("pearson", x, y, n_perm=500)
+    nulls = permutation_null("pearson", x, y, n_perm=500)
     fig = g2_nula.figure("pearson", N, 2.0, null_statistics=nulls)
     assert any("permutação" in (t.name or "") for t in fig.data)
 

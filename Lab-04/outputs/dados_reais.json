@@ -1,0 +1,57 @@
+{
+  "n": 30,
+  "alpha": 0.05,
+  "seed": 42,
+  "n_permutations": 20000,
+  "resultados": [
+    {
+      "test": "pearson",
+      "statistic": 4.1484083849145135,
+      "p_value": 0.00028191203293307244,
+      "effect": 0.6169751182287095,
+      "ci_low": 0.33007374591158833,
+      "ci_high": 0.799527622567787,
+      "n": 30,
+      "p_permutation": 0.0050497475126243686
+    },
+    {
+      "test": "spearman",
+      "statistic": 3.5410369803370294,
+      "p_value": 0.0014166584614507163,
+      "effect": 0.5561529592478616,
+      "ci_low": 0.2449663737279698,
+      "ci_high": 0.7634530654482219,
+      "n": 30,
+      "p_permutation": 0.0010999450027498626
+    }
+  ],
+  "efeito_latente": {
+    "observado": 0.735,
+    "conservador": 0.328
+  },
+  "efeito_referencia": {
+    "observado": 0.5561529592478616,
+    "conservador": 0.2449663737279698
+  },
+  "poder_no_n_real": {
+    "observado": {
+      "pearson": 0.8365,
+      "spearman": 0.916
+    },
+    "conservador": {
+      "pearson": 0.2465,
+      "spearman": 0.245
+    }
+  },
+  "n_para_80": {
+    "observado": {
+      "pearson": 30,
+      "spearman": 25
+    },
+    "conservador": {
+      "pearson": null,
+      "spearman": 150
+    }
+  },
+  "power_sims": 2000
+}

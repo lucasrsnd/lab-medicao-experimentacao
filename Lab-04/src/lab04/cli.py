@@ -7,6 +7,7 @@ produz exatamente os mesmos arquivos.
     amostra   data/real/amostra.csv e outputs/real_params.json   (real_data)
     exemplo   outputs/exemplo_simulado.json                       (scripts/)
     simular   outputs/simulacoes.csv                              (scripts/)
+    dados-reais  outputs/dados_reais.json e poder_por_n.csv         (real_results)
 """
 
 from __future__ import annotations
@@ -31,11 +32,18 @@ def _sample() -> None:
     real_data.main()
 
 
+def _real_results() -> None:
+    from lab04 import real_results
+
+    real_results.main()
+
+
 # Ordem importa: a simulação lê os parâmetros que a etapa "amostra" grava.
 STEPS: dict[str, tuple[str, Callable[[], None]]] = {
     "amostra": ("amostra real e parâmetros da simulação", _sample),
     "exemplo": ("exemplo simulado com os dois testes (G2)", _script("exemplo_simulado.py")),
     "simular": ("Monte Carlo: erro tipo I e poder (G3, G4)", _script("simular.py")),
+    "dados-reais": ("testes nos dados reais e poder × n (seção 6)", _real_results),
 }
 
 

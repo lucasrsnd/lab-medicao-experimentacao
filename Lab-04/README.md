@@ -27,7 +27,7 @@ python -m pytest
 No diretório `Lab-04`, com o ambiente ativado:
 
 ```powershell
-python -m lab04                  # roda tudo, na ordem abaixo (~30 s)
+python -m lab04                  # roda tudo, na ordem abaixo (~1 min)
 streamlit run streamlit_app.py   # abre o dashboard
 ```
 
@@ -36,6 +36,7 @@ streamlit run streamlit_app.py   # abre o dashboard
 | `python -m lab04 amostra` | `data/real/amostra.csv`, `outputs/real_params.json` | G1 e parâmetros da simulação |
 | `python -m lab04 exemplo` | `outputs/exemplo_simulado.json` | G2 |
 | `python -m lab04 simular` | `outputs/simulacoes.csv` | G3, G4 |
+| `python -m lab04 dados-reais` | `outputs/dados_reais.json`, `outputs/poder_por_n.csv` | seção 6 (testes nos dados reais, poder × n) |
 
 A semente é fixa (`SEED = 42`): rodar de novo produz exatamente os mesmos
 arquivos, e `git status` não mostra diferença. O cenário realista da simulação

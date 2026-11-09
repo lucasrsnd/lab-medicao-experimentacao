@@ -75,6 +75,22 @@ def simulations(path: Path = SIMULATIONS_PATH) -> pd.DataFrame | None:
     return data
 
 
+def real_results(path: Path | None = None) -> dict | None:
+    """``outputs/dados_reais.json`` (seção 6)."""
+    from lab04.real_results import REAL_RESULTS_PATH
+
+    path = path or REAL_RESULTS_PATH
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+
+
+def power_by_n_curves(path: Path | None = None) -> pd.DataFrame | None:
+    """``outputs/poder_por_n.csv`` (seção 6)."""
+    from lab04.real_results import POWER_BY_N_PATH
+
+    path = path or POWER_BY_N_PATH
+    return pd.read_csv(path) if path.exists() else None
+
+
 def real_params(path: Path = REAL_PARAMS_PATH) -> RealParams | None:
     if not path.exists():
         return None
