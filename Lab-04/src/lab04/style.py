@@ -22,6 +22,7 @@ def apply_layout(fig: go.Figure, title: str, x_title: str, y_title: str) -> go.F
     fig.update_layout(
         title={"text": title, "x": 0.0, "xanchor": "left", "font": {"size": TITLE_SIZE}},
         font={"size": FONT_SIZE, "color": INK},
+        separators=",.",  # decimal com vírgula e milhar com ponto (pt-BR)
         hoverlabel={"font": {"size": FONT_SIZE}},
         template=TEMPLATE,
         # Explícito: o Streamlit aplicaria a cor de fundo do tema da página.

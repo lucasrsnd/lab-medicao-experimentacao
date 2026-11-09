@@ -1,0 +1,5 @@
+## O que observar
+A tabela aplica os dois testes às 30 classes reais. Compare o p-valor pela aproximação t com o p-valor por permutação, que não depende dessa aproximação. O gráfico mostra quanto poder cada teste teria com o efeito observado e com um efeito conservador, o limite inferior do IC.
+
+## Conclusão
+Os dois testes rejeitam H₀: classes maiores têm mais defeitos (r = 0,62 e ρ = 0,56, com IC 95% longe de zero). Mas o p-valor do **Pearson** pela t (0,0003) é cerca de 18 vezes menor que o da permutação (0,005), a mesma liberalidade vista no G3; no **Spearman** as duas formas concordam (0,0014 × 0,0011). O efeito tem **importância prática**: ρ = 0,56 é uma associação grande (≥ 0,5 pela convenção de Cohen), e revisar primeiro as classes maiores concentra o esforço onde estão os defeitos. Com o efeito observado, 30 classes já dão 92% de poder ao Spearman. Se o efeito real for o menor plausível, porém, seriam necessárias cerca de 150 classes para 80%, e o Pearson não chega lá nem com 200.

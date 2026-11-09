@@ -1,0 +1,5 @@
+## O que observar
+Cada painel é uma situação simulada; a curva mostra em quantas das 10.000 repetições o teste rejeitou H₀ conforme a correlação latente ρ cresce. Em ρ = 0 o valor é o erro tipo I da seção 4, e a linha pontilhada marca 80%, o poder usual de planejamento. Compare onde as curvas se cruzam: é ali que a vantagem muda de lado.
+
+## Conclusão
+Com n = 30 **nenhum teste chega a 80%** para ρ ≤ 0,5; o melhor caso é o Spearman nos dados realistas (57% em ρ = 0,5). Nos dados realistas a vantagem muda de lado em ρ ≈ 0,3: abaixo disso o Pearson rejeita mais, mas parte dessa vantagem é a mesma liberalidade vista no erro tipo I; acima, o **Spearman** lidera (57% × 47% em ρ = 0,5). Com **outliers** o Spearman domina a partir de ρ = 0,2 e chega a 41% contra 17%, porque o poder do Pearson quase não cresce. Com assimetria extrema o Pearson fica à frente até ρ = 0,4 e o Spearman só passa em ρ = 0,5 (38% × 33%). Com n = 10 o Pearson rejeita mais em todo ρ, mas ele já rejeita 7,4% sem efeito algum, contra 3,9% do Spearman, então essa vantagem não é confiável.

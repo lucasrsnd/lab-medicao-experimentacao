@@ -93,6 +93,8 @@ def figure(results: pd.DataFrame) -> go.Figure:
         annotation_text=f"α = {alpha * 100:.0f}% (taxa esperada sob H₀)".replace(".", ","),
         annotation_position="top right",
         annotation_font={"color": REFERENCE_COLOR},
+        # Fundo branco: o rótulo cruza as barras mais altas e precisa continuar legível.
+        annotation_bgcolor="rgba(255,255,255,0.9)",
     )
     apply_layout(
         fig,

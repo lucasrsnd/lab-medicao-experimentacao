@@ -32,12 +32,16 @@ def test_section_parts_split_by_heading(tmp_path: Path):
 
 
 @pytest.mark.parametrize("name, required", [
-    ("00-resumo", {"Pergunta", "Expectativa", "Até agora"}),
+    ("00-resumo", {"Pergunta", "Expectativa", "Resultado"}),
     ("01-cenario", {"Pergunta e hipóteses", "Erros no cenário"}),
     ("02-dados", {"O que observar", "Conclusão"}),
     ("03-testes", {"Como cada teste funciona", "O que observar", "Conclusão"}),
+    ("04-erro-tipo1", {"O que observar", "Conclusão"}),
+    ("05-poder", {"O que observar", "Conclusão"}),
+    ("06-dados-reais", {"O que observar", "Conclusão"}),
+    ("07-conclusao", {"Esperado × encontrado", "Recomendação", "Quando a escolha mudaria", "Limitações"}),
 ])
-def test_sprint1_texts_have_expected_blocks(name, required):
+def test_section_texts_have_expected_blocks(name, required):
     assert required <= set(content.section_parts(name))
 
 
@@ -66,7 +70,9 @@ def app():
 def test_app_renders_sections_in_order(app):
     assert not app.exception
     assert [h.value for h in app.header] == SECTION_HEADERS
-    assert len(app.get("plotly_chart")) == 3  # G1 + G2 (Pearson e Spearman)
+    # G1 + G2 (Pearson e Spearman) + G3 + G4 + curva do simulador + poder × n
+    assert len(app.get("plotly_chart")) == 7
+    assert not any("Em construção" in m.value for m in app.markdown)
 
 
 def test_app_has_links_summary_and_pattern(app):
@@ -79,12 +85,33 @@ def test_app_has_links_summary_and_pattern(app):
 def test_sidebar_lists_progress_and_all_questions(app):
     sidebar = " ".join(m.value for m in app.sidebar.markdown)
     assert "✓ [1. Cenário](#cenario)" in sidebar
-    assert "⏳ [4. Erro tipo I](#erro-tipo-i)" in sidebar
+    assert "✓ [4. Erro tipo I](#erro-tipo-i)" in sidebar
+    assert "✓ [5. Poder](#poder)" in sidebar
+    assert "✓ [6. Dados reais](#dados-reais)" in sidebar
+    assert "✓ [7. Conclusão](#conclusao)" in sidebar
+    assert "⏳" not in sidebar.replace("⏳ em construção", "")
+    assert "(#simulador)" in sidebar
     assert sidebar.count("](#") >= len(SECTION_HEADERS) + 15
 
 
 def test_permutation_toggle(app):
     app.toggle[0].set_value(True).run()
     assert not app.exception
-    assert len(app.get("plotly_chart")) == 3
+    assert len(app.get("plotly_chart")) == 7
     assert any("escalas verticais" in c.value for c in app.caption)
+
+
+def test_simulator_reacts_to_controls(app):
+    app.slider(key="sim-n").set_value(20).run()
+    app.select_slider(key="sim-rho").set_value(0.5).run()
+    assert not app.exception
+    assert any("n = 20" in str(c.proto.spec) for c in app.get("plotly_chart"))
+
+
+def test_committed_simulations_cover_every_scenario_effect_and_test():
+    from lab04.config import EFFECTS, N_SIMS, TESTS
+
+    sims = content.simulations()
+    assert set(sims["scenario"]) == {"realista", "outliers", "assimetria_extrema", "amostra_pequena"}
+    assert sims.groupby(["scenario", "test"])["effect"].apply(lambda e: sorted(e) == list(EFFECTS)).all()
+    assert set(sims["test"]) == set(TESTS) and (sims["n_sims"] == N_SIMS).all()

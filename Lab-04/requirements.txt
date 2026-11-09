@@ -1,0 +1,8 @@
+# Dependências do dashboard no Streamlit Community Cloud (Lab-04/streamlit_app.py).
+# Versões fixas = as testadas localmente. Ao atualizar, mantenha em sintonia com
+# pyproject.toml (tests/test_deploy.py confere). Instalação local: pip install -e ".[dev]".
+numpy==2.5.4
+scipy==1.18.1
+pandas==2.3.3
+plotly==6.9.0
+streamlit==1.66.1

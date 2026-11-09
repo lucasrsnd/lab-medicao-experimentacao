@@ -9,6 +9,7 @@ o que o tema do Streamlit não cobre. Os elementos são localizados pela classe
 - ``obs-*``       chamada "O que observar" (antes do gráfico)
 - ``concl-*``     chamada "Conclusão" (depois do gráfico)
 - ``pend-*``      aviso de seção que chega numa próxima entrega
+- ``sim-box``     bloco do simulador interativo (bônus), dentro da seção 5
 """
 
 from html import escape
@@ -49,6 +50,10 @@ CSS = f"""
 [class*="st-key-pend-"] {{
   color: {MUTED}; background: #F4F6F8; border: 1px dashed #B8C0CC;
   border-radius: 8px; padding: .8rem 1rem;
+}}
+.st-key-sim-box {{
+  background: #F7F9FA; border: 1px solid #D9E0DE; border-radius: 10px;
+  padding: 1rem 1.1rem; margin-top: .5rem;
 }}
 [data-testid="stSidebar"] a {{ color: #E8EAED; }}
 </style>

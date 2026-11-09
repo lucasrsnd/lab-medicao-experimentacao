@@ -1,6 +1,6 @@
 """Dashboard do Lab04 — Pearson × Spearman (par P5).
 
-Executar no diretório Lab-04:  streamlit run src/lab04/dashboard/app.py
+Executar no diretório Lab-04:  streamlit run streamlit_app.py
 
 A página só lê artefatos versionados (data/, outputs/, docs/dashboard/); nada
 de simulação pesada acontece ao abrir. Toda seção segue o mesmo padrão:
@@ -17,8 +17,9 @@ import streamlit as st
 from lab04.config import (
     ALPHA, DASHBOARD_URL, N_SIMS, PROJECTS_URL, REPO_URL, SEED, SIMULATIONS_PATH, TESTS,
 )
-from lab04.dashboard import content, theme
-from lab04.plots import g1_dados, g2_nula
+from lab04.dashboard import content, interativo, theme
+from lab04.permutation import permutation_null
+from lab04.plots import g1_dados, g2_nula, g3_erro_tipo1, g4_poder, poder_n
 from lab04.real_data import load_raw
 from lab04.simulation.scenarios import get as get_scenario
 from lab04.style import TEST_LABELS
@@ -98,7 +99,7 @@ def load_permutation_nulls() -> dict[str, np.ndarray] | None:
         return None
     sample = content.example_sample(ex, get_scenario("realista").params)
     return {
-        test: g2_nula.permutation_null(
+        test: permutation_null(
             test, sample["loc"].to_numpy(), sample["defects"].to_numpy(),
             n_perm=N_PERMUTATIONS, rng=np.random.default_rng(SEED),
         )
@@ -116,7 +117,8 @@ def availability() -> dict[str, bool]:
         "testes": content.example() is not None,
         "erro-tipo-i": simulations,
         "poder": simulations,
-        "dados-reais": content.section_parts("06-dados-reais") is not None,
+        "dados-reais": content.real_results() is not None
+        and content.section_parts("06-dados-reais") is not None,
         "conclusao": content.section_parts("07-conclusao") is not None,
     }
 
@@ -199,7 +201,7 @@ def sidebar(ready: dict[str, bool]) -> None:
         st.markdown("\n".join(
             f"- {'✓' if ready[key] else '⏳'} [{label}](#{key})"
             for key, label, _ in SECTIONS
-        ))
+        ) + ("\n- ★ [Simulador de poder (bônus)](#simulador)" if ready["poder"] else ""))
         st.caption("✓ pronto · ⏳ em construção")
         with st.expander("Perguntas da apresentação"):
             st.markdown("\n".join(
@@ -210,7 +212,7 @@ def sidebar(ready: dict[str, bool]) -> None:
             st.markdown("\n".join(f"- **{term}:** {text}" for term, text in GLOSSARY))
         st.caption(
             f"Reprodução: semente {SEED} · α = {num(ALPHA * 100, 0)}% bicaudal · "
-            f"{thousands(N_SIMS)} repetições · `streamlit run src/lab04/dashboard/app.py`"
+            f"{thousands(N_SIMS)} repetições · `streamlit run streamlit_app.py`"
         )
 
 
@@ -288,9 +290,132 @@ def section_tests() -> None:
         callout("concl", "testes", CONCLUSION, parts)
 
 
-def section_pending(key: str, what: str) -> None:
-    with section(key):
-        pending(key, what)
+def section_type1(sims: pd.DataFrame | None) -> None:
+    with section("erro-tipo-i"):
+        if sims is None:
+            pending("erro-tipo-i", dict((k, w) for k, _, w in SECTIONS)["erro-tipo-i"])
+            return
+        parts = content.section_parts("04-erro-tipo1")
+        callout("obs", "erro-tipo-i", OBSERVE, parts)
+        chart(g3_erro_tipo1.figure(sims))
+        verdicts = g3_erro_tipo1.classify(sims)
+        st.table(
+            verdicts.assign(
+                Teste=verdicts["test"].map(TEST_LABELS),
+                Taxa=(verdicts["rate"] * 100).map(lambda v: f"{num(v, 1)}%"),
+                IC=[f"[{num(lo * 100, 1)}%; {num(hi * 100, 1)}%]"
+                    for lo, hi in zip(verdicts["ci_low"], verdicts["ci_high"])],
+                Veredicto=verdicts["verdict"].map(g3_erro_tipo1.VERDICT_LABELS),
+            )
+            .rename(columns={"label": "Situação"})
+            .set_index(["Situação", "Teste"])[["Taxa", "IC", "Veredicto"]]
+            .rename(columns={"IC": "IC 95%"})
+        )
+        violations = content.section_parts("q3-violacoes")
+        if violations:
+            with st.expander("Como as violações de pressuposto foram simuladas (Q3)"):
+                for title, body in violations.items():
+                    if title:
+                        st.markdown(f"**{title}**")
+                    st.markdown(body)
+        callout("concl", "erro-tipo-i", CONCLUSION, parts)
+
+
+def section_power(sims: pd.DataFrame | None) -> None:
+    with section("poder"):
+        if sims is None:
+            pending("poder", dict((k, w) for k, _, w in SECTIONS)["poder"])
+            return
+        parts = content.section_parts("05-poder")
+        callout("obs", "poder", OBSERVE, parts)
+        chart(g4_poder.figure(sims))
+        with st.expander("Ver as taxas de rejeição em tabela"):
+            table = sims.assign(Teste=sims["test"].map(TEST_LABELS)).pivot_table(
+                index=["label", "effect"], columns="Teste", values="rate", sort=False,
+            )
+            table.index.names = ["Situação", "ρ latente"]
+            st.dataframe(table.style.format(lambda v: f"{num(v * 100, 1)}%"), width="stretch")
+        callout("concl", "poder", CONCLUSION, parts)
+        with st.container(key="sim-box"):
+            st.subheader("Experimente: simulador de poder (bônus)", anchor="simulador")
+            st.markdown(
+                "Escolha a situação, o tamanho da amostra e o tamanho do efeito e veja o poder dos "
+                "dois testes mudar. Teste, por exemplo, **quantas classes seriam necessárias para "
+                "chegar a 80%**."
+            )
+            interativo.render()
+
+
+def _n_text(n: int | None, limit: int) -> str:
+    return f"{n}" if n is not None else f"> {limit}"
+
+
+def section_real(results: dict | None, curves: pd.DataFrame | None) -> None:
+    with section("dados-reais"):
+        if results is None or curves is None:
+            pending("dados-reais", dict((k, w) for k, _, w in SECTIONS)["dados-reais"])
+            return
+        parts = content.section_parts("06-dados-reais")
+        callout("obs", "dados-reais", OBSERVE, parts)
+        st.table(pd.DataFrame([
+            {
+                "Teste": TEST_LABELS[r["test"]],
+                "Correlação": num(r["effect"], 3),
+                "IC 95%": f"[{num(r['ci_low'])}; {num(r['ci_high'])}]",
+                "t": num(r["statistic"]),
+                "p-valor (aprox. t)": num(r["p_value"], 4),
+                "p-valor (permutação)": num(r["p_permutation"], 4),
+                "Decisão (α = 5%, permutação)": "Rejeita H₀" if r["p_permutation"] < ALPHA else "Não rejeita H₀",
+            }
+            for r in results["resultados"]
+        ]).set_index("Teste"))
+        st.caption(
+            f"n = {results['n']} classes · p-valor por permutação com "
+            f"{thousands(results['n_permutations'])} embaralhamentos, que não depende da aproximação t(n − 2)."
+        )
+
+        power, needed, ref = results["poder_no_n_real"], results["n_para_80"], results["efeito_referencia"]
+        limit = int(curves["n"].max())
+        cards = (
+            ("Poder no n real — Spearman", f"{num(power['observado']['spearman'] * 100, 0)}%",
+             f"efeito observado (ρ = {num(ref['observado'])})"),
+            ("Poder no n real — Pearson", f"{num(power['observado']['pearson'] * 100, 0)}%",
+             f"efeito observado (ρ = {num(ref['observado'])})"),
+            ("n para 80% — Spearman", _n_text(needed["conservador"]["spearman"], limit),
+             f"efeito conservador (ρ = {num(ref['conservador'])})"),
+            ("n para 80% — Pearson", _n_text(needed["conservador"]["pearson"], limit),
+             f"efeito conservador (ρ = {num(ref['conservador'])})"),
+        )
+        for i, (col, (label, value, note)) in enumerate(zip(st.columns(4), cards)):
+            with col, st.container(key=f"card-real-{i}"):
+                theme.kpi(label, value, note,
+                          "Estimado por simulação no cenário realista, com o efeito convertido para a escala latente.")
+        latent = results["efeito_latente"]
+        titles = {
+            "observado": f"Efeito observado: ρ = {num(ref['observado'])} (latente ≈ {num(latent['observado'])})",
+            "conservador": f"Efeito conservador: ρ = {num(ref['conservador'])} (latente ≈ {num(latent['conservador'])})",
+        }
+        chart(poder_n.figure(curves, titles, results["n"]))
+        st.caption(
+            "O efeito conservador é o limite inferior do IC 95% do ρ de Spearman. Os dois efeitos foram "
+            "convertidos para a correlação latente da simulação: o ρ latente cuja média do ρ amostral "
+            f"(n = {results['n']}) iguala o valor de referência. {thousands(results['power_sims'])} repetições por ponto."
+        )
+        callout("concl", "dados-reais", CONCLUSION, parts)
+
+
+def section_conclusion() -> None:
+    with section("conclusao"):
+        parts = content.section_parts("07-conclusao")
+        if not parts:
+            pending("conclusao", dict((k, w) for k, _, w in SECTIONS)["conclusao"])
+            return
+        if "Esperado × encontrado" in parts:
+            st.markdown("**Esperado × encontrado**")
+            st.markdown(parts["Esperado × encontrado"])
+        callout("concl", "conclusao", "Recomendação", parts)
+        rest = {k: v for k, v in parts.items() if k not in ("Esperado × encontrado", "Recomendação")}
+        extra_parts(rest)
 
 
 def main() -> None:
@@ -306,8 +431,13 @@ def main() -> None:
     section_scenario(real)
     section_data(real)
     section_tests()
-    for key, _, what in SECTIONS[3:]:
-        section_pending(key, what)
+    sims = content.simulations()
+    section_type1(sims)
+    section_power(sims)
+    section_real(content.real_results(), content.power_by_n_curves())
+    section_conclusion()
 
 
-main()
+# Rodado direto (streamlit run .../app.py); no deploy, streamlit_app.py chama main().
+if __name__ == "__main__":
+    main()

@@ -11,7 +11,7 @@ import numpy as np
 import plotly.graph_objects as go
 from scipy import stats
 
-from lab04.config import ALPHA, SEED, TESTS
+from lab04.config import ALPHA, TESTS
 from lab04.style import TEST_COLORS, TEST_LABELS, apply_layout
 
 CURVE_COLOR = "#333333"
@@ -39,30 +39,6 @@ def critical_value(n: int, alpha: float = ALPHA) -> float:
 def p_value(n: int, observed_statistic: float) -> float:
     """p-valor bicaudal: área da t(n−2) além de ±|t observado|."""
     return float(2.0 * stats.t.sf(abs(observed_statistic), n - 2))
-
-
-def permutation_null(
-    test: str,
-    x: np.ndarray,
-    y: np.ndarray,
-    n_perm: int = 5_000,
-    rng: np.random.Generator | None = None,
-) -> np.ndarray:
-    """Estatísticas t obtidas embaralhando ``y``: a nula exata condicionada aos dados."""
-    x = np.asarray(x, dtype=float)
-    y = np.asarray(y, dtype=float)
-    _check(test, x.size)
-    if x.shape != y.shape or x.ndim != 1:
-        raise ValueError("x e y devem ser vetores do mesmo tamanho.")
-    rng = rng if rng is not None else np.random.default_rng(SEED)
-    if test == "spearman":
-        x, y = stats.rankdata(x), stats.rankdata(y)
-    permuted = rng.permuted(np.broadcast_to(y, (n_perm, y.size)), axis=1)
-    xc = x - x.mean()
-    yc = permuted - permuted.mean(axis=1, keepdims=True)
-    r = (yc @ xc) / np.sqrt((xc @ xc) * np.einsum("ij,ij->i", yc, yc))
-    r = np.clip(r, -1 + 1e-12, 1 - 1e-12)
-    return r * np.sqrt((x.size - 2) / (1.0 - r**2))
 
 
 def _tail_traces(xs: np.ndarray, df: int, threshold: float, **style) -> list[go.Scatter]:
