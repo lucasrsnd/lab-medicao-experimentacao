@@ -39,10 +39,25 @@ class Example:
     results: dict[str, TestResult]
 
 
-def section_text(name: str, base: Path = DASHBOARD_TEXTS_DIR) -> str | None:
-    """Texto de ``docs/dashboard/<name>.md`` (ex.: ``01-cenario``)."""
+def section_parts(name: str, base: Path = DASHBOARD_TEXTS_DIR) -> dict[str, str] | None:
+    """Blocos de ``docs/dashboard/<name>.md``, indexados pelo cabeçalho ``## ...``.
+
+    Ex.: ``{"O que observar": "...", "Conclusão": "..."}``. Texto antes do
+    primeiro cabeçalho fica na chave ``""``. A ordem do arquivo é preservada.
+    """
     path = base / f"{name}.md"
-    return path.read_text(encoding="utf-8").strip() if path.exists() else None
+    if not path.exists():
+        return None
+    parts: dict[str, list[str]] = {"": []}
+    current = ""
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("## "):
+            current = line[3:].strip()
+            parts[current] = []
+        else:
+            parts[current].append(line)
+    blocks = {key: "\n".join(lines).strip() for key, lines in parts.items()}
+    return {key: body for key, body in blocks.items() if body}
 
 
 def real_sample(path: Path = SAMPLE_PATH) -> pd.DataFrame | None:
