@@ -1,0 +1,18 @@
+{
+  "nome": "modelo_externo",
+  "software": {
+    "nome": "<software escolhido em #181>",
+    "versao": "<versão exata>",
+    "site": "<link oficial>"
+  },
+  "tratamentos": {
+    "<tratamento_1>": "https://exemplo.org/v1/{unidade}",
+    "<tratamento_2>": "https://exemplo.org/v2/{unidade}"
+  },
+  "unidades": [
+    "<unidade_1>",
+    "<unidade_2>"
+  ],
+  "headers": {},
+  "timeout_s": 30
+}

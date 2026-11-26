@@ -1,0 +1,47 @@
+{
+  "alvos": "piloto_local",
+  "software": {
+    "nome": "servidor_local.py (substituto até #181)",
+    "versao": "Lab-05/scripts/servidor_local.py"
+  },
+  "tratamentos": {
+    "A_sem_cache": "http://127.0.0.1:8765/a/{unidade}",
+    "B_com_cache": "http://127.0.0.1:8765/b/{unidade}"
+  },
+  "n_unidades": 20,
+  "parametros": {
+    "repeticoes": 5,
+    "aquecimento": 3,
+    "aquecer_unidades": true,
+    "semente": 42,
+    "intervalo_s": 0.2,
+    "timeout_s": 10.0,
+    "user_agent": "PUC-Minas-LabExperimentacao-Lab05/1.0 (pesquisa academica; 1 req/s)"
+  },
+  "config_sha256": "e52a1208ff742ada1f8a68b82c52fe23d8af79b4266452c53a01d8e4a7941c34",
+  "ambiente": {
+    "python": "3.13.15",
+    "requests": "2.34.2",
+    "so": "Windows 11 (10.0.26200)",
+    "maquina": "AMD64",
+    "processador": "AMD64 Family 23 Model 96 Stepping 1, AuthenticAMD",
+    "commit": "f9730d1",
+    "rede": "loopback (127.0.0.1)"
+  },
+  "inicio_utc": "2026-11-26T01:51:35.157983+00:00",
+  "fim_utc": "2026-11-26T01:52:24.315918+00:00",
+  "duracao_s": 49.2,
+  "requisicoes": 246,
+  "falhas_medicao": 0,
+  "validacao": {
+    "linhas": 600,
+    "nulos": 0,
+    "duplicatas": 0,
+    "negativos": 0,
+    "tempo_acima_timeout": 0,
+    "ttfb_maior_que_tempo": 0,
+    "observacoes_esperadas": 200,
+    "observacoes_obtidas": 200,
+    "completude": 1.0
+  }
+}
