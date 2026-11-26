@@ -64,7 +64,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("etapa", nargs="?", default="tudo", choices=["tudo", *STEPS])
     args = parser.parse_args(argv)
     run(list(STEPS) if args.etapa == "tudo" else [args.etapa])
-    print("\nPronto. Abra o dashboard com: streamlit run streamlit_app.py")
+    print("\nPronto. Abra o dashboard com: python -m streamlit run streamlit_app.py")
 
 
 if __name__ == "__main__":

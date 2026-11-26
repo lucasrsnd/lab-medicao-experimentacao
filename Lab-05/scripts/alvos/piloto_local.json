@@ -1,0 +1,34 @@
+{
+  "nome": "piloto_local",
+  "software": {
+    "nome": "servidor_local.py (substituto até #181)",
+    "versao": "Lab-05/scripts/servidor_local.py"
+  },
+  "tratamentos": {
+    "A_sem_cache": "http://127.0.0.1:8765/a/{unidade}",
+    "B_com_cache": "http://127.0.0.1:8765/b/{unidade}"
+  },
+  "unidades": [
+    "p01",
+    "p02",
+    "p03",
+    "p04",
+    "p05",
+    "p06",
+    "p07",
+    "p08",
+    "p09",
+    "p10",
+    "p11",
+    "p12",
+    "p13",
+    "p14",
+    "p15",
+    "p16",
+    "p17",
+    "p18",
+    "p19",
+    "p20"
+  ],
+  "timeout_s": 10
+}

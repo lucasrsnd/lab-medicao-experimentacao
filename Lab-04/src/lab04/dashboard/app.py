@@ -1,6 +1,6 @@
 """Dashboard do Lab04 — Pearson × Spearman (par P5).
 
-Executar no diretório Lab-04:  streamlit run streamlit_app.py
+Executar no diretório Lab-04:  python -m streamlit run streamlit_app.py
 
 A página só lê artefatos versionados (data/, outputs/, docs/dashboard/); nada
 de simulação pesada acontece ao abrir. Toda seção segue o mesmo padrão:
@@ -212,7 +212,7 @@ def sidebar(ready: dict[str, bool]) -> None:
             st.markdown("\n".join(f"- **{term}:** {text}" for term, text in GLOSSARY))
         st.caption(
             f"Reprodução: semente {SEED} · α = {num(ALPHA * 100, 0)}% bicaudal · "
-            f"{thousands(N_SIMS)} repetições · `streamlit run streamlit_app.py`"
+            f"{thousands(N_SIMS)} repetições · `python -m streamlit run streamlit_app.py`"
         )
 
 

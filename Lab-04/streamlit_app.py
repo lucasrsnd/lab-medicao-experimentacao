@@ -1,6 +1,6 @@
 """Ponto de entrada do dashboard, local e no Streamlit Community Cloud.
 
-Local (no diretório Lab-04):   streamlit run streamlit_app.py
+Local (no diretório Lab-04):   python -m streamlit run streamlit_app.py
 Cloud:                          arquivo de entrada = Lab-04/streamlit_app.py
 
 O Cloud executa a partir da raiz do repositório e instala só o

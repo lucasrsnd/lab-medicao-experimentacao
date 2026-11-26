@@ -4,7 +4,7 @@ Par **P5**: tamanho do módulo (LOC) × número de defeitos. Plano, arquitetura 
 contratos entre módulos em [`docs/plano-lab04.md`](docs/plano-lab04.md).
 
 - GitHub Projects: <https://github.com/users/lucasrsnd/projects/2>
-- Dashboard: *link adicionado após o deploy (ver "Deploy" abaixo)*
+- **Dashboard publicado:** <https://lab-medicao-experimentacao-jnzcvcgayaegrrjdvtsbjh.streamlit.app/>
 
 ## Instalação
 
@@ -27,8 +27,8 @@ python -m pytest
 No diretório `Lab-04`, com o ambiente ativado:
 
 ```powershell
-python -m lab04                  # roda tudo, na ordem abaixo (~1 min)
-streamlit run streamlit_app.py   # abre o dashboard
+python -m lab04                            # roda tudo, na ordem abaixo (~1 min)
+python -m streamlit run streamlit_app.py   # abre o dashboard
 ```
 
 | Etapa | Gera | Para |
@@ -57,8 +57,12 @@ alvo.
 No diretório `Lab-04`, com o ambiente ativado:
 
 ```powershell
-streamlit run streamlit_app.py
+python -m streamlit run streamlit_app.py
 ```
+
+Use `python -m streamlit`, não só `streamlit`: assim o dashboard roda com o Python
+do ambiente ativado. Se o ambiente de outro lab estiver ativo, o `streamlit` do
+PATH pode ser o dele e falhar com `ModuleNotFoundError` (ex.: `plotly`).
 
 O dashboard só lê os artefatos versionados em `data/real/`, `outputs/` e
 `docs/dashboard/`. Os textos de cada seção ficam em `docs/dashboard/NN-*.md`, e
@@ -90,7 +94,7 @@ O Cloud executa a partir da **raiz do repositório**. Para reproduzir isso
 localmente, na raiz e com um ambiente instalado só pelo `requirements.txt`:
 
 ```powershell
-streamlit run Lab-04/streamlit_app.py
+python -m streamlit run Lab-04/streamlit_app.py
 ```
 
 ### Publicar (uma vez)
@@ -103,7 +107,7 @@ streamlit run Lab-04/streamlit_app.py
    - **Main file path:** `Lab-04/streamlit_app.py`
    - **App URL:** um subdomínio curto, ex.: `lab04-pearson-spearman`
    - **Advanced settings → Python:** 3.13, a versão em que o projeto foi testado
-4. Depois de publicado, preencher `DASHBOARD_URL` em `src/lab04/config.py` e o link no topo deste README. O botão "Dashboard" do topo passa a funcionar.
+4. Depois de publicado, preencher `DASHBOARD_URL` em `src/lab04/config.py` e o link no topo deste README. O botão "Dashboard" do topo passa a funcionar. *(Feito: link no topo deste README.)*
 
 ### Ao preparar a Sprint 2 e a apresentação
 

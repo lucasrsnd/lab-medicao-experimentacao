@@ -82,6 +82,14 @@ def test_app_has_links_summary_and_pattern(app):
     assert any("projects/2" in getattr(b, "url", "") for b in app.get("link_button"))
 
 
+def test_top_links_include_published_dashboard(app):
+    from lab04.config import DASHBOARD_URL
+
+    assert DASHBOARD_URL and DASHBOARD_URL.startswith("https://") and ".streamlit.app" in DASHBOARD_URL
+    buttons = {b.proto.label: b.proto for b in app.get("link_button")}
+    assert buttons["Dashboard"].url == DASHBOARD_URL and not buttons["Dashboard"].disabled
+
+
 def test_sidebar_lists_progress_and_all_questions(app):
     sidebar = " ".join(m.value for m in app.sidebar.markdown)
     assert "✓ [1. Cenário](#cenario)" in sidebar
