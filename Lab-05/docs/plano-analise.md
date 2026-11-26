@@ -2,7 +2,7 @@
 
 Issue: S01-05 (#185). Responsável: @lucasrsnd. Revisor: @DaviSantos23.
 
-> **Status:** esqueleto independente do software. As partes marcadas com **[pendente]** dependem da escolha do software (#181), das métricas e hipóteses (#182) e do piloto (#184/#186).
+> **Status:** contrato inicial alinhado à proposta WordPress (#181/#182). O tamanho da amostra e a decisão sobre normalidade permanecem pendentes até o piloto (#184/#186).
 
 O código que implementa este plano está em [`../analysis/`](../analysis/README.md). Quem coleta (#184) entrega os dados no formato da seção 1; a análise roda sem alterar nada.
 
@@ -20,15 +20,17 @@ CSV em formato longo, uma linha por observação:
 
 Metadados (versão do software, hardware, data, rede) ficam no log da coleta, não neste CSV. A validação (`descritiva.validate`) rejeita colunas ausentes, valores não numéricos e linhas duplicadas.
 
+Para a proposta WordPress, use `tratamento=cache_desligado` ou `cache_ligado`, `unidade=<endpoint>_bloco_<n>`, `metrica=latencia_ms` e `valor` em milissegundos. `repeticao` identifica a requisição dentro do mesmo endpoint/bloco/condição. Os blocos devem ser pareados entre tratamentos; os códigos HTTP e metadados do ambiente ficam no log da coleta. Não misture proporções de erro ou códigos HTTP nesta coluna de latência.
+
 ## 2. Métricas, escalas e estatísticas permitidas
 
-Cada métrica do GQM (#182) entra nesta tabela **[pendente]**:
+Métrica primária da proposta WordPress (#182):
 
 | Métrica | Entidade / atributo | Direta ou derivada | Escala | Estatísticas permitidas |
 |---|---|---|---|---|
-| ex.: tempo de resposta (ms) | produto / eficiência (externo) | direta | razão | todas |
-| ex.: nota de satisfação (1–5) | recurso / percepção | direta | ordinal | mediana, IQR, testes de postos |
-| ex.: houve erro? (sim/não) | produto / confiabilidade | direta | nominal | proporção, qui-quadrado/Fisher |
+| Latência HTTP (`latencia_ms`) | produto / desempenho percebido externamente | direta, cronometrada pelo cliente HTTP | razão | média, mediana, DP, IQR, IC 95%, CV, Shapiro-Wilk; Welch ou Mann-Whitney para independente; t pareado ou Wilcoxon para pareado |
+
+Códigos HTTP são registros de qualidade/diagnóstico, não desfecho inferencial nesta implementação. Não codificar uma proporção ou variável binária como valores numéricos de `latencia_ms`.
 
 Regras por escala (Stevens):
 
@@ -38,6 +40,8 @@ Regras por escala (Stevens):
 | Ordinal | mediana | IQR, percentis | Mann-Whitney, Wilcoxon, Kruskal-Wallis, Friedman |
 | Intervalar | média, mediana | desvio-padrão, IQR | t, ANOVA (se normal) ou testes de postos |
 | Razão | média, mediana, média geométrica | DP, IQR, CV | idem intervalar; razões entre tratamentos fazem sentido |
+
+Esta tabela descreve opções metodológicas; o código de análise implementa apenas os testes indicados na seção 4 e não implementa testes para dados nominais.
 
 Métricas de tempo e tamanho costumam ser assimétricas à direita. Por isso a **mediana e o IQR** são reportados sempre, ao lado de média, DP e IC 95%.
 

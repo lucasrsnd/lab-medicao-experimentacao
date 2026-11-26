@@ -94,6 +94,40 @@ def test_pareado_usa_mediana_por_unidade_e_wilcoxon_quando_nao_normal():
     assert result.efeito < 0
 
 
+def test_contrato_experimento_wordpress_cache_pareado():
+    rows = []
+    for bloco in range(6):
+        baseline = 200.0 + bloco * 4
+        for treatment, factor in (("cache_desligado", 1.0), ("cache_ligado", 0.6)):
+            for repetition in range(1, 4):
+                rows.append(
+                    (
+                        treatment,
+                        f"homepage_bloco_{bloco + 1}",
+                        repetition,
+                        "latencia_ms",
+                        baseline * factor + repetition,
+                    )
+                )
+    df = pd.DataFrame(
+        rows,
+        columns=["tratamento", "unidade", "repeticao", "metrica", "valor"],
+    )
+
+    validated = descritiva.validate(df)
+    result = testes.compare(
+        validated,
+        "latencia_ms",
+        pareado=True,
+        metodo="nao_parametrico",
+    )
+
+    assert set(validated["tratamento"]) == {"cache_desligado", "cache_ligado"}
+    assert result.teste == "Wilcoxon"
+    assert result.n_por_grupo == "cache_desligado=6, cache_ligado=6"
+    assert result.efeito > 0
+
+
 def test_k_grupos():
     rng = np.random.default_rng(4)
     groups = {t: rng.normal(mu, 1, 30) for t, mu in zip("ABC", (0, 0.5, 1))}
