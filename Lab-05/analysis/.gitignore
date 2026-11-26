@@ -1,0 +1,8 @@
+# Ambiente e caches locais.
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Saídas de exemplo geradas a partir de dados sintéticos (regeneráveis).
+fixtures/
+resultados/
